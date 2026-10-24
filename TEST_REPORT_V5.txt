@@ -1,0 +1,1974 @@
+E-COMMERCE INVENTORY MANAGEMENT SYSTEM V5 - TEST REPORT
+Build: 2026-10-09
+
+RESULT: PASS
+
+Logout update: confirmation prompt visually verified. Cancel preserved
+the dashboard session; confirmed Logout returned to the login page.
+PHP and JavaScript syntax checks passed after this change. The previous
+automatic GET logout behavior is now replaced by confirmation and POST.
+
+Platform logo update: dashboard, sidebar, transfer dropdown selection and
+file generator visually verified. All 26 PHP files and JavaScript passed
+syntax checks after the logo update. SVG assets are bundled locally.
+Original Upload table update: all 103 source records verified, repeated
+headers and readable dates verified; multiple worksheets, wide tables,
+long-text pagination and leading-zero identifiers checked. All sample
+and stress-fixture PDF pages were rendered and visually inspected.
+Prior V5 checks are retained below; this build adds 41 product-filter checks.
+
+Database migration and inventory rules: 62 passed
+  PASS - Migration preserved activity_log records
+  PASS - Migration preserved allocation_batches records
+  PASS - Migration preserved allocation_lines records
+  PASS - Migration preserved allocation_override_history records
+  PASS - Migration preserved allocation_rules records
+  PASS - Migration preserved beginning_balances records
+  PASS - Migration preserved brands records
+  PASS - Migration preserved categories records
+  PASS - Migration preserved import_batches records
+  PASS - Migration preserved inflow_batches records
+  PASS - Migration preserved inflows records
+  PASS - Migration preserved non_sellable records
+  PASS - Migration preserved nonsellable_outflows records
+  PASS - Migration preserved outflows records
+  PASS - Migration preserved platform_aliases records
+  PASS - Migration preserved platform_stock records
+  PASS - Migration preserved platform_transfers records
+  PASS - Migration preserved product_audit records
+  PASS - Migration preserved products records
+  PASS - Migration preserved receipt_aliases records
+  PASS - Migration preserved receipt_staging_lines records
+  PASS - Migration preserved reconciliation_batches records
+  PASS - Migration preserved reconciliations records
+  PASS - Migration preserved return_exceptions records
+  PASS - Migration preserved unmapped_imports records
+  PASS - Migration preserved users records
+  PASS - Second migration is idempotent
+  PASS - Migration restores missing inflow_batches.result_json
+  PASS - Migration restores missing import_batches.result_json
+  PASS - Migration restores missing unmapped_imports.external_id
+  PASS - Migration restores missing products.low_stock_threshold
+  PASS - UOM conversion pc and bx(n)
+  PASS - Ambiguous UOM rejected
+  PASS - Fractional pieces rejected
+  PASS - Box conversion yields 24 pieces
+  PASS - Custom thresholds affect stock status
+  PASS - Stock boundary statuses
+  PASS - Receipt parser uses shipped quantity and handles boxes
+  PASS - Wrapped specification preserved
+  PASS - Receipt reference and date extracted
+  PASS - Actual scanned receipt OCR produces review lines
+  PASS - Product query includes thresholds and variant
+  PASS - Threshold SKU validation
+  PASS - Threshold rejects invalid value "-1"
+  PASS - Threshold rejects invalid value "1.5"
+  PASS - Threshold rejects invalid value "not a number"
+  PASS - Threshold rejects invalid value ""
+  PASS - Duplicate and unknown SKU rejected
+  PASS - Threshold staging leaves inventory unchanged
+  PASS - Threshold final confirmation applies
+  PASS - Confirmed threshold stored
+  PASS - Repeated threshold confirmation blocked
+  PASS - Stale threshold preview blocked atomically
+  PASS - Receipt confirmation posts converted stock once
+  PASS - Repeated receipt submission blocked
+  PASS - Confirmed receipt corrections blocked
+  PASS - Physical release belongs only to chosen original entry
+  PASS - Non-sellable over-release rejected
+  PASS - Allocation conserves whole-piece total
+  PASS - Viewer cannot post inventory
+  PASS - E-Commerce account permissions
+  PASS - Unknown account role rejected
+
+HTTP routes and real forms: 46 passed
+  PASS - HTTP index.php
+  PASS - HTTP index.php?page=dashboard
+  PASS - HTTP index.php?page=stocks
+  PASS - HTTP index.php?page=beginning
+  PASS - HTTP index.php?page=inflow
+  PASS - HTTP index.php?page=outflow
+  PASS - HTTP index.php?page=nonsellable
+  PASS - HTTP index.php?page=platform_inventory
+  PASS - HTTP index.php?page=allocation
+  PASS - HTTP index.php?page=allocation_history
+  PASS - HTTP index.php?page=transfers
+  PASS - HTTP index.php?page=file_generator
+  PASS - HTTP index.php?page=products
+  PASS - HTTP index.php?page=mapping
+  PASS - HTTP index.php?page=reconciliation
+  PASS - HTTP index.php?page=receipts
+  PASS - HTTP index.php?page=imports
+  PASS - HTTP index.php?page=activity
+  PASS - HTTP index.php?page=settings
+  PASS - HTTP index.php?page=outflow_batch&id=1
+  PASS - HTTP index.php?page=inflow_batch&id=1
+  PASS - HTTP index.php?page=receipt_review&id=9
+  PASS - HTTP index.php?page=threshold_review&id=1
+  PASS - HTTP index.php?page=nonsellable_detail&id=1
+  PASS - HTTP index.php?page=nonsellable_release_detail&id=1
+  PASS - HTTP index.php?page=imports&history=all&offset=100
+  PASS - HTTP download.php?type=outflow_print&id=1
+  PASS - Formal outflow print summary
+  PASS - HTTP download.php?type=original_preview&id=1
+  PASS - Original XLSX returns a standard PDF
+  PASS - HTTP download.php?type=threshold_template
+  PASS - Threshold template exports saved products
+  PASS - HTTP download.php?type=import_errors&id=1
+  PASS - Historical unmapped rows appear in error report
+  PASS - Missing CSRF is rejected
+  PASS - User create through action endpoint
+  PASS - User edit and role change
+  PASS - User password reset
+  PASS - User deactivate
+  PASS - User reactivate
+  PASS - Override updates platform inventory and history
+  PASS - Threshold upload produces preview without posting
+  PASS - Threshold confirmation through actual form endpoint
+  PASS - Invalid order quantities retained as batch errors
+  PASS - Actual scanned receipt uploads into correction review
+  PASS - Actual OCR retrieves packing-slip reference
+
+Platform XLSX generation, imports and password workflow: 16 passed
+  PASS - HTTP index.php
+  PASS - Shopee workbook generation
+  PASS - HTTP download.php?type=generated_batch&id=3
+  PASS - Shopee quantities updated while price is preserved
+  PASS - TikTok workbook generation
+  PASS - HTTP download.php?type=generated_batch&id=4
+  PASS - TikTok quantities updated while price is preserved
+  PASS - Lazada workbook generation
+  PASS - HTTP download.php?type=generated_batch&id=5
+  PASS - Lazada quantities updated while price is preserved
+  PASS - Valid platform order posts
+  PASS - Valid order decrements stock once
+  PASS - Repeated order import does not deduct stock again
+  PASS - HTTP logout.php
+  PASS - Reset account must set a personal password
+  PASS - Personal password change completes and unlocks account
+
+Beginning Balance validation and history: 5 passed
+  PASS - Valid beginning quantity saved with history
+  PASS - Beginning history retains before and after
+  PASS - Invalid beginning row blocks the entire update
+  PASS - Duplicate beginning products are rejected
+  PASS - Locked beginning balance blocks updates
+
+Historical duplicate compatibility and final pages: 6 passed
+  PASS - HTTP index.php
+  PASS - Historical SHA1 order remains preserved
+  PASS - Legacy order import detected despite old digest format
+  PASS - Legacy duplicate leaves inventory unchanged
+  PASS - HTTP index.php?page=beginning&history=all
+  PASS - HTTP index.php?page=import_detail&id=10
+
+Sign Up and Admin approval: 26 passed
+  PASS - Approval migration preserves existing accounts and passwords
+  PASS - Repeated approval migration is idempotent
+  PASS - Login displays Sign Up link
+  PASS - Mismatched signup passwords rejected
+  PASS - Short signup password rejected
+  PASS - Invalid username rejected
+  PASS - Signup requires valid CSRF token
+  PASS - Signup submitted successfully
+  PASS - Forged role and activation ignored; account remains pending
+  PASS - Signup password is securely hashed
+  PASS - Duplicate usernames rejected
+  PASS - Pending user cannot sign in
+  PASS - Pending user cannot open dashboard
+  PASS - Admin sees pending registration with role selection
+  PASS - Approval rejects invalid roles
+  PASS - Generic Activate cannot bypass approval
+  PASS - Admin approves registration
+  PASS - Approval activates account, assigns role and saves reviewer/time
+  PASS - Repeated approval blocked
+  PASS - Approved user can sign in
+  PASS - Non-admin cannot approve registrations
+  PASS - Non-admin cannot view registration management
+  PASS - Admin rejects a registration
+  PASS - Rejected user cannot sign in
+  PASS - Admin can reconsider a rejected request
+  PASS - Unauthenticated approval permission denied
+
+Main Category and Subcategory creation/editing: 24 passed
+  PASS - Migration preserves every existing product field
+  PASS - Migration leaves old categories intact for manual tagging
+  PASS - Category migration is idempotent
+  PASS - Five requested main categories are available
+  PASS - All 44 requested subcategories are available
+  PASS - All supported category pairs validate, including main-only Oils and Liquid Essentials
+  PASS - Add and Edit Product both render Main Category dropdowns
+  PASS - Dependent Subcategory dropdowns and handler are present
+  PASS - Requested brand choices are available in product forms
+  PASS - Create Product saves valid category: CVT
+  PASS - Create Product saves valid category: Engine
+  PASS - Create Product saves valid category: Performance Parts
+  PASS - Create Product saves valid category: Oils
+  PASS - Create Product saves valid category: Liquid Essentials
+  PASS - Manual edit moves product to a different Main/Subcategory
+  PASS - Category edit preserves Master SKU
+  PASS - Category edit preserves inventory quantity
+  PASS - Category edit preserves platform mapping
+  PASS - Mismatched Main/Subcategory edit is rejected without changes
+  PASS - Unknown Main Category edit is rejected
+  PASS - Unexpected Subcategory under main-only Oils is rejected
+  PASS - Invalid creation rolls back without adding a product
+  PASS - Manual edit supports Oils without a subcategory
+  PASS - Category changes are recorded with before/after tags in audit history
+
+Image receipt OCR and persistent Inflow error history: 22 passed
+  PASS - Actual image-only receipt produces all four review rows
+  PASS - OCR uncertainties require manual correction
+  PASS - Receipt scan does not post stock
+  PASS - Layout selection diagnostics are saved in history
+  PASS - Line validation issues persist in batch error details
+  PASS - Saved errors can be opened directly after redirect
+  PASS - Inflow history exposes Review Errors button
+  PASS - Receipt Archive exposes Review Errors button
+  PASS - Unresolved OCR rows cannot be confirmed
+  PASS - Error alert remains visible without auto-dismiss
+  PASS - OCR reference can be corrected manually before posting
+  PASS - Error review remains available after later correction
+  PASS - Wrong receipt file type produces a persistent failure record
+  PASS - Rejected receipt upload remains in history
+  PASS - Unreadable XLSX upload also opens saved error review
+  PASS - Failed uploads never alter stock
+  PASS - Failed XLSX exception survives transaction rollback in history
+  PASS - Invalid CSRF request cannot create error history entries
+  PASS - Valid XLSX still commits successfully after transaction changes
+  PASS - Valid bulk inflow posts the expected quantity once
+  PASS - Bulk row validation failure rolls back all inventory rows
+  PASS - Bulk validation errors are permanently available in error review
+
+Product Brand/Main/Subcategory filters: 35 passed
+  PASS - Exactly six approved brands in all brand options
+  PASS - Legacy brand grouping: Azoo
+  PASS - Legacy brand grouping: Belts
+  PASS - Legacy brand grouping: Honda
+  PASS - Legacy brand grouping: Nanomoly
+  PASS - Legacy brand grouping: Luminapro
+  PASS - Brand + Main Category + Subcategory combine correctly
+  PASS - Subcategory can filter across all main categories
+  PASS - All filters cleared preserve all product rows
+  PASS - Unassigned filter retains legacy product categories
+  PASS - SQL and PHP filters return identical product sets
+  PASS - SQL Others group includes all legacy brands consistently
+  PASS - Category filter safely handles SQL-like input
+  PASS - Filtered page executes without errors: stocks
+  PASS - Brand/Main/Subcategory controls present: stocks
+  PASS - Filtered page executes without errors: products
+  PASS - Brand/Main/Subcategory controls present: products
+  PASS - Filtered page executes without errors: beginning
+  PASS - Brand/Main/Subcategory controls present: beginning
+  PASS - Filtered page executes without errors: platform_inventory
+  PASS - Brand/Main/Subcategory controls present: platform_inventory
+  PASS - Filtered page executes without errors: inflow
+  PASS - Brand/Main/Subcategory controls present: inflow
+  PASS - Filtered page executes without errors: outflow
+  PASS - Brand/Main/Subcategory controls present: outflow
+  PASS - Filtered page executes without errors: nonsellable
+  PASS - Brand/Main/Subcategory controls present: nonsellable
+  PASS - Filtered page executes without errors: allocation
+  PASS - Brand/Main/Subcategory controls present: allocation
+  PASS - Filtered page executes without errors: transfers
+  PASS - Brand/Main/Subcategory controls present: transfers
+  PASS - Filtered page executes without errors: mapping
+  PASS - Brand/Main/Subcategory controls present: mapping
+  PASS - Filtered page executes without errors: reconciliation
+  PASS - Brand/Main/Subcategory controls present: reconciliation
+
+Filter HTTP validation and pagination: 6 passed
+  PASS - Unsupported product brand rejected with visible explanation
+  PASS - Rejected brand creates no product
+  PASS - Settings cannot add an unapproved brand
+  PASS - History pagination retains Brand, Main Category and Subcategory
+  PASS - Applying filters resets history to its first page
+  PASS - Add and Edit Product offer exactly the six approved brands
+
+Bulk category assignment coverage and preservation: 1014 passed
+  PASS - All 492 live products have an assignment
+  PASS - Classified SKU AZOO-CLUT-0001
+  PASS - Classified SKU AZOO-CLUT-0002
+  PASS - Classified SKU AZOO-CLUT-0003
+  PASS - Classified SKU AZOO-CLUT-0004
+  PASS - Classified SKU AZOO-CLUT-0005
+  PASS - Classified SKU CLUT-CLUT-0006
+  PASS - Classified SKU CLUT-CLUT-0007
+  PASS - Classified SKU HEAD-OTHE-0008
+  PASS - Classified SKU HOND-BELT-0009
+  PASS - Classified SKU LUMI-OTHE-0010
+  PASS - Classified SKU LUMI-OTHE-0011
+  PASS - Classified SKU LUMI-OTHE-0012
+  PASS - Classified SKU LUMI-OTHE-0013
+  PASS - Classified SKU LUMI-OTHE-0014
+  PASS - Classified SKU LUMI-OTHE-0015
+  PASS - Classified SKU LUMI-OTHE-0016
+  PASS - Classified SKU LUMI-OTHE-0017
+  PASS - Classified SKU LUMI-OTHE-0018
+  PASS - Classified SKU NANO-OTHE-0019
+  PASS - Classified SKU NANO-OILL-0020
+  PASS - Classified SKU NANO-OTHE-0021
+  PASS - Classified SKU NANO-OTHE-0022
+  PASS - Classified SKU NANO-OTHE-0023
+  PASS - Classified SKU NANO-OTHE-0024
+  PASS - Classified SKU NANO-OTHE-0025
+  PASS - Classified SKU NANO-OTHE-0026
+  PASS - Classified SKU NANO-OTHE-0027
+  PASS - Classified SKU NANO-OTHE-0028
+  PASS - Classified SKU NANO-OTHE-0029
+  PASS - Classified SKU REDS-OTHE-0030
+  PASS - Classified SKU RS8-OTHE-0031
+  PASS - Classified SKU RS8-OTHE-0032
+  PASS - Classified SKU RS8-OTHE-0033
+  PASS - Classified SKU RS8-OTHE-0034
+  PASS - Classified SKU RS8-OTHE-0035
+  PASS - Classified SKU RS8-OTHE-0036
+  PASS - Classified SKU RS8-OTHE-0037
+  PASS - Classified SKU RS8-OTHE-0038
+  PASS - Classified SKU RS8-AIRF-0039
+  PASS - Classified SKU RS8-AIRF-0040
+  PASS - Classified SKU RS8-AIRF-0041
+  PASS - Classified SKU RS8-AIRF-0042
+  PASS - Classified SKU RS8-AIRF-0043
+  PASS - Classified SKU RS8-TORQ-0044
+  PASS - Classified SKU RS8-OTHE-0045
+  PASS - Classified SKU RS8-OTHE-0046
+  PASS - Classified SKU RS8-OTHE-0047
+  PASS - Classified SKU RS8-VALV-0048
+  PASS - Classified SKU RS8-VALV-0049
+  PASS - Classified SKU RS8-VALV-0050
+  PASS - Classified SKU RS8-VALV-0051
+  PASS - Classified SKU RS8-VALV-0052
+  PASS - Classified SKU RS8-VALV-0053
+  PASS - Classified SKU RS8-VALV-0054
+  PASS - Classified SKU RS8-BLOC-0055
+  PASS - Classified SKU RS8-BLOC-0056
+  PASS - Classified SKU RS8-BLOC-0057
+  PASS - Classified SKU RS8-BLOC-0058
+  PASS - Classified SKU RS8-BLOC-0059
+  PASS - Classified SKU RS8-BLOC-0060
+  PASS - Classified SKU RS8-BLOC-0061
+  PASS - Classified SKU RS8-BLOC-0062
+  PASS - Classified SKU RS8-BLOC-0063
+  PASS - Classified SKU RS8-BLOC-0064
+  PASS - Classified SKU RS8-BLOC-0065
+  PASS - Classified SKU RS8-BLOC-0066
+  PASS - Classified SKU RS8-BLOC-0067
+  PASS - Classified SKU RS8-CAMS-0068
+  PASS - Classified SKU RS8-CAMS-0069
+  PASS - Classified SKU RS8-OTHE-0070
+  PASS - Classified SKU RS8-OTHE-0071
+  PASS - Classified SKU RS8-OTHE-0072
+  PASS - Classified SKU RS8-OTHE-0073
+  PASS - Classified SKU RS8-CAMS-0074
+  PASS - Classified SKU RS8-CAMS-0075
+  PASS - Classified SKU RS8-CAMS-0076
+  PASS - Classified SKU RS8-OTHE-0077
+  PASS - Classified SKU RS8-OTHE-0078
+  PASS - Classified SKU RS8-CENT-0079
+  PASS - Classified SKU RS8-CENT-0080
+  PASS - Classified SKU RS8-CENT-0081
+  PASS - Classified SKU RS8-CENT-0082
+  PASS - Classified SKU RS8-CENT-0083
+  PASS - Classified SKU RS8-CENT-0084
+  PASS - Classified SKU RS8-CENT-0085
+  PASS - Classified SKU RS8-CENT-0086
+  PASS - Classified SKU RS8-CENT-0087
+  PASS - Classified SKU RS8-CENT-0088
+  PASS - Classified SKU RS8-OTHE-0089
+  PASS - Classified SKU RS8-OTHE-0090
+  PASS - Classified SKU RS8-OTHE-0091
+  PASS - Classified SKU RS8-CLUT-0092
+  PASS - Classified SKU RS8-CLUT-0093
+  PASS - Classified SKU RS8-CLUT-0094
+  PASS - Classified SKU RS8-CLUT-0095
+  PASS - Classified SKU RS8-CLUT-0096
+  PASS - Classified SKU RS8-CLUT-0097
+  PASS - Classified SKU RS8-CLUT-0098
+  PASS - Classified SKU RS8-CLUT-0099
+  PASS - Classified SKU RS8-CLUT-0100
+  PASS - Classified SKU RS8-CLUT-0101
+  PASS - Classified SKU RS8-CLUT-0102
+  PASS - Classified SKU RS8-CLUT-0103
+  PASS - Classified SKU RS8-CLUT-0104
+  PASS - Classified SKU RS8-CLUT-0105
+  PASS - Classified SKU RS8-CLUT-0106
+  PASS - Classified SKU RS8-CLUT-0107
+  PASS - Classified SKU RS8-CLUT-0108
+  PASS - Classified SKU RS8-CLUT-0109
+  PASS - Classified SKU RS8-CLUT-0110
+  PASS - Classified SKU RS8-CLUT-0111
+  PASS - Classified SKU RS8-CLUT-0112
+  PASS - Classified SKU RS8-CLUT-0113
+  PASS - Classified SKU RS8-OTHE-0114
+  PASS - Classified SKU RS8-CLUT-0115
+  PASS - Classified SKU RS8-CLUT-0116
+  PASS - Classified SKU RS8-CLUT-0117
+  PASS - Classified SKU RS8-CLUT-0118
+  PASS - Classified SKU RS8-CLUT-0119
+  PASS - Classified SKU RS8-CLUT-0120
+  PASS - Classified SKU RS8-CLUT-0121
+  PASS - Classified SKU RS8-CLUT-0122
+  PASS - Classified SKU RS8-OTHE-0123
+  PASS - Classified SKU RS8-OTHE-0124
+  PASS - Classified SKU RS8-BEAR-0125
+  PASS - Classified SKU RS8-BEAR-0126
+  PASS - Classified SKU RS8-OTHE-0127
+  PASS - Classified SKU RS8-OTHE-0128
+  PASS - Classified SKU RS8-OTHE-0129
+  PASS - Classified SKU RS8-OTHE-0130
+  PASS - Classified SKU RS8-OTHE-0131
+  PASS - Classified SKU RS8-OTHE-0132
+  PASS - Classified SKU RS8-OTHE-0133
+  PASS - Classified SKU RS8-OTHE-0134
+  PASS - Classified SKU RS8-OTHE-0135
+  PASS - Classified SKU RS8-OTHE-0136
+  PASS - Classified SKU RS8-OTHE-0137
+  PASS - Classified SKU RS8-OTHE-0138
+  PASS - Classified SKU RS8-OTHE-0139
+  PASS - Classified SKU RS8-OTHE-0140
+  PASS - Classified SKU RS8-PULL-0141
+  PASS - Classified SKU RS8-PULL-0142
+  PASS - Classified SKU RS8-PULL-0143
+  PASS - Classified SKU RS8-PULL-0144
+  PASS - Classified SKU RS8-PULL-0145
+  PASS - Classified SKU RS8-OTHE-0146
+  PASS - Classified SKU RS8-OTHE-0147
+  PASS - Classified SKU RS8-OTHE-0148
+  PASS - Classified SKU RS8-OTHE-0149
+  PASS - Classified SKU RS8-OTHE-0150
+  PASS - Classified SKU RS8-OTHE-0151
+  PASS - Classified SKU RS8-OTHE-0152
+  PASS - Classified SKU RS8-OTHE-0153
+  PASS - Classified SKU RS8-OTHE-0154
+  PASS - Classified SKU RS8-OTHE-0155
+  PASS - Classified SKU RS8-OTHE-0156
+  PASS - Classified SKU RS8-OTHE-0157
+  PASS - Classified SKU RS8-OTHE-0158
+  PASS - Classified SKU RS8-OTHE-0159
+  PASS - Classified SKU RS8-OTHE-0160
+  PASS - Classified SKU RS8-OTHE-0161
+  PASS - Classified SKU RS8-CLEA-0162
+  PASS - Classified SKU RS8-OTHE-0163
+  PASS - Classified SKU RS8-OTHE-0164
+  PASS - Classified SKU RS8-OTHE-0165
+  PASS - Classified SKU RS8-OILL-0166
+  PASS - Classified SKU RS8-INJE-0167
+  PASS - Classified SKU RS8-INJE-0168
+  PASS - Classified SKU RS8-INJE-0169
+  PASS - Classified SKU RS8-INJE-0170
+  PASS - Classified SKU RS8-INJE-0171
+  PASS - Classified SKU RS8-INJE-0172
+  PASS - Classified SKU RS8-INJE-0173
+  PASS - Classified SKU RS8-INJE-0174
+  PASS - Classified SKU RS8-INJE-0175
+  PASS - Classified SKU RS8-INJE-0176
+  PASS - Classified SKU RS8-INJE-0177
+  PASS - Classified SKU RS8-INJE-0178
+  PASS - Classified SKU RS8-INJE-0179
+  PASS - Classified SKU RS8-INJE-0180
+  PASS - Classified SKU RS8-INJE-0181
+  PASS - Classified SKU RS8-INJE-0182
+  PASS - Classified SKU RS8-INJE-0183
+  PASS - Classified SKU RS8-INJE-0184
+  PASS - Classified SKU RS8-INJE-0185
+  PASS - Classified SKU RS8-INJE-0186
+  PASS - Classified SKU RS8-INJE-0187
+  PASS - Classified SKU RS8-INJE-0188
+  PASS - Classified SKU RS8-INJE-0189
+  PASS - Classified SKU RS8-INJE-0190
+  PASS - Classified SKU RS8-INJE-0191
+  PASS - Classified SKU RS8-INJE-0192
+  PASS - Classified SKU RS8-INJE-0193
+  PASS - Classified SKU RS8-INJE-0194
+  PASS - Classified SKU RS8-INJE-0195
+  PASS - Classified SKU RS8-INJE-0196
+  PASS - Classified SKU RS8-INJE-0197
+  PASS - Classified SKU RS8-INJE-0198
+  PASS - Classified SKU RS8-INJE-0199
+  PASS - Classified SKU RS8-INJE-0200
+  PASS - Classified SKU RS8-INJE-0201
+  PASS - Classified SKU RS8-INJE-0202
+  PASS - Classified SKU RS8-CLEA-0203
+  PASS - Classified SKU RS8-CLEA-0204
+  PASS - Classified SKU RS8-OTHE-0205
+  PASS - Classified SKU RS8-OTHE-0206
+  PASS - Classified SKU RS8-OTHE-0207
+  PASS - Classified SKU RS8-OTHE-0208
+  PASS - Classified SKU RS8-OTHE-0209
+  PASS - Classified SKU RS8-OTHE-0210
+  PASS - Classified SKU RS8-OTHE-0211
+  PASS - Classified SKU RS8-OTHE-0212
+  PASS - Classified SKU RS8-CLEA-0213
+  PASS - Classified SKU RS8-OTHE-0214
+  PASS - Classified SKU RS8-OTHE-0215
+  PASS - Classified SKU RS8-OTHE-0216
+  PASS - Classified SKU RS8-OTHE-0217
+  PASS - Classified SKU RS8-OTHE-0218
+  PASS - Classified SKU RS8-OTHE-0219
+  PASS - Classified SKU RS8-OTHE-0220
+  PASS - Classified SKU RS8-OTHE-0221
+  PASS - Classified SKU RS8-OTHE-0222
+  PASS - Classified SKU RS8-OTHE-0223
+  PASS - Classified SKU RS8-OTHE-0224
+  PASS - Classified SKU RS8-OTHE-0225
+  PASS - Classified SKU RS8-OTHE-0226
+  PASS - Classified SKU RS8-OTHE-0227
+  PASS - Classified SKU RS8-OTHE-0228
+  PASS - Classified SKU RS8-OTHE-0229
+  PASS - Classified SKU RS8-CLUT-0230
+  PASS - Classified SKU RS8-CLUT-0231
+  PASS - Classified SKU RS8-OILL-0232
+  PASS - Classified SKU RS8-OILL-0233
+  PASS - Classified SKU RS8-OTHE-0234
+  PASS - Classified SKU RS8-OTHE-0235
+  PASS - Classified SKU RS8-OTHE-0236
+  PASS - Classified SKU RS8-OTHE-0237
+  PASS - Classified SKU RS8-OTHE-0238
+  PASS - Classified SKU RS8-OTHE-0239
+  PASS - Classified SKU RS8-OTHE-0240
+  PASS - Classified SKU RS8-OTHE-0241
+  PASS - Classified SKU RS8-OTHE-0242
+  PASS - Classified SKU RS8-OTHE-0243
+  PASS - Classified SKU RS8-OTHE-0244
+  PASS - Classified SKU RS8-PULL-0245
+  PASS - Classified SKU RS8-PULL-0246
+  PASS - Classified SKU RS8-PULL-0247
+  PASS - Classified SKU RS8-PULL-0248
+  PASS - Classified SKU RS8-PULL-0249
+  PASS - Classified SKU RS8-PULL-0250
+  PASS - Classified SKU RS8-PULL-0251
+  PASS - Classified SKU RS8-PULL-0252
+  PASS - Classified SKU RS8-PULL-0253
+  PASS - Classified SKU RS8-PULL-0254
+  PASS - Classified SKU RS8-PULL-0255
+  PASS - Classified SKU RS8-PULL-0256
+  PASS - Classified SKU RS8-PULL-0257
+  PASS - Classified SKU RS8-PULL-0258
+  PASS - Classified SKU RS8-PULL-0259
+  PASS - Classified SKU RS8-PULL-0260
+  PASS - Classified SKU RS8-PULL-0261
+  PASS - Classified SKU RS8-PULL-0262
+  PASS - Classified SKU RS8-OTHE-0263
+  PASS - Classified SKU RS8-OTHE-0264
+  PASS - Classified SKU RS8-CAMS-0265
+  PASS - Classified SKU RS8-OTHE-0266
+  PASS - Classified SKU RS8-OTHE-0267
+  PASS - Classified SKU RS8-OTHE-0268
+  PASS - Classified SKU RS8-OTHE-0269
+  PASS - Classified SKU RS8-OTHE-0270
+  PASS - Classified SKU RS8-OTHE-0271
+  PASS - Classified SKU RS8-OTHE-0272
+  PASS - Classified SKU RS8-ROLL-0273
+  PASS - Classified SKU RS8-ROLL-0274
+  PASS - Classified SKU RS8-ROLL-0275
+  PASS - Classified SKU RS8-ROLL-0276
+  PASS - Classified SKU RS8-ROLL-0277
+  PASS - Classified SKU RS8-ROLL-0278
+  PASS - Classified SKU RS8-ROLL-0279
+  PASS - Classified SKU RS8-ROLL-0280
+  PASS - Classified SKU RS8-ROLL-0281
+  PASS - Classified SKU RS8-ROLL-0282
+  PASS - Classified SKU RS8-ROLL-0283
+  PASS - Classified SKU RS8-ROLL-0284
+  PASS - Classified SKU RS8-ROLL-0285
+  PASS - Classified SKU RS8-ROLL-0286
+  PASS - Classified SKU RS8-ROLL-0287
+  PASS - Classified SKU RS8-ROLL-0288
+  PASS - Classified SKU RS8-ROLL-0289
+  PASS - Classified SKU RS8-ROLL-0290
+  PASS - Classified SKU RS8-ROLL-0291
+  PASS - Classified SKU RS8-ROLL-0292
+  PASS - Classified SKU RS8-ROLL-0293
+  PASS - Classified SKU RS8-ROLL-0294
+  PASS - Classified SKU RS8-ROLL-0295
+  PASS - Classified SKU RS8-ROLL-0296
+  PASS - Classified SKU RS8-ROLL-0297
+  PASS - Classified SKU RS8-OILL-0298
+  PASS - Classified SKU RS8-OTHE-0299
+  PASS - Classified SKU RS8-OTHE-0300
+  PASS - Classified SKU RS8-OTHE-0301
+  PASS - Classified SKU RS8-OTHE-0302
+  PASS - Classified SKU RS8-OTHE-0303
+  PASS - Classified SKU RS8-OTHE-0304
+  PASS - Classified SKU RS8-OTHE-0305
+  PASS - Classified SKU RS8-OTHE-0306
+  PASS - Classified SKU RS8-OTHE-0307
+  PASS - Classified SKU RS8-OTHE-0308
+  PASS - Classified SKU RS8-OTHE-0309
+  PASS - Classified SKU RS8-OTHE-0310
+  PASS - Classified SKU RS8-OTHE-0311
+  PASS - Classified SKU RS8-OTHE-0312
+  PASS - Classified SKU RS8-TORQ-0313
+  PASS - Classified SKU RS8-TORQ-0314
+  PASS - Classified SKU RS8-TORQ-0315
+  PASS - Classified SKU RS8-TORQ-0316
+  PASS - Classified SKU RS8-TORQ-0317
+  PASS - Classified SKU RS8-TORQ-0318
+  PASS - Classified SKU RS8-TORQ-0319
+  PASS - Classified SKU RS8-TORQ-0320
+  PASS - Classified SKU RS8-TORQ-0321
+  PASS - Classified SKU RS8-TORQ-0322
+  PASS - Classified SKU RS8-TORQ-0323
+  PASS - Classified SKU RS8-TORQ-0324
+  PASS - Classified SKU RS8-TORQ-0325
+  PASS - Classified SKU RS8-TORQ-0326
+  PASS - Classified SKU RS8-TORQ-0327
+  PASS - Classified SKU RS8-TORQ-0328
+  PASS - Classified SKU RS8-OTHE-0329
+  PASS - Classified SKU RS8-OTHE-0330
+  PASS - Classified SKU RS8-OTHE-0331
+  PASS - Classified SKU RS8-OTHE-0332
+  PASS - Classified SKU RS8-OTHE-0333
+  PASS - Classified SKU RS8-OTHE-0334
+  PASS - Classified SKU RS8-OTHE-0335
+  PASS - Classified SKU RS8-OTHE-0336
+  PASS - Classified SKU RS8-OTHE-0337
+  PASS - Classified SKU RS8-OTHE-0338
+  PASS - Classified SKU RS8-OTHE-0339
+  PASS - Classified SKU RS8-OTHE-0340
+  PASS - Classified SKU RS8-OTHE-0341
+  PASS - Classified SKU RS8-SUPE-0342
+  PASS - Classified SKU RS8-SUPE-0343
+  PASS - Classified SKU RS8-SUPE-0344
+  PASS - Classified SKU RS8-SUPE-0345
+  PASS - Classified SKU RS8-SUPE-0346
+  PASS - Classified SKU RS8-SUPE-0347
+  PASS - Classified SKU RS8-SUPE-0348
+  PASS - Classified SKU RS8-SUPE-0349
+  PASS - Classified SKU RS8-SUPE-0350
+  PASS - Classified SKU RS8-OTHE-0351
+  PASS - Classified SKU RS8-THRO-0352
+  PASS - Classified SKU RS8-THRO-0353
+  PASS - Classified SKU RS8-THRO-0354
+  PASS - Classified SKU RS8-THRO-0355
+  PASS - Classified SKU RS8-THRO-0356
+  PASS - Classified SKU RS8-THRO-0357
+  PASS - Classified SKU RS8-THRO-0358
+  PASS - Classified SKU RS8-THRO-0359
+  PASS - Classified SKU RS8-THRO-0360
+  PASS - Classified SKU RS8-THRO-0361
+  PASS - Classified SKU RS8-THRO-0362
+  PASS - Classified SKU RS8-THRO-0363
+  PASS - Classified SKU RS8-THRO-0364
+  PASS - Classified SKU RS8-THRO-0365
+  PASS - Classified SKU RS8-THRO-0366
+  PASS - Classified SKU RS8-THRO-0367
+  PASS - Classified SKU RS8-THRO-0368
+  PASS - Classified SKU RS8-THRO-0369
+  PASS - Classified SKU RS8-OTHE-0370
+  PASS - Classified SKU RS8-OTHE-0371
+  PASS - Classified SKU RS8-OTHE-0372
+  PASS - Classified SKU RS8-OTHE-0373
+  PASS - Classified SKU RS8-OTHE-0374
+  PASS - Classified SKU RS8-OTHE-0375
+  PASS - Classified SKU RS8-OTHE-0376
+  PASS - Classified SKU RS8-OTHE-0377
+  PASS - Classified SKU RS8-OTHE-0378
+  PASS - Classified SKU RS8-OTHE-0379
+  PASS - Classified SKU RS8-OTHE-0380
+  PASS - Classified SKU RS8-OTHE-0381
+  PASS - Classified SKU RS8-OTHE-0382
+  PASS - Classified SKU RS8-OTHE-0383
+  PASS - Classified SKU RS8-VALV-0384
+  PASS - Classified SKU RS8-VALV-0385
+  PASS - Classified SKU RS8-VALV-0386
+  PASS - Classified SKU RS8-VALV-0387
+  PASS - Classified SKU RS8-VALV-0388
+  PASS - Classified SKU RS8-VALV-0389
+  PASS - Classified SKU RS8-VALV-0390
+  PASS - Classified SKU RS8-VALV-0391
+  PASS - Classified SKU RS8-VALV-0392
+  PASS - Classified SKU RS8-VALV-0393
+  PASS - Classified SKU RS8-VALV-0394
+  PASS - Classified SKU RS8-VALV-0395
+  PASS - Classified SKU RS8-VALV-0396
+  PASS - Classified SKU RS8-VALV-0397
+  PASS - Classified SKU SRF-ROLL-0398
+  PASS - Classified SKU SRF-ROLL-0399
+  PASS - Classified SKU SRF-ROLL-0400
+  PASS - Classified SKU SRF-ROLL-0401
+  PASS - Classified SKU SRF-ROLL-0402
+  PASS - Classified SKU SRF-ROLL-0403
+  PASS - Classified SKU SRF-ROLL-0404
+  PASS - Classified SKU SRF-ROLL-0405
+  PASS - Classified SKU SRF-ROLL-0406
+  PASS - Classified SKU SRF-ROLL-0407
+  PASS - Classified SKU SRF-ROLL-0408
+  PASS - Classified SKU SRF-ROLL-0409
+  PASS - Classified SKU SRF-ROLL-0410
+  PASS - Classified SKU SRF-ROLL-0411
+  PASS - Classified SKU SRF-ROLL-0412
+  PASS - Classified SKU SRF-ROLL-0413
+  PASS - Classified SKU SRF-ROLL-0414
+  PASS - Classified SKU SRF-ROLL-0415
+  PASS - Classified SKU SRF-BLOC-0416
+  PASS - Classified SKU SRF-BLOC-0417
+  PASS - Classified SKU SRF-BLOC-0418
+  PASS - Classified SKU SRF-BLOC-0419
+  PASS - Classified SKU SRF-CLUT-0420
+  PASS - Classified SKU SRF-CLUT-0421
+  PASS - Classified SKU SRF-CLUT-0422
+  PASS - Classified SKU SRF-CLUT-0423
+  PASS - Classified SKU SRF-CLUT-0424
+  PASS - Classified SKU SRF-CLUT-0425
+  PASS - Classified SKU SRF-CLUT-0426
+  PASS - Classified SKU SRF-CLUT-0427
+  PASS - Classified SKU SRF-CLUT-0428
+  PASS - Classified SKU SRF-CLUT-0429
+  PASS - Classified SKU SRF-CLUT-0430
+  PASS - Classified SKU SRF-OTHE-0431
+  PASS - Classified SKU SRF-OTHE-0432
+  PASS - Classified SKU SRF-CLEA-0433
+  PASS - Classified SKU SRF-OTHE-0434
+  PASS - Classified SKU SRF-OTHE-0435
+  PASS - Classified SKU SRF-OTHE-0436
+  PASS - Classified SKU SRF-OILL-0437
+  PASS - Classified SKU SRF-OTHE-0438
+  PASS - Classified SKU SRF-OTHE-0439
+  PASS - Classified SKU SRF-OTHE-0440
+  PASS - Classified SKU SRF-OTHE-0441
+  PASS - Classified SKU SRF-OTHE-0442
+  PASS - Classified SKU SRF-OTHE-0443
+  PASS - Classified SKU SRF-OTHE-0444
+  PASS - Classified SKU SRF-OTHE-0445
+  PASS - Classified SKU SRF-OTHE-0446
+  PASS - Classified SKU SRF-OTHE-0447
+  PASS - Classified SKU SRF-OTHE-0448
+  PASS - Classified SKU SRF-CENT-0449
+  PASS - Classified SKU SRF-CENT-0450
+  PASS - Classified SKU SRF-CENT-0451
+  PASS - Classified SKU SRF-CLUT-0452
+  PASS - Classified SKU SRF-CENT-0453
+  PASS - Classified SKU SRF-CENT-0454
+  PASS - Classified SKU SRF-CENT-0455
+  PASS - Classified SKU SRF-CLUT-0456
+  PASS - Classified SKU SRF-CENT-0457
+  PASS - Classified SKU SRF-CENT-0458
+  PASS - Classified SKU SRF-CENT-0459
+  PASS - Classified SKU SRF-CLUT-0460
+  PASS - Classified SKU SRF-PULL-0461
+  PASS - Classified SKU SRF-PULL-0462
+  PASS - Classified SKU SRF-PULL-0463
+  PASS - Classified SKU SRF-PULL-0464
+  PASS - Classified SKU SRF-PULL-0465
+  PASS - Classified SKU SRF-PULL-0466
+  PASS - Classified SKU SRF-PULL-0467
+  PASS - Classified SKU SRF-PULL-0468
+  PASS - Classified SKU SRF-PULL-0469
+  PASS - Classified SKU SRF-PULL-0470
+  PASS - Classified SKU SRF-OTHE-0471
+  PASS - Classified SKU SRF-OTHE-0472
+  PASS - Classified SKU SRF-OTHE-0473
+  PASS - Classified SKU SRF-OTHE-0474
+  PASS - Classified SKU SRF-OTHE-0475
+  PASS - Classified SKU SRF-OTHE-0476
+  PASS - Classified SKU SRF-OTHE-0477
+  PASS - Classified SKU SRF-TORQ-0478
+  PASS - Classified SKU SRF-TORQ-0479
+  PASS - Classified SKU SRF-TORQ-0480
+  PASS - Classified SKU SRF-TORQ-0481
+  PASS - Classified SKU SRF-TORQ-0482
+  PASS - Classified SKU SRF-TORQ-0483
+  PASS - Classified SKU SRF-TORQ-0484
+  PASS - Classified SKU SRF-TORQ-0485
+  PASS - Classified SKU TAPP-OTHE-0486
+  PASS - Classified SKU ULTR-OTHE-0487
+  PASS - Classified SKU YAMA-BELT-0488
+  PASS - Classified SKU YAMA-BELT-0489
+  PASS - Classified SKU YAMA-BELT-0490
+  PASS - Classified SKU YAMA-BELT-0491
+  PASS - Classified SKU YAMA-BELT-0492
+  PASS - Manual Pulley Set tagging is preserved
+  PASS - Specific component precedence: Rs8 Pulley Set With Drive Face
+  PASS - Specific component precedence: Rs8 Camshaft Bearing
+  PASS - Specific component precedence: Rs8 Valve Spring
+  PASS - Specific component precedence: Rs8 Pulley Bushing
+  PASS - Specific component precedence: Srf Radiator Nfc Pvc Warranty Card
+  PASS - Correct legacy oil/valve mis-tag for product 166
+  PASS - Correct legacy oil/valve mis-tag for product 232
+  PASS - Correct legacy oil/valve mis-tag for product 233
+  PASS - Correct legacy oil/valve mis-tag for product 342
+  PASS - Correct legacy oil/valve mis-tag for product 437
+  PASS - Stale preview is rejected
+  PASS - Stale preview changes no product fields
+  PASS - Unknown product blocks bulk application
+  PASS - Unknown product causes no partial updates
+  PASS - 490 unassigned products updated; 2 manual assignments kept
+  PASS - Other product fields preserved: 1
+  PASS - Other product fields preserved: 2
+  PASS - Other product fields preserved: 3
+  PASS - Other product fields preserved: 4
+  PASS - Other product fields preserved: 5
+  PASS - Other product fields preserved: 6
+  PASS - Other product fields preserved: 7
+  PASS - Other product fields preserved: 8
+  PASS - Other product fields preserved: 9
+  PASS - Other product fields preserved: 10
+  PASS - Other product fields preserved: 11
+  PASS - Other product fields preserved: 12
+  PASS - Other product fields preserved: 13
+  PASS - Other product fields preserved: 14
+  PASS - Other product fields preserved: 15
+  PASS - Other product fields preserved: 16
+  PASS - Other product fields preserved: 17
+  PASS - Other product fields preserved: 18
+  PASS - Other product fields preserved: 19
+  PASS - Other product fields preserved: 20
+  PASS - Other product fields preserved: 21
+  PASS - Other product fields preserved: 22
+  PASS - Other product fields preserved: 23
+  PASS - Other product fields preserved: 24
+  PASS - Other product fields preserved: 25
+  PASS - Other product fields preserved: 26
+  PASS - Other product fields preserved: 27
+  PASS - Other product fields preserved: 28
+  PASS - Other product fields preserved: 29
+  PASS - Other product fields preserved: 30
+  PASS - Other product fields preserved: 31
+  PASS - Other product fields preserved: 32
+  PASS - Other product fields preserved: 33
+  PASS - Other product fields preserved: 34
+  PASS - Other product fields preserved: 35
+  PASS - Other product fields preserved: 36
+  PASS - Other product fields preserved: 37
+  PASS - Other product fields preserved: 38
+  PASS - Other product fields preserved: 39
+  PASS - Other product fields preserved: 40
+  PASS - Other product fields preserved: 41
+  PASS - Other product fields preserved: 42
+  PASS - Other product fields preserved: 43
+  PASS - Other product fields preserved: 44
+  PASS - Other product fields preserved: 45
+  PASS - Other product fields preserved: 46
+  PASS - Other product fields preserved: 47
+  PASS - Other product fields preserved: 48
+  PASS - Other product fields preserved: 49
+  PASS - Other product fields preserved: 50
+  PASS - Other product fields preserved: 51
+  PASS - Other product fields preserved: 52
+  PASS - Other product fields preserved: 53
+  PASS - Other product fields preserved: 54
+  PASS - Other product fields preserved: 55
+  PASS - Other product fields preserved: 56
+  PASS - Other product fields preserved: 57
+  PASS - Other product fields preserved: 58
+  PASS - Other product fields preserved: 59
+  PASS - Other product fields preserved: 60
+  PASS - Other product fields preserved: 61
+  PASS - Other product fields preserved: 62
+  PASS - Other product fields preserved: 63
+  PASS - Other product fields preserved: 64
+  PASS - Other product fields preserved: 65
+  PASS - Other product fields preserved: 66
+  PASS - Other product fields preserved: 67
+  PASS - Other product fields preserved: 68
+  PASS - Other product fields preserved: 69
+  PASS - Other product fields preserved: 70
+  PASS - Other product fields preserved: 71
+  PASS - Other product fields preserved: 72
+  PASS - Other product fields preserved: 73
+  PASS - Other product fields preserved: 74
+  PASS - Other product fields preserved: 75
+  PASS - Other product fields preserved: 76
+  PASS - Other product fields preserved: 77
+  PASS - Other product fields preserved: 78
+  PASS - Other product fields preserved: 79
+  PASS - Other product fields preserved: 80
+  PASS - Other product fields preserved: 81
+  PASS - Other product fields preserved: 82
+  PASS - Other product fields preserved: 83
+  PASS - Other product fields preserved: 84
+  PASS - Other product fields preserved: 85
+  PASS - Other product fields preserved: 86
+  PASS - Other product fields preserved: 87
+  PASS - Other product fields preserved: 88
+  PASS - Other product fields preserved: 89
+  PASS - Other product fields preserved: 90
+  PASS - Other product fields preserved: 91
+  PASS - Other product fields preserved: 92
+  PASS - Other product fields preserved: 93
+  PASS - Other product fields preserved: 94
+  PASS - Other product fields preserved: 95
+  PASS - Other product fields preserved: 96
+  PASS - Other product fields preserved: 97
+  PASS - Other product fields preserved: 98
+  PASS - Other product fields preserved: 99
+  PASS - Other product fields preserved: 100
+  PASS - Other product fields preserved: 101
+  PASS - Other product fields preserved: 102
+  PASS - Other product fields preserved: 103
+  PASS - Other product fields preserved: 104
+  PASS - Other product fields preserved: 105
+  PASS - Other product fields preserved: 106
+  PASS - Other product fields preserved: 107
+  PASS - Other product fields preserved: 108
+  PASS - Other product fields preserved: 109
+  PASS - Other product fields preserved: 110
+  PASS - Other product fields preserved: 111
+  PASS - Other product fields preserved: 112
+  PASS - Other product fields preserved: 113
+  PASS - Other product fields preserved: 114
+  PASS - Other product fields preserved: 115
+  PASS - Other product fields preserved: 116
+  PASS - Other product fields preserved: 117
+  PASS - Other product fields preserved: 118
+  PASS - Other product fields preserved: 119
+  PASS - Other product fields preserved: 120
+  PASS - Other product fields preserved: 121
+  PASS - Other product fields preserved: 122
+  PASS - Other product fields preserved: 123
+  PASS - Other product fields preserved: 124
+  PASS - Other product fields preserved: 125
+  PASS - Other product fields preserved: 126
+  PASS - Other product fields preserved: 127
+  PASS - Other product fields preserved: 128
+  PASS - Other product fields preserved: 129
+  PASS - Other product fields preserved: 130
+  PASS - Other product fields preserved: 131
+  PASS - Other product fields preserved: 132
+  PASS - Other product fields preserved: 133
+  PASS - Other product fields preserved: 134
+  PASS - Other product fields preserved: 135
+  PASS - Other product fields preserved: 136
+  PASS - Other product fields preserved: 137
+  PASS - Other product fields preserved: 138
+  PASS - Other product fields preserved: 139
+  PASS - Other product fields preserved: 140
+  PASS - Other product fields preserved: 141
+  PASS - Other product fields preserved: 142
+  PASS - Other product fields preserved: 143
+  PASS - Other product fields preserved: 144
+  PASS - Other product fields preserved: 145
+  PASS - Other product fields preserved: 146
+  PASS - Other product fields preserved: 147
+  PASS - Other product fields preserved: 148
+  PASS - Other product fields preserved: 149
+  PASS - Other product fields preserved: 150
+  PASS - Other product fields preserved: 151
+  PASS - Other product fields preserved: 152
+  PASS - Other product fields preserved: 153
+  PASS - Other product fields preserved: 154
+  PASS - Other product fields preserved: 155
+  PASS - Other product fields preserved: 156
+  PASS - Other product fields preserved: 157
+  PASS - Other product fields preserved: 158
+  PASS - Other product fields preserved: 159
+  PASS - Other product fields preserved: 160
+  PASS - Other product fields preserved: 161
+  PASS - Other product fields preserved: 162
+  PASS - Other product fields preserved: 163
+  PASS - Other product fields preserved: 164
+  PASS - Other product fields preserved: 165
+  PASS - Other product fields preserved: 166
+  PASS - Other product fields preserved: 167
+  PASS - Other product fields preserved: 168
+  PASS - Other product fields preserved: 169
+  PASS - Other product fields preserved: 170
+  PASS - Other product fields preserved: 171
+  PASS - Other product fields preserved: 172
+  PASS - Other product fields preserved: 173
+  PASS - Other product fields preserved: 174
+  PASS - Other product fields preserved: 175
+  PASS - Other product fields preserved: 176
+  PASS - Other product fields preserved: 177
+  PASS - Other product fields preserved: 178
+  PASS - Other product fields preserved: 179
+  PASS - Other product fields preserved: 180
+  PASS - Other product fields preserved: 181
+  PASS - Other product fields preserved: 182
+  PASS - Other product fields preserved: 183
+  PASS - Other product fields preserved: 184
+  PASS - Other product fields preserved: 185
+  PASS - Other product fields preserved: 186
+  PASS - Other product fields preserved: 187
+  PASS - Other product fields preserved: 188
+  PASS - Other product fields preserved: 189
+  PASS - Other product fields preserved: 190
+  PASS - Other product fields preserved: 191
+  PASS - Other product fields preserved: 192
+  PASS - Other product fields preserved: 193
+  PASS - Other product fields preserved: 194
+  PASS - Other product fields preserved: 195
+  PASS - Other product fields preserved: 196
+  PASS - Other product fields preserved: 197
+  PASS - Other product fields preserved: 198
+  PASS - Other product fields preserved: 199
+  PASS - Other product fields preserved: 200
+  PASS - Other product fields preserved: 201
+  PASS - Other product fields preserved: 202
+  PASS - Other product fields preserved: 203
+  PASS - Other product fields preserved: 204
+  PASS - Other product fields preserved: 205
+  PASS - Other product fields preserved: 206
+  PASS - Other product fields preserved: 207
+  PASS - Other product fields preserved: 208
+  PASS - Other product fields preserved: 209
+  PASS - Other product fields preserved: 210
+  PASS - Other product fields preserved: 211
+  PASS - Other product fields preserved: 212
+  PASS - Other product fields preserved: 213
+  PASS - Other product fields preserved: 214
+  PASS - Other product fields preserved: 215
+  PASS - Other product fields preserved: 216
+  PASS - Other product fields preserved: 217
+  PASS - Other product fields preserved: 218
+  PASS - Other product fields preserved: 219
+  PASS - Other product fields preserved: 220
+  PASS - Other product fields preserved: 221
+  PASS - Other product fields preserved: 222
+  PASS - Other product fields preserved: 223
+  PASS - Other product fields preserved: 224
+  PASS - Other product fields preserved: 225
+  PASS - Other product fields preserved: 226
+  PASS - Other product fields preserved: 227
+  PASS - Other product fields preserved: 228
+  PASS - Other product fields preserved: 229
+  PASS - Other product fields preserved: 230
+  PASS - Other product fields preserved: 231
+  PASS - Other product fields preserved: 232
+  PASS - Other product fields preserved: 233
+  PASS - Other product fields preserved: 234
+  PASS - Other product fields preserved: 235
+  PASS - Other product fields preserved: 236
+  PASS - Other product fields preserved: 237
+  PASS - Other product fields preserved: 238
+  PASS - Other product fields preserved: 239
+  PASS - Other product fields preserved: 240
+  PASS - Other product fields preserved: 241
+  PASS - Other product fields preserved: 242
+  PASS - Other product fields preserved: 243
+  PASS - Other product fields preserved: 244
+  PASS - Other product fields preserved: 245
+  PASS - Other product fields preserved: 246
+  PASS - Other product fields preserved: 247
+  PASS - Other product fields preserved: 248
+  PASS - Other product fields preserved: 249
+  PASS - Other product fields preserved: 250
+  PASS - Other product fields preserved: 251
+  PASS - Other product fields preserved: 252
+  PASS - Other product fields preserved: 253
+  PASS - Other product fields preserved: 254
+  PASS - Other product fields preserved: 255
+  PASS - Other product fields preserved: 256
+  PASS - Other product fields preserved: 257
+  PASS - Other product fields preserved: 258
+  PASS - Other product fields preserved: 259
+  PASS - Other product fields preserved: 260
+  PASS - Other product fields preserved: 261
+  PASS - Other product fields preserved: 262
+  PASS - Other product fields preserved: 263
+  PASS - Other product fields preserved: 264
+  PASS - Other product fields preserved: 265
+  PASS - Other product fields preserved: 266
+  PASS - Other product fields preserved: 267
+  PASS - Other product fields preserved: 268
+  PASS - Other product fields preserved: 269
+  PASS - Other product fields preserved: 270
+  PASS - Other product fields preserved: 271
+  PASS - Other product fields preserved: 272
+  PASS - Other product fields preserved: 273
+  PASS - Other product fields preserved: 274
+  PASS - Other product fields preserved: 275
+  PASS - Other product fields preserved: 276
+  PASS - Other product fields preserved: 277
+  PASS - Other product fields preserved: 278
+  PASS - Other product fields preserved: 279
+  PASS - Other product fields preserved: 280
+  PASS - Other product fields preserved: 281
+  PASS - Other product fields preserved: 282
+  PASS - Other product fields preserved: 283
+  PASS - Other product fields preserved: 284
+  PASS - Other product fields preserved: 285
+  PASS - Other product fields preserved: 286
+  PASS - Other product fields preserved: 287
+  PASS - Other product fields preserved: 288
+  PASS - Other product fields preserved: 289
+  PASS - Other product fields preserved: 290
+  PASS - Other product fields preserved: 291
+  PASS - Other product fields preserved: 292
+  PASS - Other product fields preserved: 293
+  PASS - Other product fields preserved: 294
+  PASS - Other product fields preserved: 295
+  PASS - Other product fields preserved: 296
+  PASS - Other product fields preserved: 297
+  PASS - Other product fields preserved: 298
+  PASS - Other product fields preserved: 299
+  PASS - Other product fields preserved: 300
+  PASS - Other product fields preserved: 301
+  PASS - Other product fields preserved: 302
+  PASS - Other product fields preserved: 303
+  PASS - Other product fields preserved: 304
+  PASS - Other product fields preserved: 305
+  PASS - Other product fields preserved: 306
+  PASS - Other product fields preserved: 307
+  PASS - Other product fields preserved: 308
+  PASS - Other product fields preserved: 309
+  PASS - Other product fields preserved: 310
+  PASS - Other product fields preserved: 311
+  PASS - Other product fields preserved: 312
+  PASS - Other product fields preserved: 313
+  PASS - Other product fields preserved: 314
+  PASS - Other product fields preserved: 315
+  PASS - Other product fields preserved: 316
+  PASS - Other product fields preserved: 317
+  PASS - Other product fields preserved: 318
+  PASS - Other product fields preserved: 319
+  PASS - Other product fields preserved: 320
+  PASS - Other product fields preserved: 321
+  PASS - Other product fields preserved: 322
+  PASS - Other product fields preserved: 323
+  PASS - Other product fields preserved: 324
+  PASS - Other product fields preserved: 325
+  PASS - Other product fields preserved: 326
+  PASS - Other product fields preserved: 327
+  PASS - Other product fields preserved: 328
+  PASS - Other product fields preserved: 329
+  PASS - Other product fields preserved: 330
+  PASS - Other product fields preserved: 331
+  PASS - Other product fields preserved: 332
+  PASS - Other product fields preserved: 333
+  PASS - Other product fields preserved: 334
+  PASS - Other product fields preserved: 335
+  PASS - Other product fields preserved: 336
+  PASS - Other product fields preserved: 337
+  PASS - Other product fields preserved: 338
+  PASS - Other product fields preserved: 339
+  PASS - Other product fields preserved: 340
+  PASS - Other product fields preserved: 341
+  PASS - Other product fields preserved: 342
+  PASS - Other product fields preserved: 343
+  PASS - Other product fields preserved: 344
+  PASS - Other product fields preserved: 345
+  PASS - Other product fields preserved: 346
+  PASS - Other product fields preserved: 347
+  PASS - Other product fields preserved: 348
+  PASS - Other product fields preserved: 349
+  PASS - Other product fields preserved: 350
+  PASS - Other product fields preserved: 351
+  PASS - Other product fields preserved: 352
+  PASS - Other product fields preserved: 353
+  PASS - Other product fields preserved: 354
+  PASS - Other product fields preserved: 355
+  PASS - Other product fields preserved: 356
+  PASS - Other product fields preserved: 357
+  PASS - Other product fields preserved: 358
+  PASS - Other product fields preserved: 359
+  PASS - Other product fields preserved: 360
+  PASS - Other product fields preserved: 361
+  PASS - Other product fields preserved: 362
+  PASS - Other product fields preserved: 363
+  PASS - Other product fields preserved: 364
+  PASS - Other product fields preserved: 365
+  PASS - Other product fields preserved: 366
+  PASS - Other product fields preserved: 367
+  PASS - Other product fields preserved: 368
+  PASS - Other product fields preserved: 369
+  PASS - Other product fields preserved: 370
+  PASS - Other product fields preserved: 371
+  PASS - Other product fields preserved: 372
+  PASS - Other product fields preserved: 373
+  PASS - Other product fields preserved: 374
+  PASS - Other product fields preserved: 375
+  PASS - Other product fields preserved: 376
+  PASS - Other product fields preserved: 377
+  PASS - Other product fields preserved: 378
+  PASS - Other product fields preserved: 379
+  PASS - Other product fields preserved: 380
+  PASS - Other product fields preserved: 381
+  PASS - Other product fields preserved: 382
+  PASS - Other product fields preserved: 383
+  PASS - Other product fields preserved: 384
+  PASS - Other product fields preserved: 385
+  PASS - Other product fields preserved: 386
+  PASS - Other product fields preserved: 387
+  PASS - Other product fields preserved: 388
+  PASS - Other product fields preserved: 389
+  PASS - Other product fields preserved: 390
+  PASS - Other product fields preserved: 391
+  PASS - Other product fields preserved: 392
+  PASS - Other product fields preserved: 393
+  PASS - Other product fields preserved: 394
+  PASS - Other product fields preserved: 395
+  PASS - Other product fields preserved: 396
+  PASS - Other product fields preserved: 397
+  PASS - Other product fields preserved: 398
+  PASS - Other product fields preserved: 399
+  PASS - Other product fields preserved: 400
+  PASS - Other product fields preserved: 401
+  PASS - Other product fields preserved: 402
+  PASS - Other product fields preserved: 403
+  PASS - Other product fields preserved: 404
+  PASS - Other product fields preserved: 405
+  PASS - Other product fields preserved: 406
+  PASS - Other product fields preserved: 407
+  PASS - Other product fields preserved: 408
+  PASS - Other product fields preserved: 409
+  PASS - Other product fields preserved: 410
+  PASS - Other product fields preserved: 411
+  PASS - Other product fields preserved: 412
+  PASS - Other product fields preserved: 413
+  PASS - Other product fields preserved: 414
+  PASS - Other product fields preserved: 415
+  PASS - Other product fields preserved: 416
+  PASS - Other product fields preserved: 417
+  PASS - Other product fields preserved: 418
+  PASS - Other product fields preserved: 419
+  PASS - Other product fields preserved: 420
+  PASS - Other product fields preserved: 421
+  PASS - Other product fields preserved: 422
+  PASS - Other product fields preserved: 423
+  PASS - Other product fields preserved: 424
+  PASS - Other product fields preserved: 425
+  PASS - Other product fields preserved: 426
+  PASS - Other product fields preserved: 427
+  PASS - Other product fields preserved: 428
+  PASS - Other product fields preserved: 429
+  PASS - Other product fields preserved: 430
+  PASS - Other product fields preserved: 431
+  PASS - Other product fields preserved: 432
+  PASS - Other product fields preserved: 433
+  PASS - Other product fields preserved: 434
+  PASS - Other product fields preserved: 435
+  PASS - Other product fields preserved: 436
+  PASS - Other product fields preserved: 437
+  PASS - Other product fields preserved: 438
+  PASS - Other product fields preserved: 439
+  PASS - Other product fields preserved: 440
+  PASS - Other product fields preserved: 441
+  PASS - Other product fields preserved: 442
+  PASS - Other product fields preserved: 443
+  PASS - Other product fields preserved: 444
+  PASS - Other product fields preserved: 445
+  PASS - Other product fields preserved: 446
+  PASS - Other product fields preserved: 447
+  PASS - Other product fields preserved: 448
+  PASS - Other product fields preserved: 449
+  PASS - Other product fields preserved: 450
+  PASS - Other product fields preserved: 451
+  PASS - Other product fields preserved: 452
+  PASS - Other product fields preserved: 453
+  PASS - Other product fields preserved: 454
+  PASS - Other product fields preserved: 455
+  PASS - Other product fields preserved: 456
+  PASS - Other product fields preserved: 457
+  PASS - Other product fields preserved: 458
+  PASS - Other product fields preserved: 459
+  PASS - Other product fields preserved: 460
+  PASS - Other product fields preserved: 461
+  PASS - Other product fields preserved: 462
+  PASS - Other product fields preserved: 463
+  PASS - Other product fields preserved: 464
+  PASS - Other product fields preserved: 465
+  PASS - Other product fields preserved: 466
+  PASS - Other product fields preserved: 467
+  PASS - Other product fields preserved: 468
+  PASS - Other product fields preserved: 469
+  PASS - Other product fields preserved: 470
+  PASS - Other product fields preserved: 471
+  PASS - Other product fields preserved: 472
+  PASS - Other product fields preserved: 473
+  PASS - Other product fields preserved: 474
+  PASS - Other product fields preserved: 475
+  PASS - Other product fields preserved: 476
+  PASS - Other product fields preserved: 477
+  PASS - Other product fields preserved: 478
+  PASS - Other product fields preserved: 479
+  PASS - Other product fields preserved: 480
+  PASS - Other product fields preserved: 481
+  PASS - Other product fields preserved: 482
+  PASS - Other product fields preserved: 483
+  PASS - Other product fields preserved: 484
+  PASS - Other product fields preserved: 485
+  PASS - Other product fields preserved: 486
+  PASS - Other product fields preserved: 487
+  PASS - Other product fields preserved: 488
+  PASS - Other product fields preserved: 489
+  PASS - Other product fields preserved: 490
+  PASS - Other product fields preserved: 491
+  PASS - Other product fields preserved: 492
+  PASS - Other product fields preserved: 493
+  PASS - Other product fields preserved: 494
+  PASS - Other product fields preserved: 495
+  PASS - Other product fields preserved: 496
+  PASS - Other product fields preserved: 497
+  PASS - Inventory/mapping unchanged: inflows
+  PASS - Inventory/mapping unchanged: outflows
+  PASS - Inventory/mapping unchanged: beginning_balances
+  PASS - Inventory/mapping unchanged: platform_stock
+  PASS - Inventory/mapping unchanged: non_sellable
+  PASS - Inventory/mapping unchanged: platform_aliases
+  PASS - Every changed category is audited
+  PASS - Repeat application is idempotent
+
+Admin assignment form and category filter HTTP checks: 9 passed
+  PASS - Preview shows all proposed changes and no unclassified products
+  PASS - Admin Product Master exposes bulk assignment link
+  PASS - Forged CSRF is rejected
+  PASS - Review acknowledgment is required
+  PASS - Rejected requests leave all category tags unchanged
+  PASS - Confirmed Admin form applies 490 assignments
+  PASS - Current Stocks CVT / Pulley Set includes sets and excludes bushings
+  PASS - Engine Oil Pump filter works after assignment
+  PASS - Non-Admin cannot open or apply bulk assignments
+
+V5.1 stock routing, inventory counts and preservation: 529 passed
+  PASS - Migration stock preserved 1
+  PASS - Migration stock preserved 2
+  PASS - Migration stock preserved 3
+  PASS - Migration stock preserved 4
+  PASS - Migration stock preserved 5
+  PASS - Migration stock preserved 6
+  PASS - Migration stock preserved 7
+  PASS - Migration stock preserved 8
+  PASS - Migration stock preserved 9
+  PASS - Migration stock preserved 10
+  PASS - Migration stock preserved 11
+  PASS - Migration stock preserved 12
+  PASS - Migration stock preserved 13
+  PASS - Migration stock preserved 14
+  PASS - Migration stock preserved 15
+  PASS - Migration stock preserved 16
+  PASS - Migration stock preserved 17
+  PASS - Migration stock preserved 18
+  PASS - Migration stock preserved 20
+  PASS - Migration stock preserved 19
+  PASS - Migration stock preserved 21
+  PASS - Migration stock preserved 22
+  PASS - Migration stock preserved 23
+  PASS - Migration stock preserved 24
+  PASS - Migration stock preserved 25
+  PASS - Migration stock preserved 26
+  PASS - Migration stock preserved 27
+  PASS - Migration stock preserved 28
+  PASS - Migration stock preserved 29
+  PASS - Migration stock preserved 30
+  PASS - Migration stock preserved 39
+  PASS - Migration stock preserved 40
+  PASS - Migration stock preserved 41
+  PASS - Migration stock preserved 42
+  PASS - Migration stock preserved 43
+  PASS - Migration stock preserved 125
+  PASS - Migration stock preserved 126
+  PASS - Migration stock preserved 55
+  PASS - Migration stock preserved 56
+  PASS - Migration stock preserved 57
+  PASS - Migration stock preserved 58
+  PASS - Migration stock preserved 59
+  PASS - Migration stock preserved 60
+  PASS - Migration stock preserved 61
+  PASS - Migration stock preserved 62
+  PASS - Migration stock preserved 63
+  PASS - Migration stock preserved 64
+  PASS - Migration stock preserved 65
+  PASS - Migration stock preserved 66
+  PASS - Migration stock preserved 67
+  PASS - Migration stock preserved 68
+  PASS - Migration stock preserved 69
+  PASS - Migration stock preserved 74
+  PASS - Migration stock preserved 75
+  PASS - Migration stock preserved 76
+  PASS - Migration stock preserved 265
+  PASS - Migration stock preserved 79
+  PASS - Migration stock preserved 80
+  PASS - Migration stock preserved 81
+  PASS - Migration stock preserved 82
+  PASS - Migration stock preserved 83
+  PASS - Migration stock preserved 84
+  PASS - Migration stock preserved 85
+  PASS - Migration stock preserved 86
+  PASS - Migration stock preserved 87
+  PASS - Migration stock preserved 88
+  PASS - Migration stock preserved 162
+  PASS - Migration stock preserved 203
+  PASS - Migration stock preserved 204
+  PASS - Migration stock preserved 213
+  PASS - Migration stock preserved 92
+  PASS - Migration stock preserved 93
+  PASS - Migration stock preserved 94
+  PASS - Migration stock preserved 95
+  PASS - Migration stock preserved 96
+  PASS - Migration stock preserved 97
+  PASS - Migration stock preserved 98
+  PASS - Migration stock preserved 99
+  PASS - Migration stock preserved 100
+  PASS - Migration stock preserved 101
+  PASS - Migration stock preserved 102
+  PASS - Migration stock preserved 103
+  PASS - Migration stock preserved 104
+  PASS - Migration stock preserved 105
+  PASS - Migration stock preserved 106
+  PASS - Migration stock preserved 107
+  PASS - Migration stock preserved 108
+  PASS - Migration stock preserved 109
+  PASS - Migration stock preserved 110
+  PASS - Migration stock preserved 111
+  PASS - Migration stock preserved 112
+  PASS - Migration stock preserved 113
+  PASS - Migration stock preserved 115
+  PASS - Migration stock preserved 116
+  PASS - Migration stock preserved 117
+  PASS - Migration stock preserved 118
+  PASS - Migration stock preserved 119
+  PASS - Migration stock preserved 120
+  PASS - Migration stock preserved 121
+  PASS - Migration stock preserved 122
+  PASS - Migration stock preserved 230
+  PASS - Migration stock preserved 231
+  PASS - Migration stock preserved 494
+  PASS - Migration stock preserved 495
+  PASS - Migration stock preserved 167
+  PASS - Migration stock preserved 168
+  PASS - Migration stock preserved 169
+  PASS - Migration stock preserved 170
+  PASS - Migration stock preserved 171
+  PASS - Migration stock preserved 172
+  PASS - Migration stock preserved 173
+  PASS - Migration stock preserved 174
+  PASS - Migration stock preserved 175
+  PASS - Migration stock preserved 176
+  PASS - Migration stock preserved 177
+  PASS - Migration stock preserved 178
+  PASS - Migration stock preserved 179
+  PASS - Migration stock preserved 180
+  PASS - Migration stock preserved 181
+  PASS - Migration stock preserved 182
+  PASS - Migration stock preserved 183
+  PASS - Migration stock preserved 184
+  PASS - Migration stock preserved 185
+  PASS - Migration stock preserved 186
+  PASS - Migration stock preserved 187
+  PASS - Migration stock preserved 188
+  PASS - Migration stock preserved 189
+  PASS - Migration stock preserved 190
+  PASS - Migration stock preserved 191
+  PASS - Migration stock preserved 192
+  PASS - Migration stock preserved 193
+  PASS - Migration stock preserved 194
+  PASS - Migration stock preserved 195
+  PASS - Migration stock preserved 196
+  PASS - Migration stock preserved 197
+  PASS - Migration stock preserved 198
+  PASS - Migration stock preserved 199
+  PASS - Migration stock preserved 200
+  PASS - Migration stock preserved 201
+  PASS - Migration stock preserved 202
+  PASS - Migration stock preserved 497
+  PASS - Migration stock preserved 166
+  PASS - Migration stock preserved 232
+  PASS - Migration stock preserved 233
+  PASS - Migration stock preserved 298
+  PASS - Migration stock preserved 496
+  PASS - Migration stock preserved 31
+  PASS - Migration stock preserved 32
+  PASS - Migration stock preserved 33
+  PASS - Migration stock preserved 34
+  PASS - Migration stock preserved 35
+  PASS - Migration stock preserved 36
+  PASS - Migration stock preserved 37
+  PASS - Migration stock preserved 38
+  PASS - Migration stock preserved 45
+  PASS - Migration stock preserved 46
+  PASS - Migration stock preserved 47
+  PASS - Migration stock preserved 70
+  PASS - Migration stock preserved 71
+  PASS - Migration stock preserved 72
+  PASS - Migration stock preserved 73
+  PASS - Migration stock preserved 77
+  PASS - Migration stock preserved 78
+  PASS - Migration stock preserved 89
+  PASS - Migration stock preserved 90
+  PASS - Migration stock preserved 91
+  PASS - Migration stock preserved 114
+  PASS - Migration stock preserved 123
+  PASS - Migration stock preserved 124
+  PASS - Migration stock preserved 127
+  PASS - Migration stock preserved 128
+  PASS - Migration stock preserved 129
+  PASS - Migration stock preserved 130
+  PASS - Migration stock preserved 131
+  PASS - Migration stock preserved 132
+  PASS - Migration stock preserved 133
+  PASS - Migration stock preserved 134
+  PASS - Migration stock preserved 135
+  PASS - Migration stock preserved 136
+  PASS - Migration stock preserved 137
+  PASS - Migration stock preserved 138
+  PASS - Migration stock preserved 139
+  PASS - Migration stock preserved 140
+  PASS - Migration stock preserved 146
+  PASS - Migration stock preserved 147
+  PASS - Migration stock preserved 148
+  PASS - Migration stock preserved 149
+  PASS - Migration stock preserved 150
+  PASS - Migration stock preserved 151
+  PASS - Migration stock preserved 152
+  PASS - Migration stock preserved 153
+  PASS - Migration stock preserved 154
+  PASS - Migration stock preserved 155
+  PASS - Migration stock preserved 156
+  PASS - Migration stock preserved 157
+  PASS - Migration stock preserved 158
+  PASS - Migration stock preserved 159
+  PASS - Migration stock preserved 160
+  PASS - Migration stock preserved 161
+  PASS - Migration stock preserved 163
+  PASS - Migration stock preserved 164
+  PASS - Migration stock preserved 165
+  PASS - Migration stock preserved 205
+  PASS - Migration stock preserved 206
+  PASS - Migration stock preserved 207
+  PASS - Migration stock preserved 208
+  PASS - Migration stock preserved 209
+  PASS - Migration stock preserved 210
+  PASS - Migration stock preserved 211
+  PASS - Migration stock preserved 212
+  PASS - Migration stock preserved 214
+  PASS - Migration stock preserved 215
+  PASS - Migration stock preserved 216
+  PASS - Migration stock preserved 217
+  PASS - Migration stock preserved 218
+  PASS - Migration stock preserved 219
+  PASS - Migration stock preserved 220
+  PASS - Migration stock preserved 221
+  PASS - Migration stock preserved 222
+  PASS - Migration stock preserved 223
+  PASS - Migration stock preserved 224
+  PASS - Migration stock preserved 225
+  PASS - Migration stock preserved 226
+  PASS - Migration stock preserved 227
+  PASS - Migration stock preserved 228
+  PASS - Migration stock preserved 229
+  PASS - Migration stock preserved 234
+  PASS - Migration stock preserved 235
+  PASS - Migration stock preserved 236
+  PASS - Migration stock preserved 237
+  PASS - Migration stock preserved 238
+  PASS - Migration stock preserved 239
+  PASS - Migration stock preserved 240
+  PASS - Migration stock preserved 241
+  PASS - Migration stock preserved 242
+  PASS - Migration stock preserved 243
+  PASS - Migration stock preserved 244
+  PASS - Migration stock preserved 263
+  PASS - Migration stock preserved 264
+  PASS - Migration stock preserved 266
+  PASS - Migration stock preserved 267
+  PASS - Migration stock preserved 268
+  PASS - Migration stock preserved 269
+  PASS - Migration stock preserved 270
+  PASS - Migration stock preserved 271
+  PASS - Migration stock preserved 272
+  PASS - Migration stock preserved 299
+  PASS - Migration stock preserved 300
+  PASS - Migration stock preserved 301
+  PASS - Migration stock preserved 302
+  PASS - Migration stock preserved 303
+  PASS - Migration stock preserved 304
+  PASS - Migration stock preserved 305
+  PASS - Migration stock preserved 306
+  PASS - Migration stock preserved 307
+  PASS - Migration stock preserved 308
+  PASS - Migration stock preserved 309
+  PASS - Migration stock preserved 310
+  PASS - Migration stock preserved 311
+  PASS - Migration stock preserved 312
+  PASS - Migration stock preserved 329
+  PASS - Migration stock preserved 330
+  PASS - Migration stock preserved 331
+  PASS - Migration stock preserved 332
+  PASS - Migration stock preserved 333
+  PASS - Migration stock preserved 334
+  PASS - Migration stock preserved 335
+  PASS - Migration stock preserved 336
+  PASS - Migration stock preserved 337
+  PASS - Migration stock preserved 338
+  PASS - Migration stock preserved 339
+  PASS - Migration stock preserved 340
+  PASS - Migration stock preserved 341
+  PASS - Migration stock preserved 351
+  PASS - Migration stock preserved 370
+  PASS - Migration stock preserved 371
+  PASS - Migration stock preserved 372
+  PASS - Migration stock preserved 373
+  PASS - Migration stock preserved 374
+  PASS - Migration stock preserved 375
+  PASS - Migration stock preserved 376
+  PASS - Migration stock preserved 377
+  PASS - Migration stock preserved 378
+  PASS - Migration stock preserved 379
+  PASS - Migration stock preserved 380
+  PASS - Migration stock preserved 381
+  PASS - Migration stock preserved 382
+  PASS - Migration stock preserved 383
+  PASS - Migration stock preserved 141
+  PASS - Migration stock preserved 142
+  PASS - Migration stock preserved 143
+  PASS - Migration stock preserved 144
+  PASS - Migration stock preserved 145
+  PASS - Migration stock preserved 245
+  PASS - Migration stock preserved 246
+  PASS - Migration stock preserved 247
+  PASS - Migration stock preserved 248
+  PASS - Migration stock preserved 249
+  PASS - Migration stock preserved 250
+  PASS - Migration stock preserved 251
+  PASS - Migration stock preserved 252
+  PASS - Migration stock preserved 253
+  PASS - Migration stock preserved 254
+  PASS - Migration stock preserved 255
+  PASS - Migration stock preserved 256
+  PASS - Migration stock preserved 257
+  PASS - Migration stock preserved 258
+  PASS - Migration stock preserved 259
+  PASS - Migration stock preserved 260
+  PASS - Migration stock preserved 261
+  PASS - Migration stock preserved 262
+  PASS - Migration stock preserved 493
+  PASS - Migration stock preserved 273
+  PASS - Migration stock preserved 274
+  PASS - Migration stock preserved 275
+  PASS - Migration stock preserved 276
+  PASS - Migration stock preserved 277
+  PASS - Migration stock preserved 278
+  PASS - Migration stock preserved 279
+  PASS - Migration stock preserved 280
+  PASS - Migration stock preserved 281
+  PASS - Migration stock preserved 282
+  PASS - Migration stock preserved 283
+  PASS - Migration stock preserved 284
+  PASS - Migration stock preserved 285
+  PASS - Migration stock preserved 286
+  PASS - Migration stock preserved 287
+  PASS - Migration stock preserved 288
+  PASS - Migration stock preserved 289
+  PASS - Migration stock preserved 290
+  PASS - Migration stock preserved 291
+  PASS - Migration stock preserved 292
+  PASS - Migration stock preserved 293
+  PASS - Migration stock preserved 294
+  PASS - Migration stock preserved 295
+  PASS - Migration stock preserved 296
+  PASS - Migration stock preserved 297
+  PASS - Migration stock preserved 342
+  PASS - Migration stock preserved 343
+  PASS - Migration stock preserved 344
+  PASS - Migration stock preserved 345
+  PASS - Migration stock preserved 346
+  PASS - Migration stock preserved 347
+  PASS - Migration stock preserved 348
+  PASS - Migration stock preserved 349
+  PASS - Migration stock preserved 350
+  PASS - Migration stock preserved 352
+  PASS - Migration stock preserved 353
+  PASS - Migration stock preserved 354
+  PASS - Migration stock preserved 355
+  PASS - Migration stock preserved 356
+  PASS - Migration stock preserved 357
+  PASS - Migration stock preserved 358
+  PASS - Migration stock preserved 359
+  PASS - Migration stock preserved 360
+  PASS - Migration stock preserved 361
+  PASS - Migration stock preserved 362
+  PASS - Migration stock preserved 363
+  PASS - Migration stock preserved 364
+  PASS - Migration stock preserved 365
+  PASS - Migration stock preserved 366
+  PASS - Migration stock preserved 367
+  PASS - Migration stock preserved 368
+  PASS - Migration stock preserved 369
+  PASS - Migration stock preserved 44
+  PASS - Migration stock preserved 313
+  PASS - Migration stock preserved 314
+  PASS - Migration stock preserved 315
+  PASS - Migration stock preserved 316
+  PASS - Migration stock preserved 317
+  PASS - Migration stock preserved 318
+  PASS - Migration stock preserved 319
+  PASS - Migration stock preserved 320
+  PASS - Migration stock preserved 321
+  PASS - Migration stock preserved 322
+  PASS - Migration stock preserved 323
+  PASS - Migration stock preserved 324
+  PASS - Migration stock preserved 325
+  PASS - Migration stock preserved 326
+  PASS - Migration stock preserved 327
+  PASS - Migration stock preserved 328
+  PASS - Migration stock preserved 48
+  PASS - Migration stock preserved 49
+  PASS - Migration stock preserved 50
+  PASS - Migration stock preserved 51
+  PASS - Migration stock preserved 52
+  PASS - Migration stock preserved 53
+  PASS - Migration stock preserved 54
+  PASS - Migration stock preserved 384
+  PASS - Migration stock preserved 385
+  PASS - Migration stock preserved 386
+  PASS - Migration stock preserved 387
+  PASS - Migration stock preserved 388
+  PASS - Migration stock preserved 389
+  PASS - Migration stock preserved 390
+  PASS - Migration stock preserved 391
+  PASS - Migration stock preserved 392
+  PASS - Migration stock preserved 393
+  PASS - Migration stock preserved 394
+  PASS - Migration stock preserved 395
+  PASS - Migration stock preserved 396
+  PASS - Migration stock preserved 397
+  PASS - Migration stock preserved 416
+  PASS - Migration stock preserved 417
+  PASS - Migration stock preserved 418
+  PASS - Migration stock preserved 419
+  PASS - Migration stock preserved 449
+  PASS - Migration stock preserved 450
+  PASS - Migration stock preserved 451
+  PASS - Migration stock preserved 453
+  PASS - Migration stock preserved 454
+  PASS - Migration stock preserved 455
+  PASS - Migration stock preserved 457
+  PASS - Migration stock preserved 458
+  PASS - Migration stock preserved 459
+  PASS - Migration stock preserved 433
+  PASS - Migration stock preserved 420
+  PASS - Migration stock preserved 421
+  PASS - Migration stock preserved 422
+  PASS - Migration stock preserved 423
+  PASS - Migration stock preserved 424
+  PASS - Migration stock preserved 425
+  PASS - Migration stock preserved 426
+  PASS - Migration stock preserved 427
+  PASS - Migration stock preserved 428
+  PASS - Migration stock preserved 429
+  PASS - Migration stock preserved 430
+  PASS - Migration stock preserved 452
+  PASS - Migration stock preserved 456
+  PASS - Migration stock preserved 460
+  PASS - Migration stock preserved 437
+  PASS - Migration stock preserved 431
+  PASS - Migration stock preserved 432
+  PASS - Migration stock preserved 434
+  PASS - Migration stock preserved 435
+  PASS - Migration stock preserved 436
+  PASS - Migration stock preserved 438
+  PASS - Migration stock preserved 439
+  PASS - Migration stock preserved 440
+  PASS - Migration stock preserved 441
+  PASS - Migration stock preserved 442
+  PASS - Migration stock preserved 443
+  PASS - Migration stock preserved 444
+  PASS - Migration stock preserved 445
+  PASS - Migration stock preserved 446
+  PASS - Migration stock preserved 447
+  PASS - Migration stock preserved 448
+  PASS - Migration stock preserved 471
+  PASS - Migration stock preserved 472
+  PASS - Migration stock preserved 473
+  PASS - Migration stock preserved 474
+  PASS - Migration stock preserved 475
+  PASS - Migration stock preserved 476
+  PASS - Migration stock preserved 477
+  PASS - Migration stock preserved 461
+  PASS - Migration stock preserved 462
+  PASS - Migration stock preserved 463
+  PASS - Migration stock preserved 464
+  PASS - Migration stock preserved 465
+  PASS - Migration stock preserved 466
+  PASS - Migration stock preserved 467
+  PASS - Migration stock preserved 468
+  PASS - Migration stock preserved 469
+  PASS - Migration stock preserved 470
+  PASS - Migration stock preserved 398
+  PASS - Migration stock preserved 399
+  PASS - Migration stock preserved 400
+  PASS - Migration stock preserved 401
+  PASS - Migration stock preserved 402
+  PASS - Migration stock preserved 403
+  PASS - Migration stock preserved 404
+  PASS - Migration stock preserved 405
+  PASS - Migration stock preserved 406
+  PASS - Migration stock preserved 407
+  PASS - Migration stock preserved 408
+  PASS - Migration stock preserved 409
+  PASS - Migration stock preserved 410
+  PASS - Migration stock preserved 411
+  PASS - Migration stock preserved 412
+  PASS - Migration stock preserved 413
+  PASS - Migration stock preserved 414
+  PASS - Migration stock preserved 415
+  PASS - Migration stock preserved 478
+  PASS - Migration stock preserved 479
+  PASS - Migration stock preserved 480
+  PASS - Migration stock preserved 481
+  PASS - Migration stock preserved 482
+  PASS - Migration stock preserved 483
+  PASS - Migration stock preserved 484
+  PASS - Migration stock preserved 485
+  PASS - Migration stock preserved 486
+  PASS - Migration stock preserved 487
+  PASS - Migration stock preserved 488
+  PASS - Migration stock preserved 489
+  PASS - Migration stock preserved 490
+  PASS - Migration stock preserved 491
+  PASS - Migration stock preserved 492
+  PASS - Good return increases physical and sellable once; allocation increases Shopee
+  PASS - Damaged return adds non-sellable physical only; platform unchanged
+  PASS - Damaged batch links original non-sellable record and quantity
+  PASS - Borrowed good return to Warehouse remains unallocated
+  PASS - Reject invalid manual reference_kind
+  PASS - Reject invalid manual item_condition
+  PASS - Reject invalid manual destination_platform
+  PASS - Reject invalid manual source_qty
+  PASS - Reject invalid manual txn_date
+  PASS - Reject invalid manual order_id
+  PASS - Box UOM converts before allocation
+  PASS - Filtered snapshot includes only requested products
+  PASS - Valid actual counts upload
+  PASS - Server computes variance; tampered variance ignored; blank skipped
+  PASS - Workbook roundtrip preserves count reference, all rows and blank actual cells
+  PASS - Review-only does not change stock
+  PASS - Atomic positive/negative count apply; non-sellable and blank rows preserved
+  PASS - Count apply preserves platform allocations
+  PASS - Duplicate apply blocked
+  PASS - Approver actual name retained
+  PASS - Wrong workbook persists errors
+  PASS - Reject Unknown SKU
+  PASS - Reject Duplicate SKU
+  PASS - Reject Changed On Hand
+  PASS - Reject Negative Actual
+  PASS - Reject Fractional Actual
+  PASS - Explicit zero retained
+  PASS - Allocation exceeding counted sellable blocks apply
+  PASS - Movement after download blocks whole adjustment
+  PASS - Atomic stale rejection applies no earlier rows
+  PASS - Non-admin cannot approve count
+  PASS - Actual below non-sellable stock blocked
+
+V5.1 download/upload, history and approval HTTP checks: 27 passed
+  PASS - Manual Inflow uses product search without brand/category selectors
+  PASS - Reference and condition options are present
+  PASS - Inflow has one history entry point
+  PASS - Inflow recent list has exactly 10 data rows
+  PASS - Only selected bulk form is rendered
+  PASS - Only selected receipt form is rendered
+  PASS - View all opens dedicated paginated Inflow history
+  PASS - Outflow full width raised-tab class is present
+  PASS - Current Stocks exposes clear and filtered count download
+  PASS - Downloaded workbook has only requested print columns
+  PASS - Filtered workbook includes requested products
+  PASS - HTTP download is valid XLSX
+  PASS - Actual XLSX upload endpoint computes variance and retains review
+  PASS - HTTP review-only saves without applying
+  PASS - Admin confirmed HTTP apply records approval and reason
+  PASS - Count endpoint rejects invalid CSRF
+  PASS - HTTP replay cannot apply count twice
+  PASS - Printable count sheet omits brand and category
+  PASS - Removed transaction filter bar on inflow
+  PASS - Removed transaction filter bar on outflow
+  PASS - Removed transaction filter bar on nonsellable
+  PASS - Removed transaction filter bar on allocation
+  PASS - Removed transaction filter bar on transfers
+  PASS - Removed transaction filter bar on mapping
+  PASS - Removed transaction filter bar on reconciliation
+  PASS - Count download requires login
+  PASS - Pages render without PHP fatal errors
+
+Post-install verification and incomplete copy recovery: 10 passed
+  PASS - Complete copied files and upgraded database pass verification
+  PASS - Outstanding categories remain visible with review link
+  PASS - Manifest includes application files and assets
+  PASS - Checker survives a missing workflow helper and identifies it
+  PASS - Checker survives missing header menu
+  PASS - Different stylesheet version is identified
+  PASS - Missing workflow upgrade is detected
+  PASS - Non-admin cannot inspect update verification
+  PASS - Settings exposes Update Verification
+  PASS - Verification works after all temporary fixtures are restored
+
+Total functional checks: 1837
+PHP syntax: all 42 application PHP files passed
+JavaScript syntax: passed
+
+Environment: Windows; PHP 8.2; isolated MariaDB port 33318;
+local HTTP test server port 8818. Source configuration retains the live
+database name and normal connection defaults; no QA credentials or test
+database contents are included in the release package.
+
+Data preservation: original records in 26 baseline tables were compared
+before/after migration. All matched; settings changes only track V5.
+Registration fields are additive: existing accounts and passwords were
+preserved, and repeated registration migration produced no changes.
+A second migration produced no database changes. Missing-field recovery
+was tested separately on the disposable copy. Existing SHA1 dedupe keys
+were preserved, and re-import of a historical order did not change stock.
+
+Visual review: dashboard, receipt review and tabular original XLSX
+PDF content preview inspected. Branding and cards follow the supplied
+reference styling; no claim of pixel-identical matching is made.
+
+Product filters: exactly six approved brands in dropdowns and Add/Edit.
+Brand, Main Category and Subcategory filters combine across product lists
+and searchable product pickers. SQL and PHP return the same products.
+Azoo and legacy brands group under Others; Nanomoly groups under Oils.
+Browser checks verified Current Stocks and filtered Inflow selection.
+All 41 new filter checks passed; previous feature checks are retained.
+
+Product category update: five Main Categories, 44 dependent Subcategories.
+Create/edit forms and Oils without a Subcategory were verified in browser.
+Migration preserves existing product fields and leaves Main Category
+unassigned for manual tagging. SKU, stock and platform aliases were
+preserved after manual category edits. Invalid pairings were rejected.
+
+Receipt error update: actual supplied image-only PDF initially produced
+zero item rows with OCR layout 3. Layout 6 produces four review rows.
+OCR digits and units remain imperfect: manual validation is required.
+Inflow History and Receipt Archive expose persistent Review Errors.
+Rejected receipt/XLSX uploads remain in history; receipt reference/date
+can be corrected before posting. Unresolved OCR rows block confirmation.
+Danger/warning notifications no longer automatically disappear.
+
+Confirmation prompt layering fix: native modal opens above Edit Product.
+Local fixture with production assets verified Cancel/Escape preserve
+the edit modal and values; Proceed submits the edited value.
+
+Category assignment update: all 492 live catalog products classified.
+490 assignments need updating and 2 valid manual assignments are kept.
+Expanded categories cover lights, electrical parts, merchandise, belts,
+bearings and other catalog components. Name-specific rules correct old
+Oil/Lubricant mis-tags for ignition coils and oil pumps. Superhead with
+valves remains a cylinder head; a CVT oil seal remains a CVT component.
+Admin preview requires CSRF, review acknowledgment and a fresh digest.
+Bulk application is atomic; every changed tag is audited. 1014 coverage
+and preservation assertions plus 9 HTTP checks passed in isolation.
+Live application permission was not granted; installation/application
+must be performed by the user through the supplied Admin page.
+
+Hidden sidebar scrollbar: local browser verified menu overflow remains
+auto and scrolling works while scrollbar width/display are hidden.
+
+Header gear menu: larger title and user name; Settings, Account, Change
+Password and Logout links verified in local browser. Account profile
+requires login. Escape and outside-click close the menu. Logout modal
+Cancel preserves the authenticated session. Previous checks retained.
+
+V5.1 complete workflow: manual Good/Damaged return routing, destination
+allocation, Inflow tabs and paginated history, raised equal-width Outflow
+tabs, Clear Filters and clean typography verified. Inventory count XLSX
+snapshot export, printable sheet, actual upload, computed variance,
+review-only, Admin apply and stored approval history passed new checks.
+These new checks use isolated data; previous tests remain historical.
+
+Scope and limits:
+- Tests use the supplied baseline/SQL snapshot, not later live changes.
+- OCR extracted the supplied scanned receipt but misread some digits and
+  units. Review/correction is required before posting. OCR accuracy on
+  all possible receipt layouts is not established.
+- XLSX PDF previews show all worksheets in readable tables. They do not
+  reproduce original Excel styling or merged-cell layouts.
+- Original workbook download remains available.
+- New non-sellable releases are explicitly linked; old releases without
+  reliable entry links remain legacy/unlinked.
+- Concurrency guards were implemented with transactions/row locks;
+  no multi-user load/stress testing was performed.
+- Print Summary is a formal HTML print view supporting browser Save PDF.
+
+No live XAMPP application or live database was modified.

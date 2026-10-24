@@ -1,0 +1,2 @@
+<?php
+require __DIR__.'/lib.php';require_login();header('Content-Type: application/json');$lock=null;try{if($_SERVER['REQUEST_METHOD']!=='POST'||current_user()['role']!=='Admin')throw new Exception('Admin POST required.');verify_csrf();if(!complete_update_ready())throw new Exception('Upgrade required.');$lock=inventory_write_lock();$id=backup_automatic_run();echo json_encode(['backup_id'=>$id]);}catch(Throwable $e){http_response_code(400);echo json_encode(['error'=>safe_error_message($e)]);}finally{inventory_write_unlock($lock);}

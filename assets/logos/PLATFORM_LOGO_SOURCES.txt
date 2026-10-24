@@ -1,0 +1,9 @@
+Locally bundled platform wordmarks, used to identify existing inventory platforms.
+
+Shopee: https://commons.wikimedia.org/wiki/File:Shopee.svg
+Lazada: https://commons.wikimedia.org/wiki/File:Lazada_(2019).svg
+TikTok: https://commons.wikimedia.org/wiki/File:Tiktok_logo_text.svg
+
+Source pages identify these as public-domain text/geometric logos.
+Brand names and trademarks remain the property of their respective owners.
+SVGs are loaded as local image files; the application does not contact the sources.

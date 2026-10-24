@@ -1,0 +1,86 @@
+E-COMMERCE INVENTORY MANAGEMENT SYSTEM — V5.3
+Cumulative System Update | 10 October 2026
+
+Ito ang cumulative update: kasama ang earlier V5/V5.1/V5.2.1 improvements at bagong process controls. Ito ang gamitin sa halip na isa-isang lumang update ZIP.
+Prepared and tested on an isolated application/database. Hindi pa ito installed sa live system. Hindi nito nire-reset ang stocks o transactions.
+
+INSTALLATION — STEP BY STEP
+1. Patigilin muna ang uploads, posting at stock adjustments. Mag-log out ang ibang users habang nag-update.
+2. I-copy ang BUONG existing C:\xampp\htdocs\rs8_inventory_system folder sa hiwalay na dated backup folder.
+3. I-back up ang DATABASE: http://localhost/phpmyadmin > piliin ang existing inventory database > Export > Quick > SQL > Go. Siguraduhing may downloaded SQL file at hindi ito empty. Itabi kasama ng folder backup.
+4. I-extract ang RS8_V53_Complete_System_Update.zip sa temporary folder. May rs8_inventory_system folder, guide, feature checklist at test report.
+5. Buksan ang EXTRACTED rs8_inventory_system. I-copy ang CONTENTS nito papunta sa ORIGINAL C:\xampp\htdocs\rs8_inventory_system. Piliin ang Replace files in destination. Huwag gumawa ng nested rs8_inventory_system\rs8_inventory_system folder; huwag burahin muna ang original folder.
+6. Panatilihin ang original config.php, uploads at exports. Hindi sila laman ng ZIP. Huwag mag-run ng install.php, reset_admin.php o reset ng stocks. Kung iba ang original folder/URL ninyo, gamitin iyon sa mga susunod na steps.
+7. Sa XAMPP, dapat running ang Apache at MySQL. Mag-sign in sa existing Admin account. Buksan http://localhost/rs8_inventory_system/upgrade_v5.php > Run V5.3 Upgrade > Proceed. Additive ang migration: hindi nililinis ang existing records, mappings, accounts o stock movements.
+8. Click Verify Complete Update, o buksan http://localhost/rs8_inventory_system/update_check.php. Dapat SIX checks ay PASS. Kapag CHECK, ihinto muna ang posting; ayusin ang mismatched/missing file o rerun ang upgrade ayon sa issue, saka verify ulit.
+9. Press Ctrl+F5. Product Master > Assign All Product Categories: review proposed assignments, lalo na ambiguous products; tick acknowledgment at Apply kung tama. Valid manual assignments at existing SKUs are retained. Kung may Need Manual Review, i-edit ang specific product. Product Categories ang Admin manager para sa bagong categories/subcategories.
+10. Backups & Restore Tests > Back Up Now. Hintaying Complete. Click Test Restore at hintaying Passed. Totoong ibinabalik ang backup sa disposable separate database, chine-check ang rows/files, saka inaalis ang test database. Hindi nito pinapalitan ang live inventory. Download ang backup at itabi ang pangalawang copy sa external drive o inyong secured off-computer storage.
+11. I-install ang daily backup schedule gamit ang procedure sa ibaba. Pagkatapos, download NEW templates sa Inflow at Outflow. Mag-test ng maliit na DRAFT, review at Cancel Upload bago mag-resume ng real posting. Drafts must not change stocks. I-check ang main at platform balances pagkatapos ng unang authorized real transaction.
+
+DAILY BACKUP SCHEDULE — ONE-TIME SETUP
+Default: 02:00 daily, current Windows user, limited privileges. MySQL must be running and this Windows user must be signed in. Windows can catch up a missed run when available. First Admin visit also checks for a missed daily backup while automatic backup is enabled.
+1. Sa original installed folder, right-click Install_Backup_Schedule.ps1 > Run with PowerShell. Ang script mula sa package ang ireregister nito; hindi ito nagre-reset o nag-i-install ng system.
+2. Kung Windows execution policy blocks the supplied script, open PowerShell and run this exact one-time command, adjusting the folder only if yours is different:
+   powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\xampp\htdocs\rs8_inventory_system\Install_Backup_Schedule.ps1"
+   Bypass applies only to that PowerShell process; it does not permanently change Windows execution policy. Do this only for this reviewed package script.
+3. Open Task Scheduler > Task Scheduler Library. Hanapin ang RS8 Inventory Backup task. Right-click > Run to test. Sa system > Backups & Restore Tests, dapat magkaroon ng successful backup, o magskip kung mayroon nang successful backup today. Failed runs have an error entry to review.
+4. Last successful backup should advance on the next backup day. Kung ibang PHP location, supply -PhpPath with its real path. Kung kailangan ng ibang time, rerun the script with -Time "HH:mm"; updates the same app-specific task.
+5. Para tumigil ang scheduled job permanently: Task Scheduler > select that task > Disable. The system checkbox controls automatic backup; manual Back Up Now remains available.
+Storage is private outside the public web folder, normally C:\xampp\rs8_private_backups\<app-specific folder>. This release does not automatically upload backups to a cloud account. A separate secured off-computer copy is your chosen storage responsibility. Backup files include config/database/attachments and should be accessible only to trusted Admins.
+
+PRODUCTS / CATEGORIES / MASTER SKU
+- Only approved brands: RS8, SRF, Oils & Liquid Essentials, Lumina Pro, Merchandise, Others. Nanomoly uses Oils & Liquid Essentials; Azoo bells use Others.
+- Main/subcategory list is shared by create/edit/filter. Additional applicable categories cover belts, lights, merchandise, bearings and other catalog items.
+- New SKU is locked and assigned by the system when saved, based on category: Clutch Bell CB-0001, CB-0002, etc. Preview does not reserve a number. Existing SKU and mapping links never change merely because the product category changes.
+- Exact normalized description + physical variant duplicate is blocked. Similar descriptions warn; different variants are not silently merged. Use Master SKU when descriptions are ambiguous.
+- New product appears in Current Stocks immediately with zero balance. Creating a product does not create received stock.
+- Category manager can add/edit unused categories. Assigned categories cannot be renamed or disabled until their products are reassigned, preserving valid tagging and mappings.
+
+INFLOW / RETURNS
+- Three tabs: Manual Inflow, Bulk Inflow Upload, Receipt / Packing Slip Upload. Search receipt/DR/Order ID, product/SKU, supplier, file, processor, remarks and saved errors; date/type/status filters and Clear Filters.
+- Supplier receipt requires Supplier / Source + DR / Receipt Reference. File contents are fingerprinted even if renamed. Same posted supplier/reference cannot add inventory twice; different identified suppliers may use the same DR. Historical blank supplier needs Admin identification before a conflicting receipt can proceed.
+- Supplier receipts: upload > review/correct > full good-quantity allocation among Shopee/Lazada/TikTok > Submit for Final Confirmation > Confirm. Damage/Leak goes only to Non-Sellable. No Unallocated destination. Before confirmation, Cancel Upload changes no stocks.
+- Receipt review removes Brand/Main Category/Subcategory controls. Product selection derives existing tagging. OCR pe/pec is normalized to pc only in receipt processing; strict manually entered UOM still requires pc or bx(n). OCR interpretation remains subject to review.
+- Order return: Manual entry for a single item or downloadable Excel template for many. Columns: Date, Product Description / SKU, Quantity, Platform, Order ID, Item Condition, Remarks. No user-entered Return ID. Keep Order ID as text.
+- Original posted Platform + Order ID + Product must exist. Good + damaged cumulative returns cannot exceed original remaining quantity. Good restores main sellable AND ORIGINAL platform; damage adds Non-Sellable only. Legitimate partial returns allowed. Exact repeated rows are rejected; similar prior partial returns require Admin review and explanation, not blind rejection of the Order ID.
+- Return review > Submit for Final Confirmation > Confirm Return. Cancel/Review never adds stocks. Failed authorized uploads and errors remain accessible in history.
+
+OUTFLOW / PLATFORM STOCK
+- Standard downloadable Order template on every platform: Date, Order ID, Product SKU / Description, Quantity. Existing supported platform exports retained. Uploads contain dispatched orders only; users remove cancelled orders before upload. Actual later returns go through Inflow.
+- Uploaded Items & Corrections > resolve errors > Submit for Final Confirmation > Confirm. Uploading does not deduct. Cancel Upload remains available before posting.
+- Individual Final Order Summary remains unchanged. Separate Items to Deduct consolidates product quantities with contributing nonduplicate Order IDs, platform on hand and after-posting stock. No duplicate deduction.
+- Duplicate identity is scoped to the platform/order/product. Same Order ID on a different platform is not automatically a duplicate. Previously posted same-platform rows are skipped; if every other row is resolved and posted, upload is Complete/Posted despite duplicates. Unresolved rows require correction before posting.
+- Negative main/platform stocks allowed, with before/after warning and permanent Stock Exception record. Assign an owner and resolve using a real corrective transaction; marking resolved does not itself alter stocks.
+- Manual Outflow Internal/Direct requires source platform. Repeat manual reference/product/type/source is blocked without second deduction. Manual product selection has no Brand/Main/Subcategory toolbar.
+- Full-width platform tabs and raised active tab; Global Rule displayed in Outflow. Allocation Rules page removed from navigation. All good receipts require a complete platform split; platforms must equal sellable total. Legacy misalignment must be reviewed and corrected explicitly.
+
+BORROWED ITEMS
+- Issue from required platform deducts available main/platform stock ONCE.
+- Original record has borrower, reference, date, due date, outstanding quantity, partial good/damaged returns and overdue status.
+- Good partial return restores original platform/main; damage is Non-Sellable. Do not upload that same return again as an Order Return.
+- Inventory Controller may request permanent conversion; Admin approves. It closes the converted outstanding quantity without another stock deduction.
+
+ACTUAL INVENTORY / RECONCILIATION
+- Filter Product Master or Current Stocks, choose Count Date and Download Filtered Inventory Sheet. Printable/exported sheet excludes Brand/Category columns; these remain filters. Download contains only selected products with locked Master SKU and system On Hand snapshot.
+- Physical scope includes Non-Sellable. Actual Good + Actual Damaged + Remarks identify condition differences. Upload original sheet > review variance > review platform allocation/progress/default split > Admin approval to apply. Export/Review do not adjust inventory. Blank count means not counted.
+- Stale stock snapshots, changed SKUs/on-hand values, duplicates and invalid counts are rejected. Required discrepancy remarks, complete platform variance split, double-apply protection and Cancel Count are included.
+- Reconciliation upload retains matched, unmatched and invalid rows. Correct every error, then final confirmation. It saves an external-vs-system comparison/history; it never overwrites stock automatically. Use an approved Inventory Count to apply a justified discrepancy.
+
+POSTED MISTAKES / HISTORY / DAY CLOSING
+- Transaction Corrections: select source type + original record ID + required reason. Inventory Controller requests; Admin reviews and approves inverse movements once. Original evidence remains. Supported sources: supplier Inflow, uploaded Outflow, Manual Outflow, Order Return, warehouse Non-Sellable, linked Non-Sellable Release, Stock Transfer, Applied Inventory Count.
+- Original order with returns: reverse linked returns first. Released non-sellable: correct the linked release first. Borrowed issues use their own return/conversion workflow. Locked beginning balance discrepancies use reviewed Inventory Count.
+- Legacy receipts/counts/releases lacking original platform/lot evidence are blocked instead of guessing. A reversal is not ordinary cancellation; corrections are posted dated records, linked to the original.
+- Activity / Stock Movement History provides reference/product/date/platform/user/status search, Clear Filters and readable signed before/after balances. New ledger starts with this release; missing old balance trails are not fabricated. Existing audit/history retained.
+- Latest 10 and View all on agreed transaction pages; paginated complete history. Sticky table headers, clean fonts, clearer logos, hidden-but-scrollable sidebar, larger system title, actual full name and gear account/settings menu retained. Full-name edit/save, password visibility, signup approval and logout confirmation retained.
+- Admin Day Closing: choose cutoff date, review current captured balances/alignment/negative exceptions, require remarks and acknowledgment. Pending uploaded reviews block closing; exported-but-unuploaded count sheets alone do not. Closed cutoff blocks backdated stock posting. Admin can reopen with reason before a justified correction.
+- Closing records balances captured AT CLOSING TIME; it does not claim to reconstruct a historical end-of-day balance if you close an old date after later movements.
+
+VALIDATION / LIMITS
+- See TEST_REPORT.json and FEATURE_CHECKLIST.txt for release evidence. Tested in isolated rs8_release_test database, not your live data. No live reset or installation performed.
+- UI buttons align with server role permissions. Viewer cannot post inventory via forged forms. CSRF, session/account checks, login throttling, upload size/type/content validation and obsolete reset/install protections retained.
+- PDF OCR needs working configured PDF/OCR tools and readable source. No parser can guarantee every receipt is read correctly. Review item, quantity and UOM before final confirmation.
+- Duplicate checks do not prove a physical delivery/return actually happened; staff must verify source evidence. Restore test needs local DB permission to create/drop the temporary test database; if unavailable it reports failure without overwriting live data.
+- Daily schedule installation and off-computer backup copy are explicit post-install steps; they are not silently configured on your live computer by this package.
+
+ROLLBACK
+Pause posting first. Back up the current state. If no transactions were posted after upgrade, restore BOTH the pre-update application folder AND matching SQL backup. If new movements were posted, reconcile them first; do not overwrite them with an old database blindly. Restoring application files alone does not restore previous inventory/database state.

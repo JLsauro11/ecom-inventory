@@ -1,0 +1,44 @@
+﻿E-COMMERCE INVENTORY MANAGEMENT SYSTEM
+V5.3.3 — RAW / FOR PACKAGING AND RETURN CONDITIONS
+14 October 2026
+
+INSTALLATION — existing V5.3.2 installation required
+1. Finish or cancel pending posting work and temporarily stop new transactions.
+2. Back up the entire installed rs8_inventory_system folder and export its database. Keep both backups together.
+3. Extract RS8_V533_RAW_Repackaging_Update.zip to a temporary folder.
+4. Open the extracted rs8_inventory_system folder. Copy its CONTENTS into your existing installation, normally C:\xampp\htdocs\rs8_inventory_system. Merge folders and replace the included files. Do not create a second nested rs8_inventory_system folder.
+5. Your config.php and uploads are not included and should be preserved. Do not run install.php or any stock-reset tool.
+6. Open your system and sign in as Admin. Visit http://localhost/rs8_inventory_system/upgrade_packaging.php and run the upgrade. If your site has a different address, keep that address and add /upgrade_packaging.php.
+7. Refresh with Ctrl+F5. Open /update_check.php. Every installation check should show PASS. If a file differs, copy it again from this ZIP; if schema/version fails, rerun the packaging upgrade as Admin.
+8. Open Non-Sellable and confirm all three views. Download the new Order Return template from Inflow; replace previously saved copies.
+
+PROCESS
+- RAW / For Packaging: products not yet inspected/approved for sale; includes customer/borrowed returns marked For Repackaging.
+- Damaged / Leak: damaged contents or leaking items.
+- Other Restricted Stocks: other existing restricted classifications.
+- Already approved, ready-to-sell products use the regular Inflow process with platform allocation. New packaging alone does not force Non-Sellable classification.
+- Receive RAW / For Packaging records the same existing Master SKU, quantity, source/reference, responsible person, optional target date and remarks. Physical/restricted stock increases; sellable/platform stocks do not increase.
+- Set Pending, In Progress or For Inspection on the source record. Dashboard Needs Attention shows pending and overdue work. No external notification service is configured.
+- After packaging and inspection, Admin opens Manage / Ready for Sale, enters inspected quantity, allocates ALL units to Shopee/Lazada/TikTok, writes approval remarks, checks inspection approval and confirms.
+- Partial completion is allowed. The source's remaining quantity falls, sellable stock and its platform allocations increase equally, and physical total stays unchanged. Keep the same Master SKU and pieces; this update does not convert pack sizes.
+- Ready for Sale is a linked internal reclassification. Do not record it again as a separate physical receipt or physical release.
+- If items physically leave for external rework/repackaging, use the existing physical outflow/restricted release process. Any physical return is a new inflow as previously agreed.
+
+RETURNS
+- Manual and Excel customer returns offer Good Item, Damaged / Leak and For Repackaging.
+- Good Item restores the original order platform; the other two conditions enter their respective restricted views.
+- Excel columns: Date, Product Description / SKU, Quantity, Platform, Order ID, Item Condition, Remarks. Use separate rows for different conditions. No Return ID is required.
+- Combined good + damaged + repackaging quantities cannot exceed the original posted order quantity. Existing duplicate and final-confirmation checks still apply.
+- Borrowed Items return form allows all three quantity types in one return event, constrained by the outstanding balance. Good units restore the original source platform.
+
+CORRECTIONS AND LEGACY DATA
+- Incorrect Ready for Sale: Transaction Corrections > Packaging Completion > enter PC record ID, provide reason, then obtain Admin approval. The correction reverses both linked sides and allocation together.
+- Reverse dependent packaging completion before reversing its original customer return.
+- Existing stock and history are preserved. Old unlinked restricted releases cannot be attributed to a specific source automatically; review them against total restricted stock before approving a legacy source.
+- Assign responsible person and target dates to old packaging records where needed.
+
+VALIDATION
+171 backend checks passed: 53 packaging controls, 25 borrowed controls, 48 multiple borrowed lines, 45 inflow/return/correction checks. Browser testing confirmed approval, Cancel, exact allocation, separate views and dashboard reminders in an isolated database. This package has not been installed in your live system.
+
+SCOPE NOTE
+The NetSuite delivery-receipt upload for Manual Outflow and automatic deduction from overall platform allocations are not included here. They require the agreed source-stock process and a representative NetSuite receipt sample.

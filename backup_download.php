@@ -1,0 +1,2 @@
+<?php
+require __DIR__.'/lib.php';require_login();try{if(current_user()['role']!=='Admin')throw new Exception('Admin access required.');$b=backup_record((int)($_GET['id']??0));header('Content-Type: application/zip');header('Content-Disposition: attachment; filename="'.$b['backup_ref'].'.zip"');header('Content-Length: '.filesize($b['path']));readfile($b['path']);}catch(Throwable $e){http_response_code(403);exit(e(safe_error_message($e)));}

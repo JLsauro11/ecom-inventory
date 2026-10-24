@@ -1,0 +1,44 @@
+/* Option B: Arial / compact. Screen and print typography, no business logic. */
+:root{--type-family:Arial,Helvetica,sans-serif;--type-body:14px;--type-table:13px;--type-label:13px;--type-title:28px}
+html body{font-family:var(--type-family);font-size:var(--type-body);font-weight:400;line-height:1.45;-webkit-font-smoothing:antialiased}
+body .ia-page,body .report-rule,body .mono,body .ref{font-family:var(--type-family)}
+body input,body select,body textarea,body button,body .btn{font-family:var(--type-family);font-size:14px;line-height:1.35}
+body input,body select,body textarea{font-weight:400}body input,body select{min-height:40px}
+body button,body .btn{font-weight:600}body .btn.sm,body .btn.tiny{font-size:13px;line-height:1.35}
+body h1,body .page-head h1,body .ia-page .page-head h1,body .auth-card h1{font-size:28px;line-height:1.2;font-weight:700;letter-spacing:-.25px}
+body h2,body .ia-page .ia-card h2{font-size:22px;line-height:1.3;font-weight:600;letter-spacing:0}
+body h3,body .card h3,body .modal-head h3,body .inflow-search-modal h3{font-size:20px;line-height:1.3;font-weight:600;letter-spacing:0}
+body h4{font-size:16px;line-height:1.35;font-weight:600}
+body .page-head p,body .ia-page .page-head p,body .ia-card-head p{font-size:14px;line-height:1.5}
+body label,body .inline-form label,body .picker-filters label,body .inflow-search-fields label{font-size:13px;font-weight:600;line-height:1.4}
+body p{line-height:1.5}body small,body .small,body .helper,body .audit-note,body .ia-note,body .ia-submit small,body .account-menu-disabled small{font-size:12px;line-height:1.5}
+body .alert,body .ia-info,body .ia-valid{font-size:13px;line-height:1.5}
+body .table,body .ia-table,body table{font-family:var(--type-family);font-size:13px;line-height:1.45}
+body .table th,body .ia-table th,body th{font-size:13px;font-weight:600;letter-spacing:.1px;text-transform:none;line-height:1.4}
+body .table td,body .ia-table td{font-size:13px;line-height:1.45;padding-top:10px;padding-bottom:10px}
+body .table td b,body .table td strong,body .compact-table td b{font-weight:500}
+body .table .mono,body .table .num,body .ia-table,body .kpi-card strong,body .ia-summary strong{font-variant-numeric:tabular-nums}
+body .table .mono{font-size:13px;letter-spacing:0}
+body .ia-page .ia-table input{font-family:var(--type-family);font-size:14px;line-height:1.35}
+body .badge,body .ia-badge{font-size:12px;font-weight:500;line-height:1.4}
+body .nav-item{font-size:13px;line-height:1.4;font-weight:400}body .nav-item.active{font-weight:600}
+body .sidebar .nav-group{font-size:12px;line-height:1.4;letter-spacing:.5px;font-weight:600}
+body .tab,body .outflow-tabs .tab,body .report-tabs .tab,body .entry-tabs .tab{font-size:14px;line-height:1.4;font-weight:600}
+body .topbar>div:first-of-type>b{font-size:20px;font-weight:600;line-height:1.3}
+body .header-user-name,body .userbox span{font-size:14px;font-weight:500;line-height:1.4}
+body .topbar .top-sub,body .footer span,body .brand-footer,body .eyebrow,body .auth-kicker{font-size:12px;line-height:1.45}
+body .account-menu-panel a,body .account-menu-disabled{font-size:14px;font-weight:500;line-height:1.4}
+body .kpi-label>span,body .kpi-card small,body .ia-summary span{font-size:13px;line-height:1.4}
+body .kpi-card strong,body .kpi-card .value,body .mini-kpis strong,body .ia-summary strong{font-size:26px;line-height:1.2;font-weight:600}
+body .product-results b{font-size:13px;font-weight:600;line-height:1.4}body .product-results span{font-size:12px;line-height:1.4}
+body .ia-steps>div{font-size:13px;line-height:1.4}body .ia-steps span{font-size:16px;font-weight:600}
+body .inflow-filter-chip,body .inflow-results-footer,body .inflow-clear-link{font-size:13px;line-height:1.4}
+body .footer b{font-size:13px;font-weight:600}body .meta,body .foot{font-size:13px;line-height:1.5}
+@media(max-width:900px){body .topbar>div:first-of-type>b{font-size:18px}body .header-user-name{font-size:13px}}
+@media(max-width:550px){body .page-head h1,body .ia-page .page-head h1,body .auth-card h1{font-size:26px}body .tab,body .outflow-tabs .tab{font-size:13px}}
+@media print{
+ html body{font-family:Arial,Helvetica,sans-serif;font-size:11pt;line-height:1.4}
+ body h1,body .page-head h1{font-size:20pt;line-height:1.2}body h2{font-size:15pt}body h3,body .card h3{font-size:13pt}
+ body table,body .table,body .ia-table,body th,body td,body .table th,body .table td{font-size:10pt;line-height:1.35}
+ body .meta,body .foot,body small,body .small{font-size:9pt;line-height:1.4}
+}

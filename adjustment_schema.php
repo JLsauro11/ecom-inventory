@@ -1,0 +1,15 @@
+<?php
+function adjustments_ready(){return setting('adjustments_reports_version','')==='5.4.0';}
+function migrate_adjustments_reports(){
+ if(!repack_ready())throw new Exception('Install V5.3.4 and run upgrade_repackaging_batch.php first.');global $CFG;
+ $cols=['inventory_count_batches'=>['workflow_version'=>'VARCHAR(10) NULL','support_reference'=>'VARCHAR(255) NULL','revision'=>'INT NOT NULL DEFAULT 1','upload_hash'=>'CHAR(64) NULL','review_digest'=>'CHAR(64) NULL','rule_json'=>'LONGTEXT NULL','cutoff_at'=>'DATETIME NULL'], 'inventory_count_lines'=>['snapshot_conditions'=>'LONGTEXT NULL','recount_json'=>'LONGTEXT NULL','recount_by'=>'INT NULL','recount_at'=>'DATETIME NULL','final_conditions'=>'LONGTEXT NULL','posting_json'=>'LONGTEXT NULL']];
+ foreach($cols as $t=>$cs)foreach($cs as $c=>$d){$q=db()->prepare('SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=? AND TABLE_NAME=? AND COLUMN_NAME=?');$q->execute([$CFG['db_name'],$t,$c]);if(!$q->fetchColumn())db()->exec("ALTER TABLE `$t` ADD COLUMN `$c` $d");}
+ foreach([
+ "CREATE TABLE IF NOT EXISTS count_review_events(id BIGINT AUTO_INCREMENT PRIMARY KEY,batch_id BIGINT NOT NULL,event_type VARCHAR(50),revision INT,details_json LONGTEXT,user_id INT,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,INDEX(batch_id)) ENGINE=InnoDB",
+ "CREATE TABLE IF NOT EXISTS count_upload_evidence(id BIGINT AUTO_INCREMENT PRIMARY KEY,batch_id BIGINT NOT NULL,file_hash CHAR(64) NOT NULL,filename VARCHAR(255),stored_path VARCHAR(500) NULL,stage VARCHAR(20),revision INT,user_id INT,errors_json LONGTEXT,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,UNIQUE(batch_id,file_hash),INDEX(batch_id)) ENGINE=InnoDB",
+ "CREATE TABLE IF NOT EXISTS adjustment_movements(id BIGINT AUTO_INCREMENT PRIMARY KEY,batch_id BIGINT NOT NULL,product_id INT NOT NULL,txn_date DATE NOT NULL,movement_type VARCHAR(40),physical_delta INT NOT NULL DEFAULT 0,sellable_delta INT NOT NULL DEFAULT 0,platform_json LONGTEXT,detail_json LONGTEXT,user_id INT,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,UNIQUE(batch_id,product_id,movement_type)) ENGINE=InnoDB",
+ "CREATE TABLE IF NOT EXISTS daily_closing_versions(id BIGINT AUTO_INCREMENT PRIMARY KEY,close_date DATE NOT NULL,version INT NOT NULL,event_type VARCHAR(20),details_json LONGTEXT NOT NULL,reason TEXT,user_id INT,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,UNIQUE(close_date,version)) ENGINE=InnoDB"
+ ] as $s)db()->exec($s);
+ foreach(['inventory_count_batches','inventory_count_lines','inflows','outflows','non_sellable','nonsellable_outflows','platform_stock','stock_events','count_upload_evidence','count_review_events','adjustment_movements','daily_closing_versions','nonsellable_release_links'] as $t){$q=db()->prepare('SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA=? AND TABLE_NAME=?');$q->execute([$CFG['db_name'],$t]);if($q->fetchColumn()!=='InnoDB')throw new Exception('Transactional table required: '.$t.'. Ask your administrator to review its database engine.');}
+ set_setting('adjustments_reports_version','5.4.0');
+}

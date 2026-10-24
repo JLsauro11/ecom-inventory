@@ -1,0 +1,20 @@
+<?php
+require __DIR__.'/lib.php';require_login();$pdo=db();$uid=current_user()['id'];$err='';$editing=($_GET['edit']??'')==='1';$inputName=null;
+if($_SERVER['REQUEST_METHOD']==='POST'){
+ $editing=true;
+ try{
+  verify_csrf();if(($_POST['action']??'')!=='update_full_name')throw new Exception('Use Save Changes to update your full name.');
+  if(!is_string($_POST['full_name']??null))throw new Exception('Enter your full name.');$inputName=trim($_POST['full_name']);
+  if(!preg_match('/^.{1,120}$/usD',$inputName)||preg_match('/[\x00-\x1F\x7F]/u',$inputName))throw new Exception('Full Name is required and must contain no more than 120 characters.');
+  $pdo->beginTransaction();$q=$pdo->prepare('SELECT name FROM users WHERE id=? FOR UPDATE');$q->execute([$uid]);$old=$q->fetchColumn();if($old===false)throw new Exception('Account not found.');
+  if($old!==$inputName){$pdo->prepare('UPDATE users SET name=? WHERE id=?')->execute([$inputName,$uid]);audit('Update own full name','User',(string)$uid,$old.' -> '.$inputName);}
+  $pdo->commit();$_SESSION['name']=$inputName;flash($old===$inputName?'Your full name is already up to date.':'Your full name was updated.');header('Location: account.php');exit;
+ }catch(Throwable $e){if($pdo->inTransaction())$pdo->rollBack();$err=$e->getMessage();}
+}
+$q=$pdo->prepare('SELECT name,username,role,created_at FROM users WHERE id=?');$q->execute([$uid]);$account=$q->fetch();$flash=getFlash();
+?><!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>My Account - E-commerce Inventory Management System</title><link rel="stylesheet" href="assets/style.css"><link rel="stylesheet" href="assets/typography.css?v=5.4.6-b"><link rel="stylesheet" href="assets/adjustment_notifications.css?v=5.4.12"></head><body><header class="topbar"><div><b>E-commerce Inventory Management System</b><span class="top-sub">Operational Inventory Control</span></div><?php require __DIR__.'/header_menu.php';?></header><main class="content account-content"><div class="page-head"><div><h1>My Account</h1><p>Your registered name and system access.</p></div><a class="btn ghost" href="index.php">Back to System</a></div>
+<?php if($err):?><div class="alert danger" role="alert"><?=e($err)?></div><?php endif;?>
+<?php if($flash):?><div class="alert <?=e($flash[1])?>" role="status"><?=e($flash[0])?></div><?php endif;?>
+<div class="card"><div class="card-head"><h3><?=e($account['name'])?> – <?=e($account['role'])?></h3><?php if(!$editing):?><a class="btn ghost" href="account.php?edit=1">Edit Full Name</a><?php endif;?></div>
+<?php if($editing):?><form method="post" action="account.php" class="stack"><input type="hidden" name="action" value="update_full_name"><input type="hidden" name="csrf" value="<?=e(csrf_token())?>"><label>Full Name<input name="full_name" value="<?=e($inputName??$account['name'])?>" maxlength="120" autocomplete="name" required autofocus></label><div class="modal-actions"><a class="btn ghost" href="account.php">Cancel</a><button class="btn primary" type="submit">Save Changes</button></div></form><?php endif;?>
+<div class="control-list"><?php if(!$editing):?><div><span>Full Name</span><b><?=e($account['name'])?></b></div><?php endif;?><div><span>Username</span><b><?=e($account['username'])?></b></div><div><span>Role</span><b><?=e($account['role'])?></b></div><div><span>Account Created</span><b><?=e(substr($account['created_at'],0,10))?></b></div></div><p class="muted">Your full name appears in the system header and on new transactions. Contact your administrator to change your username or access role.</p><a class="btn primary" href="account_password.php">Change Password</a></div></main><script>window.RS8_CSRF=<?=json_encode(csrf_token())?>;</script><script src="assets/app.js"></script><script src="assets/system_notifications.js?v=5.4.13"></script></body></html>
