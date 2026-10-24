@@ -1,0 +1,15 @@
+# Different on each server/developer machine; never commit credentials.
+/config.runtime.php
+/.env
+/.env.*
+
+# Persistent data created by the running app; keep protection rules in Git.
+/uploads/*
+!/uploads/.htaccess
+/exports/*
+!/exports/.htaccess
+
+# Common local runtime and backup artifacts.
+/*.log
+/.DS_Store
+/Thumbs.db
