@@ -1,0 +1,4 @@
+.report-filter-grid [hidden]{display:none!important}
+.stock-balance-report table th:nth-child(n+3):nth-child(-n+5),.stock-balance-report table td:nth-child(n+3):nth-child(-n+5){text-align:right;font-variant-numeric:tabular-nums}
+.stock-balance-report table td:nth-child(5){font-weight:700;background:#f0f4f9}
+.stock-balance-report .total-row td{border-top:2px solid #cdd8e5}
