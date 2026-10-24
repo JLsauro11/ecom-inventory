@@ -1,5 +1,5 @@
 <?php
-$id=(int)($_GET['id']??0);if(!adjustments_ready()||($id&&!adjustment_is_new($id))){require __DIR__.'/inventory_count_legacy_page.php';return;}
+$id=(int)($_GET['id']??0);if(adjustments_ready()&&(!$id||final_count_is($id))){require __DIR__.'/final_count_page.php';return;}if(!adjustments_ready()||($id&&!adjustment_is_new($id))){require __DIR__.'/inventory_count_legacy_page.php';return;}
 function adjustment_form_start($action,$id,$confirm=''){echo '<form method="post" action="inventory_count.php" class="stack"'.($confirm?' data-confirm="'.e($confirm).'"':'').'><input type="hidden" name="csrf" value="'.e(csrf_token()).'"><input type="hidden" name="action" value="'.e($action).'"><input type="hidden" name="batch_id" value="'.$id.'">';}
 echo '<div class="page-head"><div><h1>Inventory Adjustments</h1><p>Count → Recount → Review → Separate Admin Approval → Posting</p></div><a class="btn ghost" href="?page=reports&report=adjustments">Adjustment Reports</a></div>';
 if(!$id){$tab=$_GET['tab']??'count';echo '<div class="tabs">';foreach(['count'=>'Inventory Count','manual'=>'Manual Adjustment','review'=>'Review & Approval','history'=>'Adjustment History'] as $k=>$name)echo '<a class="tab '.($tab===$k?'active':'').'" href="?page=inventory_count&tab='.$k.'">'.$name.'</a>';echo '</div>';

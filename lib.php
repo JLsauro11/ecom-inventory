@@ -228,3 +228,4 @@ require_once __DIR__.'/admin_requests.php';
 require_once __DIR__.'/warranty_controls.php';
 require_once __DIR__.'/cancelled_orders.php';
 require_once __DIR__.'/stock_balance_reports.php';
+require_once __DIR__.'/final_count_controls.php';

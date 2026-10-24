@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__.'/lib.php';require_login();$id=(int)($_POST['batch_id']??$_GET['id']??0);$action=$_POST['action']??'';$lock=null;
+if(adjustments_ready()&&(($id&&final_count_is($id))||str_starts_with($action,'final_')||(!$id&&in_array($action,['create','manual_create'],true)))){require __DIR__.'/final_count_endpoint.php';exit;}
 if(!adjustments_ready()||($id&&!adjustment_is_new($id))){require __DIR__.'/inventory_count_legacy_endpoint.php';exit;}
 try{
  if($_SERVER['REQUEST_METHOD']==='POST'){verify_csrf();adjustment_access();$lock=inventory_write_lock();

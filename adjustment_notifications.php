@@ -1,5 +1,5 @@
 <?php
-function adjustment_notification_message($b){
+function adjustment_notification_message($b){if(($b['workflow_version']??'')==='5.4.29')return ['info','Final Count — '.$b['status'],'One final count per attempt. Validation precedes submission; reviewer and approver are separate. Closed attempts retain their original evidence.'];
  $status=$b['status'];$creator=trim((string)($b['created_name']??''))?:'a system user';return match($status){
  'Exported'=>['info','Count required','Snapshot created. Enter the First Count, then complete a Recount. No inventory has changed.'],
  'Recount Required'=>['warn','Recount required','First Count saved. Enter a physical Recount before submitting for review. No inventory has changed.'],
@@ -14,9 +14,9 @@ function adjustment_notification_message($b){
 function adjustment_notification_summary(){
  static $result=null;if($result!==null)return $result;$result=['pending'=>0,'approval'=>0,'review'=>0,'recount'=>0,'errors'=>0,'items'=>[]];
  if(!adjustments_ready()||!can_action('upload_inventory_count'))return $result;
- $q=db()->query("SELECT status,COUNT(*) total FROM inventory_count_batches WHERE workflow_version='5.4.0' AND status IN ('Exported','Recount Required','Recounted','Awaiting Approval','Error') GROUP BY status");
- foreach($q as $row){$n=(int)$row['total'];$result['pending']+=$n;$key=['Awaiting Approval'=>'approval','Recounted'=>'review','Recount Required'=>'recount','Error'=>'errors'][$row['status']]??null;if($key)$result[$key]+=$n;}
- $result['items']=db()->query("SELECT id,batch_ref,status,created_name,reviewed_by,reviewed_name,applied_at FROM inventory_count_batches WHERE workflow_version='5.4.0' AND (status IN ('Exported','Recount Required','Recounted','Awaiting Approval','Error') OR (status='Applied' AND applied_at>=DATE_SUB(NOW(),INTERVAL 1 DAY))) ORDER BY CASE WHEN status='Awaiting Approval' THEN 0 WHEN status='Applied' THEN 2 ELSE 1 END,id DESC LIMIT 8")->fetchAll();return $result;
+ $q=db()->query("SELECT status,COUNT(*) total FROM inventory_count_batches WHERE workflow_version IN ('5.4.0','5.4.29') AND status IN ('Exported','Validated','Submitted','Recount Required','Recounted','Awaiting Approval','Error') GROUP BY status");
+ foreach($q as $row){$n=(int)$row['total'];$result['pending']+=$n;$key=['Awaiting Approval'=>'approval','Validated'=>'review','Submitted'=>'review','Recounted'=>'review','Recount Required'=>'recount','Error'=>'errors'][$row['status']]??null;if($key)$result[$key]+=$n;}
+ $result['items']=db()->query("SELECT id,batch_ref,status,workflow_version,created_name,reviewed_by,reviewed_name,applied_at FROM inventory_count_batches WHERE workflow_version IN ('5.4.0','5.4.29') AND (status IN ('Exported','Validated','Submitted','Recount Required','Recounted','Awaiting Approval','Error') OR (status='Applied' AND applied_at>=DATE_SUB(NOW(),INTERVAL 1 DAY))) ORDER BY CASE WHEN status='Awaiting Approval' THEN 0 WHEN status='Applied' THEN 2 ELSE 1 END,id DESC LIMIT 8")->fetchAll();return $result;
 }
 function adjustment_notification_bell(){
  if(!adjustments_ready()||!can_action('upload_inventory_count'))return;$n=adjustment_notification_summary();

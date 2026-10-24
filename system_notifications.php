@@ -7,8 +7,8 @@ function system_notification_cursor(){return array_replace(['audit'=>0,'count'=>
 function system_notification_tasks(){
  $tasks=[];$add=function($title,$sql,$url)use(&$tasks){$n=(int)db()->query($sql)->fetchColumn();if($n)$tasks[]=['title'=>$title,'count'=>$n,'url'=>$url];};
  if(can_action('upload_inventory_count')&&adjustments_ready()){
-  $add('Adjustments awaiting Admin approval',"SELECT COUNT(*) FROM inventory_count_batches WHERE workflow_version='5.4.0' AND status='Awaiting Approval'",current_user()['role']==='Admin'?'index.php?page=admin_requests&request_type=adjustment&request_status=Awaiting%20Approval':'index.php?page=inventory_count&tab=review');
-  $add('Adjustments needing count, recount or review',"SELECT COUNT(*) FROM inventory_count_batches WHERE workflow_version='5.4.0' AND status IN ('Exported','Recount Required','Recounted','Error')",'index.php?page=inventory_count');
+  $add('Adjustments awaiting Admin approval',"SELECT COUNT(*) FROM inventory_count_batches WHERE workflow_version IN ('5.4.0','5.4.29') AND status='Awaiting Approval'",current_user()['role']==='Admin'?'index.php?page=admin_requests&request_type=adjustment&request_status=Awaiting%20Approval':'index.php?page=inventory_count&tab=review');
+  $add('Adjustments needing count, validation or review',"SELECT COUNT(*) FROM inventory_count_batches WHERE workflow_version IN ('5.4.0','5.4.29') AND status IN ('Exported','Validated','Submitted','Recount Required','Recounted','Error')",'index.php?page=inventory_count');
  }
  if(current_user()['role']==='Admin'){
   $resetCount=count(password_reset_requests());if($resetCount)$tasks[]=['title'=>'Password reset requests requiring identity verification','count'=>$resetCount,'url'=>'index.php?page=admin_requests&request_type=password&request_status=Pending%20Review'];

@@ -70,7 +70,7 @@ function count_export_xlsx($id,$path){if(adjustments_ready()&&adjustment_is_new(
  $z->addFromString('xl/worksheets/sheet1.xml',$sheet);$z->close();
 }
 
-function count_cancel_pending($id){if(!can_action('upload_inventory_count'))throw new Exception('Permission required.');return process_transaction(function()use($id){$q=db()->prepare('SELECT * FROM inventory_count_batches WHERE id=? FOR UPDATE');$q->execute([$id]);$b=$q->fetch();if(!$b||in_array($b['status'],['Applied','Cancelled','Reversed'],true))throw new Exception('Count is already applied or cancelled.');db()->prepare("UPDATE inventory_count_batches SET status='Cancelled' WHERE id=?")->execute([$id]);audit('Cancel inventory count','Inventory Count',$b['batch_ref'],'No stock changed.');});}
+function count_cancel_pending($id){if(final_count_is($id))throw new Exception('Cancel final counts with a required reason through their Final Count record.');if(!can_action('upload_inventory_count'))throw new Exception('Permission required.');return process_transaction(function()use($id){$q=db()->prepare('SELECT * FROM inventory_count_batches WHERE id=? FOR UPDATE');$q->execute([$id]);$b=$q->fetch();if(!$b||in_array($b['status'],['Applied','Cancelled','Reversed'],true))throw new Exception('Count is already applied or cancelled.');db()->prepare("UPDATE inventory_count_batches SET status='Cancelled' WHERE id=?")->execute([$id]);audit('Cancel inventory count','Inventory Count',$b['batch_ref'],'No stock changed.');});}
 
 function count_create_snapshot($filters){return adjustments_ready()?adjustment_create($filters):count_create_snapshot_legacy($filters);}
 
