@@ -4,7 +4,9 @@ $uploadAuthorized=false;$inventoryLock=null;
 try{
  if($_SERVER['REQUEST_METHOD']!=='POST')throw new Exception('Submit this action using its form.');verify_csrf();
  if(!can_action($a))throw new Exception('Your account does not have permission to perform this action.');$uploadAuthorized=true;$inventoryLock=inventory_write_lock();day_action_guard($a,$_POST);
- if($a==='create_access_role'){create_access_role($_POST['role_name']??'',$_POST['access_profile']??'');$return='settings';flash('Access role created. Select it when approving a registration or editing a user.');}
+ if($a==='cancelled_order_lookup'){cancelled_order_add($_POST);$return='cancelled_orders'.(!empty($_POST['batch_id'])?'&id='.(int)$_POST['batch_id'].'&edit=1':'');flash(!empty($_POST['remove_order'])?'Order removed from this batch. No stock changed.':'Posted order found. Review its product lines; no stock changed.','info');}
+ elseif($a==='cancelled_order_review'){$id=cancelled_order_stage($_POST);$return='cancelled_orders&id='.$id;flash('Validation passed. Confirm the items are physically in the warehouse before posting. No stock added.','info');}
+ elseif($a==='create_access_role'){create_access_role($_POST['role_name']??'',$_POST['access_profile']??'');$return='settings';flash('Access role created. Select it when approving a registration or editing a user.');}
  elseif($a==='complete_password_reset_request'){process_password_reset_request($_POST);$return=$return==='admin_requests'?'admin_requests':'settings';flash('Password reset completed. Share the temporary password privately. The user must change it after signing in.');}
  elseif($a==='dismiss_password_reset_request'){process_password_reset_request($_POST,true);$return=$return==='admin_requests'?'admin_requests':'settings';flash('Password reset request dismissed. The password was not changed.');}
  elseif($a==='repack_stage'){$id=repack_stage($_POST);$return='repackaging_batch&id='.$id;flash('Batch saved for review. No stock changed.');}
@@ -30,8 +32,8 @@ try{
  elseif($a==='inflow_supplier'){inflow_supplier_update((int)$_POST['batch_id'],$_POST['supplier']??'');flash('Supplier saved. Reopen allocation to review duplicate checks.');}
  elseif($a==='return_upload'){$rid=return_excel_stage($_FILES['file']??[]);$return='order_return&id='.$rid;flash('Returns uploaded for review. No stock added.','info');}
  elseif($a==='return_save_row'){$rid=(int)$_POST['batch_id'];return_save_row($rid,(int)$_POST['row_no'],$_POST['revision']??0,$_POST);flash('Return corrected. No stock added.');}
- elseif($a==='return_confirm'){$rid=(int)$_POST['batch_id'];return_confirm($rid,$_POST['digest']??'',!empty($_POST['review_ack']));flash('Return posted to its original platform / Non-Sellable.');}
- elseif($a==='return_cancel'){$rid=(int)$_POST['batch_id'];return_cancel($rid);flash('Return cancelled. No stock added.');}
+ elseif($a==='return_confirm'){$rid=(int)$_POST['batch_id'];return_confirm($rid,$_POST['digest']??'',!empty($_POST['review_ack']));flash(cancelled_order_batch(return_batch($rid))?'Cancelled orders received. Stock restored to the original platform / Non-Sellable.':'Return posted to its original platform / Non-Sellable.');}
+ elseif($a==='return_cancel'){$rid=(int)$_POST['batch_id'];return_cancel($rid);flash(cancelled_order_batch(return_batch($rid))?'Cancellation receipt cancelled. No stock added.':'Return cancelled. No stock added.');}
  elseif($a==='negative_assign'){negative_exception_assign((int)$_POST['exception_id'],(int)$_POST['owner_id'],$_POST['reason']??'');flash('Exception owner assigned.');}
  elseif($a==='negative_resolve'){negative_exception_resolve((int)$_POST['exception_id'],$_POST['reason']??'',$_POST['correction_reference']??'');flash('Stock exception resolved with its correction reference.');}
  elseif(str_starts_with($a,'borrow_')){
