@@ -1,15 +1,7 @@
 (function(){
  const products=window.RS8_PRODUCTS||[];
  const escapeText=value=>String(value??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
- function bindPicker(root){
-  const input=root.querySelector('.product-search'), hidden=root.querySelector('input[type=hidden]'), box=root.querySelector('.product-results'); if(!input||!hidden||!box)return;
-  if(hidden.value){const p=products.find(x=>String(x.id)===String(hidden.value));if(p)input.value=p.name;}
-  const show=()=>{const q=(input.value||'').toLowerCase().trim();const list=products.filter(p=>(!root.rs8ProductMatches||root.rs8ProductMatches(p))&&(!q||(`${p.name} ${p.brand} ${p.category} ${p.master_sku}`).toLowerCase().includes(q))).slice(0,40);box.innerHTML=list.map(p=>`<button type="button" data-id="${Number(p.id)}" data-name="${escapeText(p.name)}"><b>${escapeText(p.name)}</b><span>${escapeText(p.brand)} · ${escapeText(p.category)} · ${escapeText(p.master_sku)}</span></button>`).join('');box.classList.toggle('open',list.length>0);};
-  root.rs8RefreshPicker=show;
-  input.addEventListener('input',()=>{hidden.value='';show();}); input.addEventListener('focus',show);
-  box.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;hidden.value=b.dataset.id;input.value=b.dataset.name;box.classList.remove('open');});
-  document.addEventListener('click',e=>{if(!root.contains(e.target))box.classList.remove('open');});
- }
+ function bindPicker(root){window.rs8EnhanceProductPicker(root);}
  document.querySelectorAll('.product-picker').forEach(bindPicker);
  window.rs8BindProductPicker=bindPicker;
 

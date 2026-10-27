@@ -7,7 +7,7 @@ if(!borrow_multiple_ready()){
  return;
 }
 function borrow_form_fields($action,$id){echo '<input type="hidden" name="action" value="'.e($action).'"><input type="hidden" name="return" value="borrowed&id='.(int)$id.'"><input type="hidden" name="csrf" value="'.e(csrf_token()).'">';}
-function borrow_line_options($lines){foreach($lines as $line)if(borrow_outstanding($line)>0)echo '<option value="'.(int)$line['id'].'" data-source="'.e($line['source_platform']).'" data-outstanding="'.borrow_outstanding($line).'">'.e($line['name'].' · '.$line['source_platform'].' · '.borrow_outstanding($line).' outstanding').'</option>';}
+function borrow_line_options($lines){foreach($lines as $line)if(borrow_outstanding($line)>0)echo '<option value="'.(int)$line['id'].'" data-source="'.e($line['source_platform']).'" data-outstanding="'.borrow_outstanding($line).'">'.e($line['name'].' · '.$line['master_sku'].' · '.$line['source_platform'].' · '.borrow_outstanding($line).' outstanding').'</option>';}
 $id=(int)($_GET['id']??0);
 if($id){
  try{$lines=borrow_group($id);}catch(Throwable $e){echo '<div class="alert danger">'.e($e->getMessage()).'</div>';return;}
@@ -25,13 +25,13 @@ if($id){
  <div class="grid two"><div class="card"><h3>Record Partial / Full Return</h3><p>Select the product being returned. Good quantity restores its original source platform; damaged and For Repackaging quantities enter their separate restricted views.</p>
  <form method="post" action="actions.php" class="stack" data-borrow-line-action data-confirm="Post the selected product return? Review the good and damaged quantities first.">
  <?php borrow_form_fields('borrow_return',$id);?><input type="hidden" name="reference_no" value="<?=e(next_ref('BOR-RETURN'))?>">
- <label>Product Line<select name="borrow_id" required><?php borrow_line_options($lines);?></select></label><p class="borrow-line-note muted"></p>
+ <label>Product Line<select name="borrow_id" data-product-select required><?php borrow_line_options($lines);?></select></label><p class="borrow-line-note muted"></p>
  <label>Return Date<input type="date" name="txn_date" value="<?=date('Y-m-d')?>" required></label>
  <div class="grid two"><label>Good Quantity<input type="number" name="good_qty" min="0" value="0" step="1" required></label><label>Damaged / Leak Quantity<input type="number" name="damaged_qty" min="0" value="0" step="1" required></label></div>
  <label>For Repackaging Quantity<input type="number" name="repackaging_qty" min="0" value="0" step="1" required></label><label>Remarks<textarea name="reason" required></textarea></label><button class="btn primary">Submit Selected Product Return</button></form></div>
  <div class="card"><h3>Permanent Conversion</h3><p>Admin approval closes the selected outstanding quantity. Stock was deducted when issued and is not deducted again.</p>
  <form method="post" action="actions.php" class="stack" data-borrow-line-action data-confirm="Request Admin approval for the selected product quantity?">
- <?php borrow_form_fields('borrow_request_conversion',$id);?><label>Product Line<select name="borrow_id" required><?php borrow_line_options($lines);?></select></label><p class="borrow-line-note muted"></p>
+ <?php borrow_form_fields('borrow_request_conversion',$id);?><label>Product Line<select name="borrow_id" data-product-select required><?php borrow_line_options($lines);?></select></label><p class="borrow-line-note muted"></p>
  <label>Quantity<input type="number" name="qty" min="1" step="1" required></label><label>Reason<textarea name="reason" required></textarea></label><button class="btn secondary">Request Admin Approval</button></form></div></div>
  <?php endif;
  $ids=array_column($lines,'id');$placeholders=implode(',',array_fill(0,count($ids),'?'));
