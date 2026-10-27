@@ -68,7 +68,6 @@ if($id){
  <div class="card table-wrap"><h3>Borrow Transaction Register</h3><table class="table"><thead><tr><th>Reference / Issue Date</th><th>Borrower</th><th>Product Lines / Platforms</th><th>Issued</th><th>Returned</th><th>Converted</th><th>Outstanding</th><th>Due / Status</th></tr></thead><tbody>
  <?php foreach($rows as $row):$rowStatus=$row['outstanding']>0?($row['due_date']<date('Y-m-d')?'Overdue':'Outstanding'):($row['converted_qty']>0?'Closed / Converted':'Returned');?><tr><td><a href="?page=borrowed&id=<?=(int)$row['id']?>"><?=e($row['transaction_ref'])?></a><br><?=e($row['issue_date'])?></td><td><?=e($row['borrower'])?></td><td><?=(int)$row['line_count']?> product line(s)<br><?=e($row['platforms'])?></td><td><?=(int)$row['qty']?></td><td><?=(int)$row['returned_qty']?></td><td><?=(int)$row['converted_qty']?></td><td><b><?=(int)$row['outstanding']?></b></td><td><?=e($row['due_date'])?><br><?=e($rowStatus)?></td></tr><?php endforeach;?>
  <?php if(!$rows):?><tr><td colspan="8">No borrowed transactions for this filter.</td></tr><?php endif;?></tbody></table>
- <?php if($page>1):?><a class="btn ghost" href="?page=borrowed&amp;borrow_status=<?=e($status)?>&amp;borrow_page=<?=$page-1?>">Previous</a><?php endif;?>
- <?php if($more):?><a class="btn ghost" href="?page=borrowed&amp;borrow_status=<?=e($status)?>&amp;borrow_page=<?=$page+1?>">Next</a><?php endif;?></div>
+ <?php $countSql=substr($sql,0,strrpos($sql,' ORDER BY MAX(b.id)'));echo rs8_pagination(rs8_list_total('SELECT COUNT(*) FROM ('.$countSql.') borrowed_groups'),($page-1)*50,50,array_replace($_GET,['page'=>'borrowed','borrow_status'=>$status]),'borrow_page',true);?></div>
  <?php
 }
