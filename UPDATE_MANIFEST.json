@@ -1,5 +1,5 @@
 {
-  "build": "V5.4.32 Streamlined Product Report Filters \u2014 2026-10-27",
+  "build": "V5.4.33 Bottom-Right Report Actions \u2014 2026-10-27",
   "requires": "Existing V5.4.0 or later; enable earlier item-code controls through upgrade_item_codes.php if needed. The Brand SKU Format module performs a separate verified conversion without resetting stock.",
   "files": {
     "access_roles.php": "e5ccb4ff4a1a7c70c767621dc6a39dd591f674abd0426099e02f5fec926d608b",
@@ -44,7 +44,7 @@
     "assets/product_status.js": "bf28384057c8c14a9dc2aa83737eb6620411f73d10ff42dae0bcf6819218697d",
     "assets/repackaging_batch.js": "d71cd46c2e8afa9252b68bc770579a0567f87be45a9d283afb6f686009448668",
     "assets/report_dates.js": "f0427743d66a38e2067c9a4fd205a170afe0da225f672bc3557da798a56afbc8",
-    "assets/reports.css": "13af21d0d37f0c5049d2bd72ee64f311a39728a7f17f4192e5a5344e361834f7",
+    "assets/reports.css": "99c22bed46c548473b143805fe18a275b9843cb87e12cb102d3d110208226147",
     "assets/stock_balance_reports.css": "e66555cb4b38e03ea8f12f6e56cf4b953ba4b99b87e9349153cea64af6cc1c3d",
     "assets/style.css": "5f3a44b50d7b16de809c64b2b18165d576b211b1e96c0205b64f42ab677bfa67",
     "assets/system_notifications.js": "d2a0eb3648b94afb339e384f1364974544161125e1148bca6da7a5cc80f55ce7",
@@ -85,7 +85,7 @@
     "fresh_start_page.php": "87662d629d2d1df808772d7ef83c6984a2317bd5df8aa40b87092edd4ec26e5d",
     "header_menu.php": "d73102c586b1a82d80ec7dcd66981bc9dbb437c012d1c8e5e3a830d8a9043382",
     "import_history_page.php": "fb83a672e5c6b79532c879cf30853e44acfbd58a7bba3f92189d1f29d10cac10",
-    "index.php": "d738b73da6f5825dbc1a52eb320564613098233376647feb08d80bd1fad40808",
+    "index.php": "e0848d9c62cb9d0c552e7b209fbf5338a06bf2c5539fa815f9cdcb15893d88db",
     "inflow_allocation.php": "f5cd6ae6e5ec11a8c0caae92f077421f59371faed11c63976e449abe69ea60ab",
     "inflow_cancellation.php": "7960a59e8d20581c74c938f06ca84e368c845f4ceb1ef457080243b32d307255",
     "inflow_guard.php": "dd998f226fa383a86d7f5a8eacce7b476ab1e02ea806d84ba5d09cdd66cb655f",
@@ -142,7 +142,7 @@
     "report.php": "e0c690d158bddfab48efa1333456bb4862a444543a024555c1d5d3e2c3cec06c",
     "report_exports.php": "8bde8a6d0abd9dd29686a3e7bbaaaf38c2021e6f14206eff036ab062e49afe8c",
     "report_view.php": "d44ab49ae13d8cc713cea2b0003948d3673ae016be34547ba2496552ea15d05c",
-    "reports_page.php": "f4debd03af4cf242317ba4d58e19537a1acc7795ed15ddd15e65b2dd0caf107e",
+    "reports_page.php": "a1152240671399ece2394712acabe0b94f87d1499811d2b96e038e2e34a38aa4",
     "role_ui.php": "e222bb3fb73621e2d2b1e3e1a6321c4713c13dd4405a00194b71dd8a77d16f3f",
     "schema.sql": "4e1094db72106b61fa60d7e9acb8d9f486e2b6e5f56355fa56d74dd2f91979f2",
     "security_controls.php": "23ed88ad509c5a93ced8bad4af813e6c6272ccf8dbcf42595c34e24e4fa8700b",
