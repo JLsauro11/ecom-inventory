@@ -1,5 +1,5 @@
 {
-  "build": "V5.4.31 Searchable Products & Footer Bar \u2014 2026-10-27",
+  "build": "V5.4.32 Streamlined Product Report Filters \u2014 2026-10-27",
   "requires": "Existing V5.4.0 or later; enable earlier item-code controls through upgrade_item_codes.php if needed. The Brand SKU Format module performs a separate verified conversion without resetting stock.",
   "files": {
     "access_roles.php": "e5ccb4ff4a1a7c70c767621dc6a39dd591f674abd0426099e02f5fec926d608b",
@@ -142,7 +142,7 @@
     "report.php": "e0c690d158bddfab48efa1333456bb4862a444543a024555c1d5d3e2c3cec06c",
     "report_exports.php": "8bde8a6d0abd9dd29686a3e7bbaaaf38c2021e6f14206eff036ab062e49afe8c",
     "report_view.php": "d44ab49ae13d8cc713cea2b0003948d3673ae016be34547ba2496552ea15d05c",
-    "reports_page.php": "4365d3775a9a7a48f9ee8f1fe08d006963fa6c8d590ed96ede5d3f4ef1411f4f",
+    "reports_page.php": "f4debd03af4cf242317ba4d58e19537a1acc7795ed15ddd15e65b2dd0caf107e",
     "role_ui.php": "e222bb3fb73621e2d2b1e3e1a6321c4713c13dd4405a00194b71dd8a77d16f3f",
     "schema.sql": "4e1094db72106b61fa60d7e9acb8d9f486e2b6e5f56355fa56d74dd2f91979f2",
     "security_controls.php": "23ed88ad509c5a93ced8bad4af813e6c6272ccf8dbcf42595c34e24e4fa8700b",
