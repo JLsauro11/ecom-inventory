@@ -11,7 +11,7 @@ function norm($s){$s=mb_strtolower(trim((string)$s));$s=str_replace(['’','–'
 function flash($msg,$type='success'){$_SESSION['flash']=[$msg,$type];}
 function getFlash(){$f=$_SESSION['flash']??null;unset($_SESSION['flash']);return $f;}
 function logged(){return !empty($_SESSION['uid']);}
-function require_login(){if(logged()){$q=db()->prepare('SELECT * FROM users WHERE id=?');$q->execute([$_SESSION['uid']]);$r=$q->fetch();if(!$r||!(int)($r['active']??1)||($r['approval_status']??'Approved')!=='Approved'){$_SESSION=[];}else{$_SESSION['name']=$r['name'];$_SESSION['role']=$r['role'];if(!empty($r['must_change_password'])&&!in_array(basename($_SERVER['SCRIPT_NAME']??''),['account_password.php','logout.php','upgrade_v5.php'],true)){header('Location: account_password.php');exit;}}}if(!logged()){header('Location: login.php');exit;}}
+function require_login(){if(logged()){$q=db()->prepare('SELECT * FROM users WHERE id=?');$q->execute([$_SESSION['uid']]);$r=$q->fetch();if(!$r||!(int)($r['active']??1)||($r['approval_status']??'Approved')!=='Approved'){$_SESSION=[];}else{$_SESSION['name']=$r['name'];$_SESSION['role']=$r['role'];if(!empty($r['must_change_password'])&&!in_array(basename($_SERVER['SCRIPT_NAME']??''),['account_password.php','logout.php','upgrade_v5.php'],true)){header('Location: account_password.php');exit;}}}if(!logged()){header('Location: login.php');exit;}access_enforce_request();}
 function current_user(){return ['id'=>(int)($_SESSION['uid']??0),'name'=>$_SESSION['name']??'','role'=>role_label($_SESSION['role']??'')];}
 function setting($k,$d=null){$st=db()->prepare('SELECT value_text FROM settings WHERE key_name=?');$st->execute([$k]);$r=$st->fetch();return $r?$r['value_text']:$d;}
 function set_setting($k,$v){$st=db()->prepare('INSERT INTO settings(key_name,value_text) VALUES(?,?) ON DUPLICATE KEY UPDATE value_text=VALUES(value_text)');$st->execute([$k,(string)$v]);}
@@ -234,3 +234,5 @@ require_once __DIR__.'/batch_workflows.php';
 require_once __DIR__.'/batch_pages.php';
 
 require_once __DIR__.'/guided_count_controls.php';
+
+require_once __DIR__.'/access_policy.php';

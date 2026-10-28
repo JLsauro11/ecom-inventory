@@ -39,7 +39,7 @@ function count_upload_legacy($id,$rows,$filename){
  }catch(Throwable $e){if($pdo->inTransaction())$pdo->rollBack();throw $e;}
 }
 function count_apply($id,$reason,$allocations=[]){if(adjustments_ready()&&adjustment_is_new($id))throw new Exception('Use the separate recount, review and Admin approval workflow.');return process_ready()?count_condition_apply($id,$reason,$allocations):count_apply_legacy($id,$reason,$allocations);}
-function count_apply_legacy($id,$reason,$allocations=[]){
+function count_apply_legacy($id,$reason,$allocations=[]){access_assert_admin_approval(count_batch($id)['created_by']);
  if(current_user()['role']!=='Admin')throw new Exception('Administrator approval is required.');if(trim($reason)==='')throw new Exception('Enter the adjustment reason.');
  $pdo=db();$pdo->beginTransaction();try{
   $q=$pdo->prepare('SELECT * FROM inventory_count_batches WHERE id=? FOR UPDATE');$q->execute([$id]);$b=$q->fetch();if(!$b||!in_array($b['status'],['Pending Review','Review Only'],true))throw new Exception('This count is not ready to apply or was already applied.');

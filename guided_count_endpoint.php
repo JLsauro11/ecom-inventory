@@ -11,7 +11,7 @@ try{
   $b=count_batch($id);if(!guided_count_is($b))throw new Exception('Use the original workflow for this record.');
   if($action==='guided_submit'){if(!hash_equals(final_count_meta($b)['validation_digest']??'',(string)($_POST['digest']??'')))throw new Exception('Validation changed. Reopen and review the latest quantities.');final_count_submit($id,$_POST['revision']??0,!empty($_POST['review_ack']));flash('Submitted for review. Counts are locked; no stock changed.');}
   elseif($action==='guided_review'){final_count_review($id,$_POST['revision']??0,!empty($_POST['review_ack']));flash('Review completed. A different Admin must approve and post.');}
-  elseif($action==='guided_post'){final_count_post($id,$_POST['digest']??'',!empty($_POST['review_ack']));flash('Adjustment approved and posted. Later movements were retained.');}
+  elseif(in_array($action,['guided_post','guided_approve'],true)){access_count_approve($id,$_POST['digest']??'',!empty($_POST['review_ack']));flash('Adjustment approved and posted. Later movements were retained.');}
   elseif($action==='guided_return'){guided_count_return($id,$_POST['revision']??0,$_POST['reason']??'');flash('Returned for correction. Previous counts and evidence remain in history.');}
   elseif($action==='guided_cancel'){final_count_close($id,$_POST['reason']??'');flash('Adjustment cancelled. No stock adjustment was posted.');}
   elseif($action==='guided_refresh'){guided_count_refresh($id,$_POST['revision']??0);flash('Validation refreshed. Review the updated projection before submitting.');}

@@ -6,10 +6,9 @@ function system_notification_audit_filter(){
 function system_notification_cursor(){return array_replace(['audit'=>0,'count'=>0],json_decode(setting('notification_read_'.current_user()['id'],''),true)?:[]);}
 function system_notification_tasks(){
  $tasks=[];$add=function($title,$sql,$url)use(&$tasks){$n=(int)db()->query($sql)->fetchColumn();if($n)$tasks[]=['title'=>$title,'count'=>$n,'url'=>$url];};
- if(can_action('upload_inventory_count')&&adjustments_ready()){
-  $add('Adjustments awaiting Admin approval',"SELECT COUNT(*) FROM inventory_count_batches WHERE workflow_version IN ('5.4.0','5.4.29') AND status='Awaiting Approval'",current_user()['role']==='Admin'?'index.php?page=admin_requests&request_type=adjustment&request_status=Awaiting%20Approval':'index.php?page=inventory_count&tab=review');
-  $add('Adjustments needing count, validation or review',"SELECT COUNT(*) FROM inventory_count_batches WHERE workflow_version IN ('5.4.0','5.4.29') AND status IN ('Exported','Validated','Submitted','Recount Required','Recounted','Error')",'index.php?page=inventory_count');
- }
+ if(adjustments_ready()&&current_user()['role']==='Admin')$add('Adjustment requests awaiting Admin approval',"SELECT COUNT(*) FROM inventory_count_batches WHERE workflow_version IN ('5.4.0','5.4.29') AND status IN ('Submitted','Awaiting Approval')",'index.php?page=admin_requests&request_type=adjustment');
+ if(can_action('upload_inventory_count')&&adjustments_ready())$add('Your adjustments needing entry or correction',"SELECT COUNT(*) FROM inventory_count_batches WHERE created_by=".(int)current_user()['id']." AND status IN ('Exported','Validated','Error')",'index.php?page=inventory_count&tab=review');
+
  if(current_user()['role']==='Admin'){
   $add('Physical releases awaiting separate Admin approval',"SELECT COUNT(*) FROM import_batches WHERE import_type='Non-Sellable Release' AND status='Submitted'",'index.php?page=admin_requests&request_type=physical_release');$resetCount=count(password_reset_requests());if($resetCount)$tasks[]=['title'=>'Password reset requests requiring identity verification','count'=>$resetCount,'url'=>'index.php?page=admin_requests&request_type=password&request_status=Pending%20Review'];
   $add('New users awaiting approval',"SELECT COUNT(*) FROM users WHERE approval_status='Pending'",'index.php?page=admin_requests&request_type=registration&request_status=Pending%20Review');
@@ -32,7 +31,7 @@ function system_notification_audit_url($event){
  if($entity==='Inflow Batch'){if(ctype_digit($ref))return 'index.php?page=inflow_batch&id='.(int)$ref;$q=db()->prepare('SELECT id FROM inflow_batches WHERE batch_ref=?');$q->execute([$ref]);if($id=$q->fetchColumn())return 'index.php?page=inflow_batch&id='.(int)$id;}
  return 'index.php?page='.(['Inflow Batch'=>'inflow','Borrow'=>'borrowed','Transfer'=>'transfers','Product'=>'products','Non-Sellable'=>'nonsellable','Receipt'=>'receipts','Reversal'=>'corrections','Bundle'=>'mapping','User'=>'settings','Inventory'=>'stocks','Allocation Batch'=>'platform_inventory','Exception'=>'stock_exceptions','Packaging'=>'nonsellable&stock_view=packaging','Repackaging'=>'nonsellable&stock_view=packaging','Return'=>'inflow','Reconciliation'=>'reconciliation','Threshold Batch'=>'products','Brand'=>'products','Category'=>'category_manager','Backup'=>'backups','Closing'=>'day_closing'][$entity]??'activity');
 }
-function system_notification_data(){
+function system_notification_data(){if(access_is_viewer())return ['tasks'=>[],'pending'=>0,'unread'=>0,'events'=>[],'audit_max'=>0,'count_max'=>0];
  $cursor=system_notification_cursor();$where=system_notification_audit_filter();$tasks=system_notification_tasks();
  $q=db()->prepare('SELECT COUNT(*) FROM activity_log a WHERE '.$where.' AND a.id>?');$q->execute([(int)$cursor['audit']]);$unread=(int)$q->fetchColumn();
  $auditMax=(int)db()->query('SELECT COALESCE(MAX(a.id),0) FROM activity_log a WHERE '.$where)->fetchColumn();
