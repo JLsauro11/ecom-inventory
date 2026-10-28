@@ -45,17 +45,7 @@ if($id){
  <?php endif;?></td></tr><?php endforeach;?></tbody></table></div>
  <?php
 }else{
- if(can_action('borrow_issue')):?>
- <div class="card"><h3>Issue Borrowed Products</h3><p>Enter the borrower once, then add all products. Each line requires a source platform and quantity.</p>
- <form method="post" action="actions.php" class="stack" id="borrowIssueForm">
- <input type="hidden" name="action" value="borrow_issue"><input type="hidden" name="return" value="borrowed"><input type="hidden" name="csrf" value="<?=e(csrf_token())?>"><input type="hidden" name="borrow_ref" value="<?=e('BOR-'.date('Ymd-His').'-'.bin2hex(random_bytes(6)))?>">
- <div class="grid two"><label>Borrower<input name="borrower" maxlength="150" required></label><label>Issue Date<input type="date" name="txn_date" value="<?=date('Y-m-d')?>" required></label><label>Due Date<input type="date" name="due_date" required></label><label>Reason<textarea name="reason" required></textarea></label></div>
- <div class="borrow-lines-heading"><h4>Product Lines</h4><button type="button" class="btn secondary" id="addBorrowLine">+ Add Product Line</button></div>
- <div class="borrow-lines" id="borrowLines">
- <div class="borrow-product-line" data-borrow-product-line><label>Product <?=picker('items[0][product_id]','Search product or Master SKU...',true,'',false)?></label><label>Source Platform<select name="items[0][source_platform]" required><option value="">Select source</option><option>Shopee</option><option>Lazada</option><option>TikTok</option></select></label><label>Quantity<input type="number" name="items[0][qty]" min="1" step="1" required></label><button type="button" class="btn ghost" data-remove-borrow-line aria-label="Remove product line">Remove</button></div>
- </div><div class="modal-actions"><button type="reset" class="btn ghost">Clear Form</button><button type="submit" class="btn primary">Review Borrowed Products</button></div>
- <p class="muted small">Review all product lines before confirming. Stock is deducted only after final confirmation.</p></form></div>
- <?php endif;
+ workflow_form('Borrow Issue');
  $status=$_GET['borrow_status']??'Outstanding';if(!in_array($status,['All','Outstanding','Overdue','Closed'],true))$status='Outstanding';?>
  <div class="card"><form class="inline-form"><input type="hidden" name="page" value="borrowed"><label>Status<select name="borrow_status"><?php foreach(['All','Outstanding','Overdue','Closed'] as $s):?><option <?=$status===$s?'selected':''?>><?=$s?></option><?php endforeach;?></select></label><button class="btn secondary">Filter</button><a class="btn ghost" href="?page=borrowed&borrow_status=All">Clear Filters</a></form></div>
  <?php

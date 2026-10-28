@@ -17,7 +17,7 @@ function borrow_issue_multiple($input){
  if(!borrow_multiple_ready())throw new Exception('Run the Multi Product Borrowed Items upgrade first.');
  return process_transaction(function()use($input){
   $items=$input['items']??null;
-  if(!is_array($items)||count($items)<1||count($items)>100)throw new Exception('Add between 1 and 100 product lines.');
+  if(!is_array($items)||count($items)<1||count($items)>300)throw new Exception('Use up to 100 products (300 automatic platform source lines).');
   $date=process_date($input['txn_date']??'');$due=(string)($input['due_date']??'');$d=DateTime::createFromFormat('!Y-m-d',$due);
   if(!$d||$d->format('Y-m-d')!==$due||$due<$date)throw new Exception('Due date must be on or after the issue date.');
   $borrower=trim($input['borrower']??'');if($borrower===''||strlen($borrower)>150)throw new Exception('Enter the borrower name (up to 150 characters).');

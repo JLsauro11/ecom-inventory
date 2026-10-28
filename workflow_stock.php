@@ -1,0 +1,2 @@
+<?php
+require __DIR__.'/lib.php';require_login();header('Content-Type: application/json');header('Cache-Control: private, no-store');try{if(!can_action('manual_outflow')&&!can_action('borrow_issue'))throw new Exception('Stock issue access required.');$pid=whole_number($_GET['product_id']??'','Product',1);active_product($pid);$s=stock_row($pid);echo json_encode(['sellable'=>(int)$s['current']]);}catch(Throwable $ex){http_response_code(400);echo json_encode(['error'=>safe_error_message($ex)]);}

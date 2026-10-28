@@ -1,12 +1,13 @@
 <?php
 function admin_requests_access(){if(current_user()['role']!=='Admin')throw new Exception('Administrator access required.');}
-function admin_request_types(){return ['all'=>'All','registration'=>'Registrations','adjustment'=>'Adjustments','borrow'=>'Borrow Conversions','reversal'=>'Reversals','password'=>'Password Resets'];}
+function admin_request_types(){return ['all'=>'All','registration'=>'Registrations','adjustment'=>'Adjustments','borrow'=>'Borrow Conversions','reversal'=>'Reversals','password'=>'Password Resets','physical_release'=>'Physical Releases'];}
 function admin_requests_sql(){
  admin_requests_access();
  $sql="SELECT 'registration' request_type,CAST(u.id AS CHAR) request_id,CONCAT('REG-',u.id) reference,CONCAT('Account registration: ',u.username) title,u.name requester,u.created_at requested_at,CASE u.approval_status WHEN 'Pending' THEN 'Pending Review' WHEN 'Approved' THEN 'Completed' ELSE 'Rejected' END request_status,u.approval_status source_status FROM users u WHERE u.approval_status IN ('Pending','Rejected') OR u.approved_at IS NOT NULL
  UNION ALL SELECT 'adjustment',CAST(b.id AS CHAR),b.batch_ref,COALESCE(NULLIF(b.reason,''),'Inventory count review'),b.created_name,b.created_at,CASE WHEN b.status='Awaiting Approval' THEN 'Awaiting Approval' WHEN b.status IN ('Applied','Reversed','Approved') THEN 'Completed' WHEN b.status='Cancelled' THEN 'Cancelled' ELSE 'Pending Review' END,b.status FROM inventory_count_batches b WHERE b.workflow_version IN ('5.4.0','5.4.29') AND b.status IN ('Submitted','Recount Required','Recounted','Awaiting Approval','Error','Applied','Reversed','Approved','Cancelled')
  UNION ALL SELECT 'borrow',CAST(ev.id AS CHAR),ev.reference_no,CONCAT('Permanent conversion: ',COALESCE(b.batch_ref,b.borrow_ref),' / ',p.name),u.name,ev.created_at,CASE ev.status WHEN 'Pending' THEN 'Awaiting Approval' WHEN 'Rejected' THEN 'Rejected' ELSE 'Completed' END,ev.status FROM borrowed_events ev JOIN borrowed_items b ON b.id=ev.borrow_id JOIN products p ON p.id=b.product_id LEFT JOIN users u ON u.id=ev.user_id WHERE ev.event_type='Permanent Conversion'
  UNION ALL SELECT 'reversal',CAST(r.id AS CHAR),CONCAT('REV-',r.id),CONCAT(r.source_type,' #',r.source_id,': ',r.reason),u.name,r.created_at,CASE r.status WHEN 'Pending' THEN 'Awaiting Approval' WHEN 'Rejected' THEN 'Rejected' ELSE 'Completed' END,r.status FROM transaction_reversals r LEFT JOIN users u ON u.id=r.requested_by";
+ $sql.=" UNION ALL SELECT 'physical_release',CAST(b.id AS CHAR),CONCAT('NSR-',b.id),b.filename,u.name,b.created_at,CASE b.status WHEN 'Submitted' THEN 'Awaiting Approval' WHEN 'Posted' THEN 'Completed' WHEN 'Cancelled' THEN 'Cancelled' ELSE 'Pending Review' END,b.status FROM import_batches b LEFT JOIN users u ON u.id=b.user_id WHERE b.import_type='Non-Sellable Release' AND b.status IN ('Submitted','Posted','Cancelled')";
  // Password reset history is retained inside each account's existing settings record.
  foreach(password_reset_requests(false) as $latest){$history=$latest['history']??[];unset($latest['history']);$history[]=$latest;foreach($history as $r){if(!isset($r['reference'],$r['user_id'],$r['requested_at']))continue;$status=($r['status']??'Pending')==='Pending'?'Pending Review':(($r['status']??'')==='Dismissed'?'Dismissed':'Completed');$values=['password',(string)$r['user_id'],$r['reference'],'Account password reset: '.($r['username']??''),$r['name']??'',$r['requested_at'],$status,$r['status']??'Pending'];$sql.=' UNION ALL SELECT '.implode(',',array_map(fn($v)=>db()->quote((string)$v),$values));}}
  return $sql;
@@ -30,6 +31,7 @@ function admin_request_link($r){
  $id=(int)$r['request_id'];switch($r['request_type']){
  case 'registration':return 'index.php?'.http_build_query(['page'=>'admin_request','request_type'=>'registration','id'=>$id]);
  case 'password':return 'index.php?'.http_build_query(['page'=>'admin_request','request_type'=>'password','id'=>$id,'reference'=>$r['reference']]);
+ case 'physical_release':return 'index.php?page=stock_batch&id='.$id;
  case 'adjustment':return 'index.php?page=inventory_count&id='.$id.'&from_requests=1';
  case 'borrow':$q=db()->prepare('SELECT borrow_id FROM borrowed_events WHERE id=?');$q->execute([$id]);return 'index.php?page=borrowed&id='.(int)$q->fetchColumn().'&from_requests=1#borrow-event-'.$id;
  case 'reversal':return 'index.php?page=corrections&request_id='.$id.'&from_requests=1';

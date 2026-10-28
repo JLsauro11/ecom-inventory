@@ -11,7 +11,7 @@ function system_notification_tasks(){
   $add('Adjustments needing count, validation or review',"SELECT COUNT(*) FROM inventory_count_batches WHERE workflow_version IN ('5.4.0','5.4.29') AND status IN ('Exported','Validated','Submitted','Recount Required','Recounted','Error')",'index.php?page=inventory_count');
  }
  if(current_user()['role']==='Admin'){
-  $resetCount=count(password_reset_requests());if($resetCount)$tasks[]=['title'=>'Password reset requests requiring identity verification','count'=>$resetCount,'url'=>'index.php?page=admin_requests&request_type=password&request_status=Pending%20Review'];
+  $add('Physical releases awaiting separate Admin approval',"SELECT COUNT(*) FROM import_batches WHERE import_type='Non-Sellable Release' AND status='Submitted'",'index.php?page=admin_requests&request_type=physical_release');$resetCount=count(password_reset_requests());if($resetCount)$tasks[]=['title'=>'Password reset requests requiring identity verification','count'=>$resetCount,'url'=>'index.php?page=admin_requests&request_type=password&request_status=Pending%20Review'];
   $add('New users awaiting approval',"SELECT COUNT(*) FROM users WHERE approval_status='Pending'",'index.php?page=admin_requests&request_type=registration&request_status=Pending%20Review');
   $add('Borrow conversions awaiting approval',"SELECT COUNT(*) FROM borrowed_events WHERE status='Pending'",'index.php?page=admin_requests&request_type=borrow&request_status=Awaiting%20Approval');
   $add('Transaction corrections awaiting approval',"SELECT COUNT(*) FROM transaction_reversals WHERE status='Pending'",'index.php?page=admin_requests&request_type=reversal&request_status=Awaiting%20Approval');

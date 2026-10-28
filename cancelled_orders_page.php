@@ -1,4 +1,6 @@
 <?php
+if(empty($_GET['id'])){receiving_page();return;}
+
 $id=(int)($_GET['id']??0);$b=$id?return_batch($id):null;if($b&&!cancelled_order_batch($b))throw new Exception('Select a cancelled-order receipt.');
 echo '<div class="page-head"><div><h1>Cancelled Orders</h1><p>Find the original posted order. Receive only items physically in your warehouse. No attachment is required.</p></div><a class="btn ghost" href="?page=inflow">Back to Inflow</a></div>';
 if($b&&($_GET['edit']??'')!=='1'){

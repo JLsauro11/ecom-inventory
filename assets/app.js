@@ -11,10 +11,10 @@
    input.classList.add('native-file-input');
    const btn=document.createElement('button');btn.type='button';btn.className='file-select-btn';btn.disabled=input.disabled;
    const accept=(input.getAttribute('accept')||'').toLowerCase();
-   btn.innerHTML='<span class="file-icon">↥</span><span class="file-label">'+(accept.includes('pdf')?'Upload PDF':'Select File')+'</span>';
+   btn.innerHTML='<span class="file-icon">↥</span><span class="file-label">'+(accept.trim()==='.pdf'?'Upload PDF':'Select File')+'</span>';
    input.insertAdjacentElement('afterend',btn);
    btn.addEventListener('click',()=>input.click());
-   input.addEventListener('change',()=>{const name=input.files&&input.files[0]?input.files[0].name:'';btn.classList.toggle('selected',!!name);btn.querySelector('.file-label').textContent=name|| (accept.includes('pdf')?'Upload PDF':'Select File');});
+   input.addEventListener('change',()=>{const name=input.files&&input.files[0]?input.files[0].name:'';btn.classList.toggle('selected',!!name);btn.querySelector('.file-label').textContent=name|| (accept.trim()==='.pdf'?'Upload PDF':'Select File');});
   });
  }
  beautifyFileInputs();
