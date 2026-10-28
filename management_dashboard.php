@@ -1,3 +1,4 @@
 <?php
 $totals=['Products'=>0,'Sellable Units'=>0,'Non-Sellable Units'=>0,'Total Physical Units'=>0];foreach(product_options() as $p){$s=stock_row($p['id']);$totals['Products']++;$totals['Sellable Units']+=$s['current'];$totals['Non-Sellable Units']+=$s['nonsellable'];$totals['Total Physical Units']+=$s['physical'];}
+usability_quick_tasks();usability_terms();
 echo '<div class="page-head"><div><h1>Inventory Overview</h1><p>Read-only inventory balances and management reports.</p></div></div><div class="mini-kpis">';foreach($totals as $label=>$value)echo '<div><span>'.e($label).'</span><strong>'.number_format($value).'</strong></div>';echo '</div><div class="card"><h3>Inventory Reports</h3><div class="modal-actions"><a class="btn secondary" href="?page=stocks">Current Stocks</a><a class="btn secondary" href="?page=platform_inventory">Platform Inventory</a><a class="btn secondary" href="?page=reports&report=overview">Management Reports</a></div></div>';

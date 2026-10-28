@@ -236,3 +236,4 @@ require_once __DIR__.'/batch_pages.php';
 require_once __DIR__.'/guided_count_controls.php';
 
 require_once __DIR__.'/access_policy.php';
+require_once __DIR__.'/usability.php';

@@ -1,0 +1,3 @@
+<?php
+require __DIR__.'/lib.php';require_login();header('Content-Type: application/json');header('Cache-Control: private, no-store');
+try{if(($_SERVER['REQUEST_METHOD']??'')!=='POST')throw new Exception('Use the tour controls.');verify_csrf();$state=$_POST['state']??'';if(!in_array($state,['completed','skipped'],true))throw new Exception('Invalid guide preference.');set_setting('guide_v58_user_'.(int)current_user()['id'],$state);echo json_encode(['saved'=>true]);}catch(Throwable $e){http_response_code(400);echo json_encode(['saved'=>false,'message'=>'Guide preference could not be saved. You can replay the guide from Help.']);}

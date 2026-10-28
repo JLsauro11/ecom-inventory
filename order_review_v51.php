@@ -73,7 +73,7 @@ function order_review_uploaded_fields($row){
  $out=$dateValid?'<input type="hidden" name="date" value="'.e($date).'">':'<label>Correct uploaded date<input type="date" name="date" required></label>';
  return $orderField.$out.($qtyValid?'<input type="hidden" name="qty" value="'.e($qty).'">':'<label>Correct uploaded quantity<input type="number" name="qty" min="1" step="1" required></label>');
 }
-function order_review_page($b){
+function order_review_page($b){usability_journey($b['status'],'Order quantities and bundle components deduct sellable stock from the selected order platform. Review item matches and quantities below.','?page=imports&history=all&import_type=Orders');
  $res=json_decode($b['result_json']??'[]',true)?:[];echo '<div class="page-head"><div><a class="back" href="?page=outflow&platform='.e($b['platform']).'">← Outflow</a><h1>Order Upload Review</h1><p>'.e($b['platform']).' · '.e($b['filename']).' · Batch #'.(int)$b['id'].'</p></div><a class="btn ghost" target="_blank" href="download.php?type=original_preview&id='.(int)$b['id'].'">View Original File</a></div>';
  if($b['status']==='Cancelled'){echo '<div class="alert info"><b>Upload Cancelled</b><p>No inventory was deducted. Cancelled by '.e($res['cancelled_name']??'').' on '.e($res['cancelled_at']??'').'. The original file remains in history. To process it later, upload it again.</p></div>';return;}
  if($b['status']==='Review'&&can_action('cancel_order_review'))echo '<div class="card modal-actions">'.order_cancel_form($b['id']).'</div>';

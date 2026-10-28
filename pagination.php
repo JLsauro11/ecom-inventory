@@ -16,4 +16,4 @@ function rs8_pagination($total,$offset=0,$size=50,$params=null,$key='offset',$pa
 function rs8_list_total($sql,$params=[]){$stmt=db()->prepare($sql);$stmt->execute($params);return (int)$stmt->fetchColumn();}
 
 function rs8_page_size($page=null){$page=$page??($_GET['page']??'');if(in_array($page,['inflow','outflow'],true))return 10;$allowed=$page==='platform_inventory'?[10,20,30,50,100]:[10,20,30,50];$size=(int)($_GET['per_page']??10);return in_array($size,$allowed,true)?$size:10;}
-function rs8_page_size_select($params,$size){if(($params['page']??'')!=='transfers')return '';$html='<label class="pagination-size-label">Rows per page<select data-server-page-size>';foreach([10,20,30,50] as $n)$html.='<option value="'.$n.'" '.($n===$size?'selected':'').'>'.$n.'</option>';return $html.'</select></label>';}
+function rs8_page_size_select($params,$size){if(!in_array($params['page']??'',['transfers','dashboard'],true))return '';$html='<label class="pagination-size-label">Rows per page<select data-server-page-size>';foreach([10,20,30,50] as $n)$html.='<option value="'.$n.'" '.($n===$size?'selected':'').'>'.$n.'</option>';return $html.'</select></label>';}

@@ -4,7 +4,7 @@ function access_is_viewer($role=null){return access_profile($role)==='Viewer / M
 function access_operational_manager(){return in_array(access_profile(),['Admin','Operations Lead'],true);}
 function access_report_allowed($report,$role=null){return !access_is_viewer($role)||in_array($report?:'overview',['overview','stocks','platforms','daily','product_master'],true);}
 function access_report_catalog(){$out=[];foreach(report_catalog() as $group=>$reports){$allowed=array_filter($reports,fn($label,$key)=>access_report_allowed($key),ARRAY_FILTER_USE_BOTH);if($allowed)$out[$group]=$allowed;}return $out;}
-function access_page_allowed($page,$role=null){$profile=access_profile($role);if($profile==='Admin')return true;if(in_array($page,['admin_requests','admin_request','settings','backups','day_closing','fresh_start','brand_sku'],true))return false;if(access_is_viewer($role))return in_array($page,['dashboard','stocks','platform_inventory','reports'],true);return true;}
+function access_page_allowed($page,$role=null){$profile=access_profile($role);if($profile==='Admin')return true;if(in_array($page,['admin_requests','admin_request','settings','backups','day_closing','fresh_start','brand_sku'],true))return false;if(access_is_viewer($role))return in_array($page,['dashboard','stocks','platform_inventory','reports','help'],true);return true;}
 function access_count_action_allowed($action,$role=null){$profile=access_profile($role);if($profile==='Admin')return true;if(!in_array($profile,['Auditor','Operations Lead'],true))return false;return in_array($action,['create','manual_create','manual_save','upload','save_review','final_create','final_upload','final_manual','final_submit','final_cancel','guided_validate','guided_submit','guided_cancel','guided_refresh'],true);}
 function access_request_allowed($script,$method,$get=[],$post=[],$role=null){
  $profile=access_profile($role);if($profile==='Admin')return true;$script=basename($script);$method=strtoupper($method);
@@ -12,7 +12,7 @@ function access_request_allowed($script,$method,$get=[],$post=[],$role=null){
  if($script==='index.php')return $method==='GET'&&access_page_allowed($get['page']??'dashboard',$role)&&(($get['page']??'')!=='reports'||access_report_allowed($get['report']??'overview',$role));
  if(in_array($script,['inventory_count.php','inventory_count_legacy_endpoint.php'],true))return $method==='GET'?!access_is_viewer($role):access_count_action_allowed($post['action']??'',$role);
  if($script==='report.php')return $method==='GET'&&access_report_allowed($get['report']??'overview',$role);
- if(in_array($script,['account.php','account_password.php','notifications.php'],true))return true;
+ if(in_array($script,['account.php','account_password.php','notifications.php','guide_preferences.php'],true))return true;
  if($script==='actions.php')return $method==='POST'; // Every action is checked by can_action before dispatch.
  if(access_is_viewer($role))return $method==='GET'&&$script==='platform_inventory_export.php';
  return true;
