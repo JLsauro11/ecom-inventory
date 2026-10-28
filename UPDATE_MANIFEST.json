@@ -1,5 +1,5 @@
 {
-  "build": "V5.5.1 Inflow Table Header Layout \u2014 2026-10-28",
+  "build": "V5.5.2 Page Size Label Alignment \u2014 2026-10-28",
   "requires": "Existing V5.4.0 or later; enable earlier item-code controls through upgrade_item_codes.php if needed. The Brand SKU Format module performs a separate verified conversion without resetting stock.",
   "files": {
     "access_roles.php": "90a330286b65a35b9a7f395b91803b96b5b20d246268b5abacaf595441a0e209",
@@ -14,7 +14,7 @@
     "assets/adjustment_notifications.css": "391c1fe3d0995fbd013fbcc63ad075ceecca4ccc54f74e138086403ee0d77380",
     "assets/admin_requests.css": "2eefed5db8e7a374152d872a1f7dbc3b60461958e62f23263181e896eb6be65e",
     "assets/app.js": "55935bb06ba7a918fcb6c27bf99340b09bd44049d81398fac26693adb2f63cde",
-    "assets/batch_update.css": "845837aa63402fa699457e8f310c5d1757b9cfca9a3de1f089f2283777c6e4f4",
+    "assets/batch_update.css": "c5c1b79dc9504720d82f4a79d9b4d1d0662937fb3c45add982df26355e65bfb1",
     "assets/batch_update.js": "9216c954d541b6136abffdd9dbca8509eb5f796fcdd7db64e8097adda57552cc",
     "assets/borrowed_multi.css": "a6ae40fa0dae126a84279e4f8af08b4169b6c435ebb860b2ece82e21fcd175b4",
     "assets/borrowed_multi.js": "94725d72b8fb4e97864919cd7479c19217125f52d0eb0a2134fccc791ddeea99",
@@ -92,7 +92,7 @@
     "fresh_start_page.php": "87662d629d2d1df808772d7ef83c6984a2317bd5df8aa40b87092edd4ec26e5d",
     "header_menu.php": "c13519ce2d7e39bcfedc7d25187fbf8576137096140b2e16ef7e8fa92a72cd1e",
     "import_history_page.php": "fb83a672e5c6b79532c879cf30853e44acfbd58a7bba3f92189d1f29d10cac10",
-    "index.php": "c40ab4b1720be66fc823219e0b7cb7345533b6d20343415fd9826b8d3bd5e442",
+    "index.php": "03ed573dfec392ee320c43a6a095064414e8e787cea0f918d38912b05cecdb8f",
     "inflow_allocation.php": "f5cd6ae6e5ec11a8c0caae92f077421f59371faed11c63976e449abe69ea60ab",
     "inflow_cancellation.php": "7960a59e8d20581c74c938f06ca84e368c845f4ceb1ef457080243b32d307255",
     "inflow_guard.php": "dd998f226fa383a86d7f5a8eacce7b476ab1e02ea806d84ba5d09cdd66cb655f",

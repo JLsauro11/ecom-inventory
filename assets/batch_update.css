@@ -22,3 +22,7 @@
 .receiving-order .batch-entry-table td input[type=number]{width:100%;min-width:60px}
 .receiving-order .batch-entry-table td select{width:100%;padding:9px 5px;font-size:12px}
 @media(max-width:750px){.receiving-order .batch-entry-table table{min-width:700px}}
+
+/* Keep the page-size selector first, with its label on the right. */
+body .content .rs8-pagination .pagination-size-label{display:inline-flex;flex-direction:row;align-items:center;gap:8px;white-space:nowrap;width:auto;margin:0}
+body .content .rs8-pagination .pagination-size-label select{order:-1;flex:0 0 76px;margin:0}
