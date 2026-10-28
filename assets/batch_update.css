@@ -2,6 +2,15 @@
 
 .content .table-wrap[data-wide-table]{overflow-x:auto!important}
 
+/* The nested horizontal wrapper must not offset the header into data rows. */
+.content .inflow-results .table th{position:static;top:auto;z-index:auto;vertical-align:middle}
+.inflow-results .table{min-width:1100px}
+.inflow-results .table th,.inflow-results .table td{vertical-align:middle}
+.inflow-results .table td:nth-child(2),.inflow-results .table td:nth-child(7){overflow-wrap:anywhere}
+.inflow-results .table td:first-child,.inflow-results .table td:nth-child(6){white-space:nowrap}
+.inflow-results .table td:last-child{min-width:168px}
+.inflow-results .table td:last-child .btn{margin:2px 4px 2px 0;white-space:nowrap}
+
 .content .receiving-order input[type=checkbox]{width:16px;height:16px;min-width:16px;min-height:16px;padding:0;margin:0;display:inline-block}
 .receiving-order .batch-entry-table{width:100%;overflow-x:auto}
 .receiving-order .batch-entry-table table{width:100%;min-width:0;table-layout:fixed}
