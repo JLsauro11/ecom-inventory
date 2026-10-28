@@ -232,3 +232,5 @@ require_once __DIR__.'/stock_balance_reports.php';
 require_once __DIR__.'/final_count_controls.php';
 require_once __DIR__.'/batch_workflows.php';
 require_once __DIR__.'/batch_pages.php';
+
+require_once __DIR__.'/guided_count_controls.php';

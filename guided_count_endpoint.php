@@ -1,0 +1,21 @@
+<?php
+try{
+ if(isset($_GET['guided_stock'])){header('Content-Type: application/json');header('Cache-Control: private, no-store');echo json_encode(guided_count_quantity((int)($_GET['product_id']??0),$_GET['count_date']??'',$_GET['count_scope']??'Sellable',(int)($_GET['id']??0)));exit;}
+ if(isset($_GET['guided_template'])){adjustment_access();$scope=$_GET['count_scope']??'Sellable';if(!in_array($scope,['Sellable','All Conditions'],true))throw new Exception('Select a count scope.');$heads=final_count_headers($scope);array_splice($heads,1,0,['Product']);$rows=[];foreach(product_options() as $p)$rows[]=array_merge([$p['master_sku'],$p['name']],array_fill(0,$scope==='Sellable'?1:4,''));$path=tempnam(sys_get_temp_dir(),'guided-sheet-');try{report_write_xlsx($path,'Inventory Count Sheet',$heads,$rows,['Count Scope'=>$scope,'Instructions'=>'Blank is not counted. Enter 0 for an actual zero. System quantities are excluded.'],range(2,count($heads)-1));header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');header('Content-Disposition: attachment; filename="Inventory_Count_Sheet.xlsx"');header('Cache-Control: private, no-store');readfile($path);}finally{if(is_file($path))unlink($path);}exit;}
+ if($_SERVER['REQUEST_METHOD']!=='POST')throw new Exception('Use the adjustment form.');verify_csrf();adjustment_access();$lock=inventory_write_lock();
+ if($action==='guided_validate'){
+  $entry=guided_count_input($_POST);$_SESSION['guided_count_entry']=$entry+['batch_id'=>$id,'supersedes'=>(int)($_POST['supersedes']??0)];$rows=[];$name='Manual Inventory Count';$hash=null;$stored=null;
+  if($entry['entry_method']==='Upload'){$file=$_FILES['file']??[];validate_upload_file($file,['xlsx']);$hash=hash_file('sha256',$file['tmp_name']);$rows=XlsxReader::rows($file['tmp_name']);$stored=store_upload($file,'count_evidence','GUIDED');$name=$file['name'];}
+  $result=guided_count_validate($_POST,$rows,$name,$hash,$stored);$id=$result['id'];unset($_SESSION['guided_count_entry']);flash($result['errors']?'Validation found errors. Select Back to Correct; no stock changed.':'Validation ready. Review the quantities before submission. No stock changed.',$result['errors']?'danger':'info');
+ }else{
+  $b=count_batch($id);if(!guided_count_is($b))throw new Exception('Use the original workflow for this record.');
+  if($action==='guided_submit'){if(!hash_equals(final_count_meta($b)['validation_digest']??'',(string)($_POST['digest']??'')))throw new Exception('Validation changed. Reopen and review the latest quantities.');final_count_submit($id,$_POST['revision']??0,!empty($_POST['review_ack']));flash('Submitted for review. Counts are locked; no stock changed.');}
+  elseif($action==='guided_review'){final_count_review($id,$_POST['revision']??0,!empty($_POST['review_ack']));flash('Review completed. A different Admin must approve and post.');}
+  elseif($action==='guided_post'){final_count_post($id,$_POST['digest']??'',!empty($_POST['review_ack']));flash('Adjustment approved and posted. Later movements were retained.');}
+  elseif($action==='guided_return'){guided_count_return($id,$_POST['revision']??0,$_POST['reason']??'');flash('Returned for correction. Previous counts and evidence remain in history.');}
+  elseif($action==='guided_cancel'){final_count_close($id,$_POST['reason']??'');flash('Adjustment cancelled. No stock adjustment was posted.');}
+  elseif($action==='guided_refresh'){guided_count_refresh($id,$_POST['revision']??0);flash('Validation refreshed. Review the updated projection before submitting.');}
+  else throw new Exception('Select a supported adjustment action.');
+ }
+ inventory_write_unlock($lock);$lock=null;header('Location: index.php?page=inventory_count&id='.$id);exit;
+}catch(Throwable $ex){if(db()->inTransaction())db()->rollBack();inventory_write_unlock($lock);if(isset($_GET['guided_stock'])){http_response_code(400);echo json_encode(['error'=>safe_error_message($ex)]);exit;}if($_SERVER['REQUEST_METHOD']==='POST')try{audit('Adjustment action rejected','Inventory Count',$id?(string)$id:'New',safe_error_message($ex));}catch(Throwable $ignored){}flash(safe_error_message($ex),'danger');header('Location: index.php?page=inventory_count'.($id?'&id='.$id:'').($action==='guided_validate'?'&edit=1':''));exit;}
