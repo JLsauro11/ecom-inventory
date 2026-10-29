@@ -244,3 +244,6 @@ require_once __DIR__.'/order_monitor_page.php';
 
 require_once __DIR__.'/grouped_monitoring.php';
 require_once __DIR__.'/grouped_monitoring_page.php';
+
+require_once __DIR__.'/order_simple.php';
+require_once __DIR__.'/order_simple_page.php';

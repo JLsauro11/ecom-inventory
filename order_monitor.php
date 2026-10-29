@@ -78,7 +78,7 @@ function om_existing_totals($id){$tot=[];foreach(om_query("SELECT o.product_id,S
 
 function om_upload($id){$b=om_query('SELECT * FROM om_uploads WHERE id=?',[(int)$id])->fetch();if(!$b)throw new Exception('Upload not found.');$b['meta']=json_decode($b['meta_json'],true);$b['rows']=json_decode($b['rows_json'],true);return $b;}
 
-function om_meta($kind,$i){$pl=stock_platform($i['platform']??'');$m=['platform'=>$pl,'shop'=>om_shop($pl,$i['shop']??''),'fulfillment_date'=>process_date($i['fulfillment_date']??date('Y-m-d')),'late'=>!empty($i['late']),'reason'=>!empty($i['late'])?process_reason($i['reason']??''):''];
+function om_meta($kind,$i){$pl=stock_platform($i['platform']??'');$m=['platform'=>$pl,'shop'=>om_shop($pl,$i['shop']??''),'fulfillment_date'=>process_date($i['fulfillment_date']??date('Y-m-d')),'late'=>false,'reason'=>''];
 
  if($kind==='Status'){$m['snapshot']=om_datetime($i['snapshot']??'',true);if($m['snapshot']>date('Y-m-d H:i:s'))throw new Exception('Export snapshot cannot be in the future.');$m['coverage_from']=process_date($i['coverage_from']??'');$m['coverage_to']=process_date($i['coverage_to']??'');if($m['coverage_from']>$m['coverage_to']||$m['coverage_to']>substr($m['snapshot'],0,10))throw new Exception('Export coverage is invalid.');$m['all_statuses']=!empty($i['all_statuses']);if(empty($i['coverage_ack']))throw new Exception('Confirm the platform, shop, snapshot and export coverage.');}return $m;
 
@@ -110,9 +110,7 @@ function om_plan($b){
 
  if($b['kind']==='Register'){
 
- if($status!=='To Ship')throw new Exception('Only To Ship orders can be registered for fulfillment.');$session=om_query('SELECT * FROM om_sessions WHERE platform=? AND shop=? AND fulfillment_date=?',[$b['platform'],$b['shop'],$m['fulfillment_date']])->fetch();$snapshots['session']=$session?:null;if($session&&$session['status']==='Closed'&&empty($m['late']))throw new Exception('Registration is closed. Use Add Late Order with a reason.');if(!empty($m['late'])&&empty($m['reason']))throw new Exception('Late-order reason required.');
-
- foreach($tot as $pid=>$qty){$stock=stock_row($pid);$av=om_available($pid,$b['platform'])-($used[$pid]??0);$snapshots['stock'][$pid]=[$stock['current'],platform_qty($b['platform'],$pid),om_reserved($pid),om_reserved($pid,$b['platform'])];if($qty>$av||$qty>om_available($pid)-($used[$pid]??0))throw new Exception('Insufficient unreserved stock for '.$stock['name'].'. Available on '.$b['platform'].': '.$av.'.');}
+ if($status!=='To Ship')throw new Exception('Only To Ship orders can be registered for fulfillment.');foreach($tot as $pid=>$qty){$stock=stock_row($pid);$av=om_available($pid,$b['platform'])-($used[$pid]??0);$snapshots['stock'][$pid]=[$stock['current'],platform_qty($b['platform'],$pid),om_reserved($pid),om_reserved($pid,$b['platform'])];if($qty>$av||$qty>om_available($pid)-($used[$pid]??0))throw new Exception('Insufficient unreserved stock for '.$stock['name'].'. Available on '.$b['platform'].': '.$av.'.');}
 
  foreach($tot as $pid=>$qty)$used[$pid]=($used[$pid]??0)+$qty;$action='Reserve';
 
@@ -127,13 +125,13 @@ function om_plan($b){
 
  $rank=['Needs Checking'=>0,'Unpaid'=>0,'To Ship'=>1,'Shipped'=>2,'Delivered'=>3,'Completed'=>4,'Cancelled'=>5,'Return / Refund'=>4];if($status==='Needs Checking')throw new Exception('Unknown or conflicting item statuses.');if($o['platform_status']==='Cancelled'&&$status!=='Cancelled')throw new Exception('Cancelled order cannot return to an earlier fulfillment status.');if($status!=='Cancelled'&&($rank[$status]??0)<($rank[$o['platform_status']]??0))throw new Exception('Status rollback blocked.');
 
- if($status==='Cancelled')$action=$o['posting']==='Posted'?'Cancelled after posting — review receipt/reversal':'Cancel / release';
+ if($status==='Cancelled')$action=$o['posting']==='Posted'?'Cancelled after posting — review receipt/reversal':($o['platform_status']==='Cancelled'&&(int)om_query('SELECT COALESCE(SUM(qty),0) FROM om_reservations WHERE order_id=?',[$o['id']])->fetchColumn()===0?'Unchanged':'Cancel / release');
 
  elseif(in_array($status,['Shipped','Delivered','Completed'],true)&&$o['posting']==='Not Posted'){$action='Dispatch / post';foreach($tot as $pid=>$qty){$stock=stock_row($pid);$held=(int)om_query('SELECT qty FROM om_reservations WHERE order_id=? AND product_id=?',[$o['id'],$pid])->fetchColumn();$snapshots['stock'][$pid]=[$stock['current'],platform_qty($b['platform'],$pid),om_reserved($pid),om_reserved($pid,$b['platform'])];if($held!==$qty||$qty>$stock['current']||$qty>platform_qty($b['platform'],$pid)||om_available($pid)<0||om_available($pid,$b['platform'])<0)throw new Exception('Reservation or current stock requires allocation review before posting.');}}
 
  elseif($o['posting']==='Reversed'&&$status!=='Cancelled')throw new Exception('Posting was reversed; review the linked correction before any new dispatch.');
 
- else $action=$status===$o['platform_status']&&!$af?'Unchanged':'Status only';
+ else $action=$status===$o['platform_status']&&(!$af||$o['aftersales']==='Return / Refund')?'Unchanged':'Status only';
 
  }
 
@@ -159,7 +157,7 @@ function om_confirm($id,$digest,$ack){
 
  om_require();if(!$ack)throw new Exception('Review and acknowledge the validation results.');return process_transaction(function()use($id,$digest){$b=om_upload($id);om_owner($b);$p=om_plan($b);if($b['kind']==='Register'&&array_filter($p['orders'],fn($r)=>$r['errors']))throw new Exception('Resolve every registration issue before confirmation, or cancel and correct the source file. No reservation was created.');if(!hash_equals($p['digest'],(string)$digest))throw new Exception('Stock, registration or review changed. Reopen validation before confirming.');$counts=[];$m=$b['meta'];
 
- foreach($p['orders'] as $r){$action=$r['action'];$counts[$action]=($counts[$action]??0)+1;$o=$r['order_record'];if($action==='Duplicate — skip'||$action==='Excluded — not registered')continue;if($r['errors']){if($o){om_query("UPDATE om_orders SET exception_text=?,monitoring='Needs Follow-up',revision=revision+1 WHERE id=?",[implode(' · ',$r['errors']),$o['id']]);om_event($o['id'],$id,'Conflicting update blocked',$r);}continue;}
+ foreach($p['orders'] as $r){$action=$r['action'];$counts[$action]=($counts[$action]??0)+1;$o=$r['order_record'];if($action==='Duplicate — skip')continue;if($action==='Excluded — not registered'){os_note_excluded($b,$r);continue;}if($r['errors']){if($o){om_query("UPDATE om_orders SET exception_text=?,monitoring='Needs Follow-up',revision=revision+1 WHERE id=?",[implode(' · ',$r['errors']),$o['id']]);om_event($o['id'],$id,'Conflicting update blocked',$r);}continue;}
 
  if($b['kind']==='Register'){
 
@@ -199,7 +197,7 @@ function om_confirm($id,$digest,$ack){
 
 }
 
-function om_close($platform,$shop,$date){om_require();$shop=om_shop($platform,$shop);$date=process_date($date);om_query('INSERT IGNORE INTO om_sessions(platform,shop,fulfillment_date) VALUES(?,?,?)',[$platform,$shop,$date]);om_query("UPDATE om_sessions SET status='Closed',closed_by=?,closed_at=NOW() WHERE platform=? AND shop=? AND fulfillment_date=? AND status='Open'",[current_user()['id'],$platform,$shop,$date]);om_event(null,null,'Registration closed',['platform'=>$platform,'shop'=>$shop,'date'=>$date]);audit('Close fulfillment registration','Order Monitoring',$date,$platform.' / '.$shop);}
+function om_close($platform,$shop,$date){throw new Exception('Registration uploading now stays open. Refresh Outflow to use Upload, Review and Confirm.');}
 
 function om_followup($id,$input){om_require();$o=om_order($id);$reason=process_reason($input['reason']??'');$owner=whole_number($input['owner_id']??'','Responsible user',1);$valid=array_column(array_filter(db()->query("SELECT id,role FROM users WHERE active=1 AND approval_status='Approved'")->fetchAll(),fn($u)=>in_array(access_role_profile($u['role']),['Admin','Operations Lead'],true)),'id');if(!in_array($owner,array_map('intval',$valid),true))throw new Exception('Select an active Admin or Operations Lead.');$next=report_date($input['followup_date']??'');if($next<date('Y-m-d'))throw new Exception('Next follow-up cannot be in the past.');om_query("UPDATE om_orders SET owner_id=?,followup_date=?,monitoring='Carried Over',revision=revision+1 WHERE id=?",[$owner,$next,$id]);om_event($id,null,'Follow-up assigned',['previous_owner'=>$o['owner_id'],'owner'=>$owner,'next'=>$next,'reason'=>$reason]);om_alert_refresh();}
 
@@ -215,6 +213,8 @@ function om_alert_refresh(){if(!om_ready())return;$cfg=om_alert_settings();$toda
 
  foreach(db()->query('SELECT DISTINCT o.* FROM om_orders o JOIN om_reservations r ON r.order_id=o.id WHERE r.qty>0') as $held){foreach(om_query('SELECT product_id FROM om_reservations WHERE order_id=? AND qty>0',[$held['id']]) as $line)if(om_available($line['product_id'])<0||om_available($line['product_id'],$held['platform'])<0){$put('shortage-'.$held['id'],$held['id'],$held['owner_id'],'HIGH · Reservation shortage / allocation review · '.$held['order_no']);break;}}
  $operating=$cfg['overrides'][$today]??(in_array((int)date('N'),$cfg['operating'],true)?'Operating':'Closed');if($operating==='Operating'&&date('H:i')>=$cfg['reminder'])foreach(db()->query('SELECT * FROM om_sessions WHERE fulfillment_date='.db()->quote($today)) as $s){$cutoff=date('Y-m-d H:i:s',strtotime($today.' '.$cfg['reminder'].' -30 minutes'));$unchecked=(int)om_query("SELECT COUNT(*) FROM om_orders WHERE session_id=? AND monitoring<>'Resolved' AND (last_seen_at IS NULL OR last_seen_at<?)",[$s['id'],$cutoff])->fetchColumn();if($unchecked>0){$owner=om_query('SELECT owner_id FROM om_orders WHERE session_id=? ORDER BY id LIMIT 1',[$s['id']])->fetchColumn();$put('daily-'.$today.'-'.$s['id'],null,$owner?:null,'Final status update required · '.$s['platform'].' / '.$s['shop'].' · '.$today);}}
+
+ foreach(os_open_exceptions() as $issue)$put($issue['key'],null,$issue['owner_id'],'HIGH · Unregistered '.$issue['status'].' order · '.$issue['platform'].' · '.$issue['order']);
 
  om_query('UPDATE om_alerts SET resolved=1'.($active?' WHERE alert_key NOT IN ('.implode(',',array_fill(0,count($active),'?')).')':''),$active);
 
