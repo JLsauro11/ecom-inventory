@@ -2,7 +2,7 @@
 (() => {
  'use strict';
  const content=document.querySelector('.content');if(!content)return;
- content.querySelectorAll('[data-server-page-size]').forEach(select=>select.addEventListener('change',()=>{const url=new URL(location.href);url.searchParams.set('per_page',select.value);url.searchParams.set('offset','0');if((url.searchParams.get('page')||'dashboard')==='dashboard')url.searchParams.set('activity_offset','0');location.assign(url.href);}));
+ content.querySelectorAll('[data-server-page-size]').forEach(select=>select.addEventListener('change',()=>{const url=new URL(location.href);url.searchParams.set('per_page',select.value);url.searchParams.set('offset','0');url.searchParams.set('om_offset','0');if((url.searchParams.get('page')||'dashboard')==='dashboard')url.searchParams.set('activity_offset','0');location.assign(url.href);}));
  const module=new URL(location.href).searchParams.get('page')||'dashboard';const adjustable=['products','platform_inventory'].includes(module);const sizes=module==='platform_inventory'?[10,20,30,50,100]:[10,20,30,50];
  const tables=Array.from(content.querySelectorAll('table.table'));
  // A server pager always follows its table, possibly outside the scroll/card wrapper.

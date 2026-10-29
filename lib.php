@@ -241,3 +241,6 @@ require_once __DIR__.'/usability.php';
 require_once __DIR__.'/order_monitor.php';
 require_once __DIR__.'/order_monitor_reports.php';
 require_once __DIR__.'/order_monitor_page.php';
+
+require_once __DIR__.'/grouped_monitoring.php';
+require_once __DIR__.'/grouped_monitoring_page.php';
