@@ -54,6 +54,7 @@ function cancel_order_review($id,$uid){
 }
 function order_cancel_form($id){return '<form method="post" action="actions.php" data-confirm="Cancel this pending upload? No inventory will be deducted. The file will remain in history as Cancelled."><input type="hidden" name="action" value="cancel_order_review"><input type="hidden" name="batch_id" value="'.(int)$id.'"><input type="hidden" name="return" value="order_review&id='.(int)$id.'"><button class="btn ghost" type="submit">Cancel Upload</button></form>';}
 function confirm_order_review($id,$digest,$uid){
+ if(om_ready())throw new Exception('Use Register Orders and Update Status for platform orders. Cancel this unposted legacy upload and register the original platform export; existing posted orders remain linked.');
  $pdo=db();$pdo->beginTransaction();try{$b=order_review_batch($id,true);$res=json_decode($b['result_json']??'[]',true)?:[];if($b['status']!=='Review'||empty($res['review_rows']))throw new Exception('This upload is already posted or is not ready for review.');
  $a=order_review_analysis($b['platform'],$res['review_rows']);if($a['errors'])throw new Exception('Resolve every error and unmapped item before submitting.');
  $ids=array_unique(array_column($a['groups'],'product_id'));sort($ids,SORT_NUMERIC);$lock=$pdo->prepare('SELECT id FROM products WHERE id=? FOR UPDATE');foreach($ids as $pid){$lock->execute([$pid]);$lock->fetchColumn();check_platform_alignment($pid);}

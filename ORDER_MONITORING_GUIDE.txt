@@ -1,0 +1,48 @@
+ORDER MONITORING — V5.9.0
+
+1. Open Outflow / Order Monitoring. Admin and Operations Lead may upload.
+2. Register Orders: select platform/date, upload the original To Ship XLSX,
+   validate product matches and bundle components, then Confirm Registration.
+   Fix every registration error before confirming. Physical stock is unchanged.
+3. Close Registration when the fulfillment list is complete (normally 3 PM).
+   Use Add Late Order through the closed registration form with a reason.
+4. Update Status after pickup: select the same platform/shop, enter the actual
+   export time, creation-date coverage and whether ALL statuses were exported.
+   Validate and confirm. Unregistered orders are excluded.
+5. Registered orders reserve availability. Dispatch deducts physical stock once.
+   Cancellation before dispatch releases the reservation only.
+6. A posted cancellation never adds stock automatically. Record actual receiving,
+   or request a linked reversal if the entire order never left the warehouse.
+   A different Admin approves the reversal. Legacy multi-order batches require
+   a reviewed transaction correction; unrelated orders must not be reversed.
+7. Open Orders shows status, posting, pending age, owner and exceptions.
+   Carryover needs a reason, next date and responsible Admin / Operations Lead.
+   Reading the notification does not resolve an order or reset pending age.
+8. Return/Refund flags do not prove physical receipt. Open existing Return Orders,
+   receive actual quantities/conditions, validate and post once; link the receipt.
+9. Reports include order statuses, aging, dispatch/delivery, upload validation,
+   history, reservation activity and inventory readiness. Excel and Print/PDF
+   include all matching rows. Readiness is a checklist, not a block on counting.
+10. Stock Movements retains posted inflows/outflows. Include Reservation Activity
+    shows the separate holds/releases with zero physical effect.
+
+AVAILABLE = SELLABLE ON HAND - RESERVED
+PHYSICAL = SELLABLE ON HAND + NON-SELLABLE
+Count reserved items still physically held in the warehouse or packing area.
+Platform inventory Excel Quantity uses available stock after reservations.
+Negative availability needs allocation review; reservations are never discarded.
+
+EXISTING DATA
+Existing posted orders are linked without another deduction or reservation.
+Their platform status is not assumed; use exports covering those orders to verify.
+No stock reset, product deletion or transaction deletion is performed.
+
+ALERTS
+Default operation: Monday–Saturday; holiday/date override: Operating or Closed.
+Final update reminder: 5:30 PM, allowing a final export from 5 PM onward.
+High pending-age alert: 7 calendar days (configurable).
+Missing/conflicting exports and reservation shortages remain actionable.
+Install_Order_Monitoring_Schedule.ps1 installs the local 5-minute check.
+The host and its Windows user session must be running; inventory-app login
+is not required. Without the schedule, checks run when the system is opened.
+No marketplace API is needed. Stock balances reflect confirmed uploads.

@@ -1,11 +1,11 @@
 <?php
 function system_notification_audit_filter(){
- $entities=['Outflow','Import','Inflow Batch','Borrow','Transfer','Product','Non-Sellable','Receipt','Reversal','Bundle','Inventory','Allocation Batch','Exception','Packaging','Repackaging','Return','Reconciliation','Threshold Batch','Brand','Category'];if(current_user()['role']==='Admin')$entities=array_merge($entities,['User','Settings','System','Backup','Closing']);
+ $entities=['Order Monitoring','Outflow','Import','Inflow Batch','Borrow','Transfer','Product','Non-Sellable','Receipt','Reversal','Bundle','Inventory','Allocation Batch','Exception','Packaging','Repackaging','Return','Reconciliation','Threshold Batch','Brand','Category'];if(current_user()['role']==='Admin')$entities=array_merge($entities,['User','Settings','System','Backup','Closing']);
  return "a.entity_type IN (".implode(',',array_map(fn($x)=>db()->quote($x),$entities)).") AND a.action_type NOT IN ('Physical count adjustment','Platform redistribution') AND a.created_at>=DATE_SUB(NOW(),INTERVAL 7 DAY)";
 }
 function system_notification_cursor(){return array_replace(['audit'=>0,'count'=>0],json_decode(setting('notification_read_'.current_user()['id'],''),true)?:[]);}
 function system_notification_tasks(){
- $tasks=[];$add=function($title,$sql,$url)use(&$tasks){$n=(int)db()->query($sql)->fetchColumn();if($n)$tasks[]=['title'=>$title,'count'=>$n,'url'=>$url];};
+ $tasks=function_exists('om_notification_tasks')?om_notification_tasks():[];$add=function($title,$sql,$url)use(&$tasks){$n=(int)db()->query($sql)->fetchColumn();if($n)$tasks[]=['title'=>$title,'count'=>$n,'url'=>$url];};
  if(adjustments_ready()&&current_user()['role']==='Admin')$add('Adjustment requests awaiting Admin approval',"SELECT COUNT(*) FROM inventory_count_batches WHERE workflow_version IN ('5.4.0','5.4.29') AND status IN ('Submitted','Awaiting Approval')",'index.php?page=admin_requests&request_type=adjustment');
  if(can_action('upload_inventory_count')&&adjustments_ready())$add('Your adjustments needing entry or correction',"SELECT COUNT(*) FROM inventory_count_batches WHERE created_by=".(int)current_user()['id']." AND status IN ('Exported','Validated','Error')",'index.php?page=inventory_count&tab=review');
 
@@ -25,7 +25,7 @@ function system_notification_tasks(){
  return $tasks;
 }
 function system_notification_audit_url($event){
- $ref=(string)$event['entity_ref'];$entity=$event['entity_type'];
+ $ref=(string)$event['entity_ref'];$entity=$event['entity_type'];if($entity==='Order Monitoring')return 'index.php?page=order_monitor&view=history';
  if($entity==='Outflow'&&ctype_digit($ref))return 'index.php?page=outflow_batch&id=-'.(int)$ref;
  if($entity==='Import'&&ctype_digit($ref)){$q=db()->prepare('SELECT import_type FROM import_batches WHERE id=?');$q->execute([(int)$ref]);return 'index.php?page='.($q->fetchColumn()==='Orders'?'outflow_batch':'import_detail').'&id='.(int)$ref;}
  if($entity==='Inflow Batch'){if(ctype_digit($ref))return 'index.php?page=inflow_batch&id='.(int)$ref;$q=db()->prepare('SELECT id FROM inflow_batches WHERE batch_ref=?');$q->execute([$ref]);if($id=$q->fetchColumn())return 'index.php?page=inflow_batch&id='.(int)$id;}

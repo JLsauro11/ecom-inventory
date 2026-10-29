@@ -5,13 +5,14 @@ function badge($label,$cls){$display=['Complete'=>'Posted','Confirmed'=>'Posted'
 if($page==='outflow_batch'&&(int)($_GET['id']??0)>0){$pending=$pdo->prepare("SELECT status FROM import_batches WHERE id=? AND import_type='Orders'");$pending->execute([(int)$_GET['id']]);if(in_array($pending->fetchColumn(),['Review','Cancelled'],true))$page='order_review';}
 if($page==='receipt_review'&&($_GET['step']??'')==='confirm')$page='inflow_allocation';
 if($page==='allocation')$page='outflow';
+if($page==='outflow'&&($_GET['platform']??'Shopee')!=='Manual'&&om_ready())$page='order_monitor';
 if($page==='import_detail'){$br=$pdo->prepare("SELECT import_type FROM import_batches WHERE id=?");$br->execute([(int)($_GET['id']??0)]);$batchType=$br->fetchColumn();if($batchType==='Beginning Balance')$page='beginning_review';elseif(in_array($batchType,workflow_types(),true))$page='stock_batch';}
 if($page==='outflow_batch'&&(int)($_GET['id']??0)>0){$bt=$pdo->prepare('SELECT import_type FROM import_batches WHERE id=?');$bt->execute([(int)$_GET['id']]);if(in_array($bt->fetchColumn(),workflow_types(),true))$page='stock_batch';}
 require_once __DIR__.'/outflow_global_rule.php';
 $adminPendingRequests=$u['role']==='Admin'?admin_requests_pending_count():0;
 $nav=[
  ['dashboard','Dashboard','⌂'],
- ['inventory_group','Inventory',''],['stocks','Current Stocks','▣'],['beginning','Beginning Balance','▥'],['inflow','Inflow','＋'],['outflow','Outflow','−'],['nonsellable','Non-Sellable','↩'],
+ ['inventory_group','Inventory',''],['stocks','Current Stocks','▣'],['beginning','Beginning Balance','▥'],['inflow','Inflow','＋'],['outflow','Outflow','−'],['order_monitor','Order Monitoring','▤'],['nonsellable','Non-Sellable','↩'],
  ['borrowed','Borrowed Items','⇄'],
  ['platform_group','Platform Inventory',''],['platform_inventory','Lazada / Shopee / TikTok','▦'],['transfers','Stock Transfer','⇄'],['file_generator','Platform File Generator','⇩'],
  ['products_group','Products',''],['products','Product Master','▦'],['mapping','Platform Mapping','↔'],
@@ -27,6 +28,7 @@ if(in_array($page,['receipt_review','inflow_batch'],true))inflow_supplier_form((
 usability_page_context($page);
 if($u['role']==='Admin'&&!empty($_GET['from_requests']))echo '<a class="btn ghost requests-back" href="?page=admin_requests">← Requests &amp; Approvals</a>';
 if($page==='dashboard'&&access_is_viewer()){require __DIR__.'/management_dashboard.php';}
+elseif($page==='order_monitor'){om_page();}
 elseif($page==='help'){usability_help_page();}
 elseif($page==='admin_requests'){admin_requests_page();}
 elseif($page==='admin_request'){admin_request_detail_page();}
@@ -122,8 +124,8 @@ elseif($page==='platform_inventory'){
  echo '<div class="page-head"><div><h1>Platform Inventory</h1><p>Virtual allocation of sellable physical stock across e-commerce platforms.</p></div></div><div class="tabs">';foreach(['Lazada','Shopee','TikTok'] as $pl)echo '<a class="tab '.($tab===$pl?'active':'').'" href="?page=platform_inventory&platform='.$pl.e($brandQuery.'&q='.rawurlencode($pq).'&status='.rawurlencode($_GET['status']??'')).'">'.platform_label($pl).'</a>';echo '</div>';
  echo '<div class="toolbar card compact"><form method="get" class="inline-form product-list-filters"><input type="hidden" name="page" value="platform_inventory"><input type="hidden" name="platform" value="'.e($tab).'"><input name="q" value="'.e($pq).'" placeholder="Search '.$tab.' item, SKU, brand or description...">'.inventory_brand_select($products,$selectedBrand).inventory_category_select($selectedMain,$selectedSub).'<input type="hidden" name="status" value="'.e($_GET['status']??'').'"><button class="btn secondary">Filter</button>' .inventory_clear_filter_link().'</form></div>';
  echo '<a class="btn secondary platform-download" href="platform_inventory_export.php?'.e(http_build_query(array_replace($_GET,['platform'=>$tab]))).'">Download Excel · '.e($tab).'</a>';
- echo '<div class="card table-wrap"><table class="table"><tr><th>Product</th><th>Platform SKU / Alias</th><th>Allocated Qty</th><th>Status</th><th>Last Updated</th></tr>';
- $sql='SELECT p.*,COALESCE(ps.qty,0) pqty,ps.updated_at,(SELECT alias FROM platform_aliases a WHERE a.platform=? AND a.product_id=p.id ORDER BY id DESC LIMIT 1) alias FROM products p LEFT JOIN platform_stock ps ON ps.product_id=p.id AND ps.platform=? WHERE p.active=1';$args=[$tab,$tab];$sql.=' AND '.inventory_filter_condition('p');if($pq!==''){$sql.=' AND (p.name LIKE ? OR p.master_sku LIKE ? OR p.brand LIKE ? OR EXISTS(SELECT 1 FROM platform_aliases ax WHERE ax.platform=? AND ax.product_id=p.id AND (ax.alias LIKE ? OR ax.external_id LIKE ?)))';$like='%'.$pq.'%';array_push($args,$like,$like,$like,$tab,$like,$like);}$sql.=' ORDER BY p.brand,p.name';$st=$pdo->prepare($sql);$st->execute($args);foreach($st as $r){$ss=detect_status((int)$r['pqty'],($r['low_stock_threshold']??10));if(!empty($_GET['status'])&&stock_status_key($ss[0])!==$_GET['status'])continue;echo '<tr><td><b>'.e($r['name']).'</b><div class="muted small">'.e($r['master_sku']).' · '.e(inventory_filter_brand($r['brand'])).'</div></td><td>'.e($r['alias']??'—').'</td><td class="stock-num">'.$r['pqty'].'</td><td>'.badge($ss[0],$ss[1]).'</td><td>'.e($r['updated_at']??'—').'</td></tr>';}
+ echo '<div class="card table-wrap"><table class="table"><tr><th>Product</th><th>Platform SKU / Alias</th><th>Allocated Qty</th><th>Reserved</th><th>Available</th><th>Status</th><th>Last Updated</th></tr>';
+ $sql='SELECT p.*,COALESCE(ps.qty,0) pqty,ps.updated_at,(SELECT alias FROM platform_aliases a WHERE a.platform=? AND a.product_id=p.id ORDER BY id DESC LIMIT 1) alias FROM products p LEFT JOIN platform_stock ps ON ps.product_id=p.id AND ps.platform=? WHERE p.active=1';$args=[$tab,$tab];$sql.=' AND '.inventory_filter_condition('p');if($pq!==''){$sql.=' AND (p.name LIKE ? OR p.master_sku LIKE ? OR p.brand LIKE ? OR EXISTS(SELECT 1 FROM platform_aliases ax WHERE ax.platform=? AND ax.product_id=p.id AND (ax.alias LIKE ? OR ax.external_id LIKE ?)))';$like='%'.$pq.'%';array_push($args,$like,$like,$like,$tab,$like,$like);}$sql.=' ORDER BY p.brand,p.name';$st=$pdo->prepare($sql);$st->execute($args);foreach($st as $r){$ss=detect_status((int)$r['pqty'],($r['low_stock_threshold']??10));if(!empty($_GET['status'])&&stock_status_key($ss[0])!==$_GET['status'])continue;echo '<tr><td><b>'.e($r['name']).'</b><div class="muted small">'.e($r['master_sku']).' · '.e(inventory_filter_brand($r['brand'])).'</div></td><td>'.e($r['alias']??'—').'</td><td class="stock-num">'.$r['pqty'].'</td><td>'.om_reserved($r['id'],$tab).'</td><td>'.om_available($r['id'],$tab).'</td><td>'.badge($ss[0],$ss[1]).'</td><td>'.e($r['updated_at']??'—').'</td></tr>';}
  echo '</table></div>';
 }
 elseif($page==='allocation_override_detail'){

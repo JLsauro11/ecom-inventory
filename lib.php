@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__.'/security_controls.php';
 require_once __DIR__.'/pagination.php';
+if(PHP_SAPI!=='cli'&&is_file(__DIR__.'/data/order_monitor_update.lock')){http_response_code(503);header('Retry-After: 30');exit('<h1>System update in progress</h1><p>Please refresh shortly. Your saved transactions are preserved.</p>');}
 security_start_session();
 $CFG=require __DIR__.'/config.php';
 date_default_timezone_set($CFG['timezone']);
@@ -48,7 +49,7 @@ function stock_row($pid){
  COALESCE((SELECT SUM(qty) FROM non_sellable n WHERE n.product_id=p.id),0)-COALESCE((SELECT SUM(qty) FROM nonsellable_outflows no WHERE no.product_id=p.id),0) nonsellable
  FROM products p LEFT JOIN beginning_balances b ON b.product_id=p.id WHERE p.id=?";
  $st=db()->prepare($sql);$st->execute([(int)$pid]);$r=$st->fetch();
- if($r){$r['current']=(int)$r['beginning']+(int)$r['inflow']-(int)$r['outflow']-(int)$r['condition_out'];$r['nonsellable']=max(0,(int)$r['nonsellable']);$r['physical']=$r['current']+$r['nonsellable'];$r['allocated']=platform_allocated_total($pid);$r['unallocated']=$r['current']-$r['allocated'];}
+ if($r){$r['current']=(int)$r['beginning']+(int)$r['inflow']-(int)$r['outflow']-(int)$r['condition_out'];$r['nonsellable']=max(0,(int)$r['nonsellable']);$r['physical']=$r['current']+$r['nonsellable'];$r['allocated']=platform_allocated_total($pid);$r['unallocated']=$r['current']-$r['allocated'];$r['reserved']=function_exists('om_reserved')?om_reserved($pid):0;$r['available']=$r['current']-$r['reserved'];}
  return $r;
 }
 function detect_status($qty,$threshold=10){$threshold=$threshold===null?10:max(0,(int)$threshold);if($qty<0)return ['Reconcile','danger'];if($qty==0)return ['Out of Stock','danger'];if($qty<=$threshold)return ['Low Stock','warn'];return ['In Stock','ok'];}
@@ -237,3 +238,6 @@ require_once __DIR__.'/guided_count_controls.php';
 
 require_once __DIR__.'/access_policy.php';
 require_once __DIR__.'/usability.php';
+require_once __DIR__.'/order_monitor.php';
+require_once __DIR__.'/order_monitor_reports.php';
+require_once __DIR__.'/order_monitor_page.php';

@@ -38,7 +38,7 @@ function borrow_issue_multiple($input){
   if($prior->fetchColumn())throw new Exception('This borrow reference has already been issued. No additional stock was deducted.');
   $uid=current_user()['id'];$ids=[];$negative=false;
   foreach($lines as $i=>$line){
-   $pid=$line['product_id'];$platform=$line['platform'];$qty=$line['qty'];$lineRef=$ref.'-L'.str_pad((string)($i+1),3,'0',STR_PAD_LEFT);
+   $pid=$line['product_id'];$platform=$line['platform'];$qty=$line['qty'];om_assert_available($pid,$qty);om_assert_available($pid,$qty,$platform);$lineRef=$ref.'-L'.str_pad((string)($i+1),3,'0',STR_PAD_LEFT);
    db()->prepare('INSERT INTO borrowed_items(borrow_ref,batch_ref,product_id,source_platform,borrower,qty,issue_date,due_date,reason,user_id) VALUES(?,?,?,?,?,?,?,?,?,?)')->execute([$lineRef,$ref,$pid,$platform,$borrower,$qty,$date,$due,$reason,$uid]);$id=(int)db()->lastInsertId();$ids[]=$id;
    db()->prepare('INSERT INTO outflows(txn_date,platform,order_id,product_id,source_item,qty,type,dedupe_key,remarks,user_id) VALUES(?,?,?,?,?,?,?,?,?,?)')->execute([$date,$platform,$ref,$pid,'Borrowed: '.$borrower,$qty,'Borrowed Issue',hash('sha256','borrow|'.$lineRef),$lineRef.'; '.$reason,$uid]);$out=(int)db()->lastInsertId();
    db()->prepare('UPDATE borrowed_items SET outflow_id=? WHERE id=?')->execute([$out,$id]);

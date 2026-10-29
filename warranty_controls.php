@@ -20,7 +20,7 @@ function warranty_validate($input,$lock=false){
  $pid=(int)($input['product_id']??0);$q=db()->prepare('SELECT * FROM products WHERE id=? AND active=1'.($lock?' FOR UPDATE':''));$q->execute([$pid]);$p=$q->fetch();if(!$p)throw new Exception('Select an active replacement product.');
  $source=stock_platform($input['source_platform']??'');$ref=trim($input['order_id']??'');if($ref===''||strlen($ref)>100)throw new Exception('Enter a warranty reference of up to 100 characters.');
  $q=db()->prepare("SELECT COUNT(*) FROM outflows WHERE type='Warranty Replacement' AND order_id=? AND reversed_by_request IS NULL");$q->execute([$ref]);if($q->fetchColumn())throw new Exception('This warranty reference was already posted. Use a separate reference for a partial replacement.');
- $remarks=process_reason($input['remarks']??'');check_platform_alignment($pid);
+ $remarks=process_reason($input['remarks']??'');check_platform_alignment($pid);om_assert_available($pid,$qty);om_assert_available($pid,$qty,$source);
  return ['return'=>$r,'product'=>$p,'input'=>['return_id'=>(int)$r['id'],'txn_date'=>$date,'qty'=>$qty,'product_id'=>$pid,'source_platform'=>$source,'order_id'=>$ref,'remarks'=>$remarks],'stock'=>stock_row($pid),'platform_qty'=>platform_qty($source,$pid)];
 }
 function warranty_digest($a){return hash('sha256',json_encode([$a['input'],$a['return'],$a['product'],$a['stock'],$a['platform_qty']]));}
