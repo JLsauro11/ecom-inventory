@@ -1,6 +1,6 @@
 {
-  "build": "V5.9.0 Order Monitoring & Reserved Stock \u2014 2026-10-28",
-  "requires": "Existing V5.8.0. Additive Order Monitoring upgrade required; existing transactions are linked without stock reset or reposting.",
+  "build": "V5.9.1 Outflow Navigation \u2014 2026-10-29",
+  "requires": "Existing V5.9.0. File-only navigation correction; no database or stock changes.",
   "files": {
     "Install_Order_Monitoring_Schedule.ps1": "b536ed83efdb181a947f31963631e1d6510fc9e506689eaef531994df01e28fa",
     "ORDER_MONITORING_GUIDE.txt": "2354ac7e63102978eb97b25c678e93924bdf9135a90f03f61b6aa53711d6c864",
@@ -106,7 +106,7 @@
     "guided_count_page.php": "1544e437d09fc3e40d90b098a92415777aa2e02c0ea66630c499777b00a708b0",
     "header_menu.php": "40c71a022c12bd56237ad3af91ec1522e478382a604325dcba87ff5566d6f643",
     "import_history_page.php": "fb83a672e5c6b79532c879cf30853e44acfbd58a7bba3f92189d1f29d10cac10",
-    "index.php": "f35b848960d515e8eb46b87adb60d975d8d4b367ab5a8712665a56eeb77e849c",
+    "index.php": "4acd91641d7931ecc536e2397bfd66bcfff4ff185f10796fcfdaaf9aab3aa120",
     "inflow_allocation.php": "20c83c72d445ae3c2072eb7cba9e413e7a4c66e88ac8446f29abfb525ad44c6b",
     "inflow_cancellation.php": "7960a59e8d20581c74c938f06ca84e368c845f4ceb1ef457080243b32d307255",
     "inflow_guard.php": "dd998f226fa383a86d7f5a8eacce7b476ab1e02ea806d84ba5d09cdd66cb655f",
