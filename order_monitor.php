@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__.'/order_monitor_reader.php';
+require_once __DIR__.'/order_review_controls.php';
 
 function om_ready(){if(!array_key_exists('OM_READY',$GLOBALS))$GLOBALS['OM_READY']=setting('order_monitor_version','')==='5.9.0';return $GLOBALS['OM_READY'];}
 
@@ -86,7 +87,7 @@ function om_meta($kind,$i){$pl=stock_platform($i['platform']??'');$m=['platform'
 
 function om_stage_rows($kind,$meta,$rows,$name,$stored=null,$hash=null,$warnings=[]){om_require();if(!in_array($kind,['Register','Status'],true))throw new Exception('Unknown upload type.');$meta['warnings']=$warnings;om_query('INSERT INTO om_uploads(kind,platform,shop,filename,stored_path,file_hash,meta_json,rows_json,created_by) VALUES(?,?,?,?,?,?,?,?,?)',[$kind,$meta['platform'],$meta['shop'],$name,$stored,$hash,json_encode($meta),json_encode($rows),current_user()['id']]);$id=(int)db()->lastInsertId();om_event(null,$id,'File validated',['kind'=>$kind,'rows'=>count($rows),'stock_changed'=>false]);return $id;}
 
-function om_stage($kind,$input,$file){om_require();$m=om_meta($kind,$input);validate_upload_file($file,['xlsx']);$r=om_parse($m['platform'],$file['tmp_name']);if($kind==='Status')foreach($r['rows'] as $line){$day=substr($line['created'],0,10);if($day<$m['coverage_from']||$day>$m['coverage_to'])throw new Exception('The file contains orders outside the declared creation-date coverage. Correct the coverage before validating.');foreach(['created','ship_at','delivered_at'] as $k)if(!empty($line[$k])&&$line[$k]>$m['snapshot'])throw new Exception('The export contains timestamps after the declared snapshot time. Enter the actual export time.');}$hash=hash_file('sha256',$file['tmp_name']);$old=om_query("SELECT id FROM om_uploads WHERE kind=? AND platform=? AND shop=? AND file_hash=? AND status='Review' AND created_by=? ORDER BY id DESC LIMIT 1",[$kind,$m['platform'],$m['shop'],$hash,current_user()['id']])->fetchColumn();if($old)throw new Exception('This file already has an open review: #'.$old.'. Open Upload History.');$stored=store_upload($file,'order_monitor','ORD');return om_stage_rows($kind,$m,$r['rows'],basename($file['name']),$stored,$hash,$r['warnings']);}
+function om_stage($kind,$input,$file){om_require();$m=om_meta($kind,$input);validate_upload_file($file,['xlsx']);$r=om_parse($m['platform'],$file['tmp_name']);$hash=hash_file('sha256',$file['tmp_name']);$old=om_query("SELECT id FROM om_uploads WHERE kind=? AND platform=? AND shop=? AND file_hash=? AND status='Review' AND created_by=? ORDER BY id DESC LIMIT 1",[$kind,$m['platform'],$m['shop'],$hash,current_user()['id']])->fetchColumn();if($old)throw new Exception('This file already has an open review: #'.$old.'. Open Upload History.');$stored=store_upload($file,'order_monitor','ORD');return om_stage_rows($kind,$m,$r['rows'],basename($file['name']),$stored,$hash,$r['warnings']);}
 
 function om_owner($b){om_require();if(access_profile()!=='Admin'&&(int)$b['created_by']!==current_user()['id'])throw new Exception('Only the uploader or Admin may confirm or correct this upload.');if($b['status']!=='Review')throw new Exception('This upload is already confirmed or cancelled.');}
 
@@ -96,7 +97,7 @@ function om_plan($b){
 
  $groups=[];$snapshots=[];$used=[];$m=$b['meta'];foreach($b['rows'] as $r)$groups[$r['order']][]=$r;$out=[];
 
- foreach($groups as $no=>$lines){$o=om_find($b['platform'],$b['shop'],(string)$no);$errors=[];$statuses=array_unique(array_column($lines,'status'));$status=count($statuses)===1?reset($statuses):'Needs Checking';$af=(bool)array_filter($lines,fn($r)=>!empty($r['aftersales']));$action='';$tot=[];
+ foreach($groups as $no=>$lines){$o=om_find($b['platform'],$b['shop'],(string)$no);$errors=[];$statuses=array_unique(array_column($lines,'status'));$status=count($statuses)===1?reset($statuses):'Needs Checking';$af=(bool)array_filter($lines,fn($r)=>!empty($r['aftersales']));$action='';$tot=[];$postingDate=null;
 
  try{
 
@@ -106,6 +107,7 @@ function om_plan($b){
 
  else{
 
+ om_validate_source_dates($lines,$m,$b['kind']);
  foreach($lines as &$line){$line['components']=om_components($b['platform'],$b['shop'],$line,$b['kind']==='Status');}unset($line);$tot=om_totals($lines);
 
  if($b['kind']==='Register'){
@@ -127,7 +129,7 @@ function om_plan($b){
 
  if($status==='Cancelled')$action=$o['posting']==='Posted'?'Cancelled after posting — review receipt/reversal':($o['platform_status']==='Cancelled'&&(int)om_query('SELECT COALESCE(SUM(qty),0) FROM om_reservations WHERE order_id=?',[$o['id']])->fetchColumn()===0?'Unchanged':'Cancel / release');
 
- elseif(in_array($status,['Shipped','Delivered','Completed'],true)&&$o['posting']==='Not Posted'){$action='Dispatch / post';foreach($tot as $pid=>$qty){$stock=stock_row($pid);$held=(int)om_query('SELECT qty FROM om_reservations WHERE order_id=? AND product_id=?',[$o['id'],$pid])->fetchColumn();$snapshots['stock'][$pid]=[$stock['current'],platform_qty($b['platform'],$pid),om_reserved($pid),om_reserved($pid,$b['platform'])];if($held!==$qty||$qty>$stock['current']||$qty>platform_qty($b['platform'],$pid)||om_available($pid)<0||om_available($pid,$b['platform'])<0)throw new Exception('Reservation or current stock requires allocation review before posting.');}}
+ elseif(in_array($status,['Shipped','Delivered','Completed'],true)&&$o['posting']==='Not Posted'){$action='Dispatch / post';$postingDate=om_dispatch_review_date($lines,$o,$m);foreach($tot as $pid=>$qty){$stock=stock_row($pid);$held=(int)om_query('SELECT qty FROM om_reservations WHERE order_id=? AND product_id=?',[$o['id'],$pid])->fetchColumn();$snapshots['stock'][$pid]=[$stock['current'],platform_qty($b['platform'],$pid),om_reserved($pid),om_reserved($pid,$b['platform'])];if($held!==$qty||$qty>$stock['current']||$qty>platform_qty($b['platform'],$pid)||om_available($pid)<0||om_available($pid,$b['platform'])<0)throw new Exception('Reservation or current stock requires allocation review before posting.');}}
 
  elseif($o['posting']==='Reversed'&&$status!=='Cancelled')throw new Exception('Posting was reversed; review the linked correction before any new dispatch.');
 
@@ -139,7 +141,7 @@ function om_plan($b){
 
  }catch(Throwable $ex){$errors[]=$ex->getMessage();$action='Needs Checking';}
 
- $out[]=['order'=>(string)$no,'order_record'=>$o?:null,'lines'=>$lines,'totals'=>$tot,'status'=>$status,'aftersales'=>$af,'action'=>$action,'errors'=>$errors];
+ $out[]=['order'=>(string)$no,'order_record'=>$o?:null,'lines'=>$lines,'totals'=>$tot,'status'=>$status,'aftersales'=>$af,'action'=>$action,'errors'=>$errors,'date_details'=>om_date_details($lines,$o?:null,$m),'posting_date'=>$postingDate];
 
  }
 
@@ -171,7 +173,7 @@ function om_confirm($id,$digest,$ack){
 
  if($action==='Dispatch / post'){
 
- $date=substr($m['snapshot'],0,10);$ships=array_filter(array_column($r['lines'],'ship_at'));if($ships)$date=substr(max($ships),0,10);if($date<$o['fulfillment_date'])throw new Exception('Dispatch predates fulfillment registration.');require_open_inventory_date($date);
+ $date=$r['posting_date'];if(!$date)throw new Exception('Reopen review: posting date has not been validated.');require_open_inventory_date($date);
 
  // A separate ledger batch per order keeps linked reversals scoped to that order.
 
