@@ -1,6 +1,6 @@
 {
-  "build": "V5.9.5 Order Date Validation & Duplicate Protection \u2014 2026-11-10",
-  "requires": "Existing V5.9.4 application and V5.9.0 order schema. File-only update; no migration, reset, or automatic order posting.",
+  "build": "V5.9.6 Fresh Start Backup Manifest Validation Fix \u2014 2026-11-10",
+  "requires": "Existing V5.9.5 application. File-only validation fix; no migration or reset.",
   "files": {
     "Install_Order_Monitoring_Schedule.ps1": "b536ed83efdb181a947f31963631e1d6510fc9e506689eaef531994df01e28fa",
     "ORDER_MONITORING_GUIDE.txt": "2354ac7e63102978eb97b25c678e93924bdf9135a90f03f61b6aa53711d6c864",
@@ -65,7 +65,7 @@
     "assets/usability.js": "b90249d4f2c0178058b7fdeb8aed3c984e4abed43f2f0e1338d82d4415d7625a",
     "assign_categories.php": "b5a17b796f1861d342ff9ba0d4a7df2473e644ff78fac659a8048701b1a2baf0",
     "backup_auto.php": "abb9d045f342ae58c0fea08eb2a2b8e6ee1a9766298728dcee977e034198a536",
-    "backup_controls.php": "9519cc9de0cc9b957451aed21b6f8768c2fa8c4404e9a39bb878500f7b70ae0c",
+    "backup_controls.php": "a0699728a3cd5f7c332bd32d66b83a8dbbef942035f2ff5d5ddcf5bf04b08bda",
     "backup_download.php": "cd6d3c0a91e318563cf400b876fd4d5c825cf706ce26a303fdcce8dbad324b20",
     "backup_job.php": "3491cbca56362f076d7d7ae1eba3270a209a3b5bcd53f33e5817e0b537a2d14d",
     "backup_page.php": "9cab692fdac7634ba86ec13e82762fd2775cb6dfd247f5c66e2f6b17b5cde876",
@@ -125,7 +125,7 @@
     "inventory_count_page.php": "b164b24efec4b0d0696d0ed005fdbaf3ba1e2375b291b3f0bb2b3e2d55434111",
     "inventory_reports.php": "2b1b565c6a0f7eb44ee826a68a3f5ec43876ca4cd52c544db31f55adaa7a54d2",
     "inventory_reset.php": "200ea20acccbdb657b5a85d9d1bb9bfeb07a1046c79888423594b7caaeaa4aa6",
-    "inventory_reset_controls.php": "93109e3b1b3516aa5684be8b5c1a36a0e5062cc094067c32e6afe4915b0da34f",
+    "inventory_reset_controls.php": "3606eacfacaa1b4db4bf32147a93e086d24121b7d04a91afbb60e74069875806",
     "inventory_reset_page.php": "a43d189d3aaa339e0b39646bb0b48b085ed42c26b0b261681888946277731d65",
     "item_code_controls.php": "bebf4fafda435cc3d7a02cc8c6696efc104f178b9a55b6daf651b33084a51077",
     "item_code_update.php": "63fd5dec11a5b382c174b0099dad4b095ad91dd8562193bd0919b69895ddf0b5",
