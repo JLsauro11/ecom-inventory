@@ -240,6 +240,7 @@ require_once __DIR__.'/guided_count_controls.php';
 require_once __DIR__.'/access_policy.php';
 require_once __DIR__.'/usability.php';
 require_once __DIR__.'/order_monitor.php';
+require_once __DIR__.'/order_aging_workflow.php';
 require_once __DIR__.'/order_monitor_reports.php';
 require_once __DIR__.'/order_monitor_page.php';
 
