@@ -1,6 +1,7 @@
 <?php
 /** Native XLSX download: all text uses inline strings, never executable formulas. */
 function report_write_xlsx($path,$title,$headers,$rows,$metadata=[],$editable=[]){
+ [$headers,$rows,$metadata]=export_current_product_details($headers,$rows,$metadata);if(PHP_SAPI!=='cli'&&!headers_sent())header('Cache-Control: private, no-store, no-cache, max-age=0');
  $x=fn($v)=>htmlspecialchars((string)$v,ENT_XML1|ENT_QUOTES,'UTF-8');
  $cell=function($col,$row,$value,$style=0)use($x){$ref=XlsxReader::colLetters($col).$row;if(is_int($value)||is_float($value))return '<c r="'.$ref.'" s="'.$style.'"><v>'.$value.'</v></c>';return '<c r="'.$ref.'" s="'.$style.'" t="inlineStr"><is><t xml:space="preserve">'.$x($value).'</t></is></c>';};
  $all=[[$title]];foreach($metadata as $k=>$v)$all[]=[$k,is_array($v)?json_encode($v):$v];$all[]=$headers;$hr=count($all);foreach($rows as $r)$all[]=array_values($r);$last=XlsxReader::colLetters(max(0,count($headers)-1));
@@ -17,5 +18,6 @@ function report_write_xlsx($path,$title,$headers,$rows,$metadata=[],$editable=[]
  $z->addFromString('xl/worksheets/sheet1.xml',$xml);if(!$z->close())throw new Exception('Workbook could not be saved.');
 }
 function report_print_document($title,$headers,$rows,$meta=[]){
+ [$headers,$rows,$meta]=export_current_product_details($headers,$rows,$meta);
  echo '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>'.e($title).'</title><style>body{font:12px Arial,sans-serif;color:#16263c;margin:24px}h1{font-size:22px}table{width:100%;border-collapse:collapse}th,td{padding:8px;border-bottom:1px solid #cfd8e3;text-align:left;overflow-wrap:anywhere}th{background:#edf2f7}thead{display:table-header-group}tr{break-inside:avoid}.meta{margin:12px 0;line-height:1.6}.foot{margin-top:14px;color:#53647a}@page{size:A4 landscape;margin:12mm}@media print{button{display:none}}</style><link rel="stylesheet" href="assets/typography.css?v=5.4.6-b"></head><body><button onclick="window.print()">Print / Save as PDF</button><h1>'.e($title).'</h1><b>E-commerce Inventory Management System</b><div class="meta">';foreach($meta as $k=>$v)echo e($k).': '.e(is_array($v)?json_encode($v):$v).'<br>';echo '</div><table><thead><tr>';foreach($headers as $h)echo '<th>'.e($h).'</th>';echo '</tr></thead><tbody>';foreach($rows as $r){echo '<tr>';foreach($r as $v)echo '<td>'.e($v).'</td>';echo '</tr>';}if(!$rows)echo '<tr><td colspan="'.count($headers).'">No matching records.</td></tr>';echo '</tbody></table><p class="foot">Read-only report. Quantities in pieces. Use browser print settings for page numbers.</p></body></html>';
 }

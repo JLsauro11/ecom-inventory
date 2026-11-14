@@ -1,5 +1,6 @@
 <?php
 require __DIR__.'/lib.php';require_login();$pdo=db();$type=$_GET['type']??'';require __DIR__.'/v5_downloads.php';
+if(in_array($type,['beginning_template','return_template','supplier_inflow_template','order_template'],true))stream_current_template($type);
 if($type==='beginning_revision')beginning_review_version_download((int)($_GET['id']??0),(int)($_GET['version']??-1));
 if(in_array($type,['return_template','supplier_inflow_template'],true)){$path=__DIR__.'/templates/'.($type==='return_template'?'Order_Return_Template.xlsx':'Supplier_Inflow_Template.xlsx');if(!is_file($path)){http_response_code(404);exit('Template missing. Copy the complete update.');}header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');header('Content-Disposition: attachment; filename="'.basename($path).'"');readfile($path);exit;}
 if($type==='order_template'){$path=__DIR__.'/templates/Standard_Order_Upload_Template.xlsx';if(!is_file($path)){http_response_code(404);exit('Order template is missing. Copy the complete update package.');}header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');header('Content-Disposition: attachment; filename="Standard_Order_Upload_Template.xlsx"');header('Content-Length: '.filesize($path));readfile($path);exit;}

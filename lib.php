@@ -250,3 +250,5 @@ require_once __DIR__.'/order_simple_page.php';
 
 require_once __DIR__.'/inventory_reset_controls.php';
 ir_session_guard();
+
+require_once __DIR__.'/product_export_controls.php';
