@@ -1,11 +1,11 @@
 {
-  "build": "V5.9.8 Beginning Balance Blank Quantity Skip \u2014 2026-11-14",
-  "requires": "Existing V5.9.7 application. File-only update; blank quantities skipped, explicit zero applied. No migration or stock reset.",
+  "build": "V5.9.9 Operations Lead Beginning Balance Access \u2014 2026-11-14",
+  "requires": "Existing V5.9.8 application. File-only permission correction; no migration or stock changes.",
   "files": {
     "Install_Order_Monitoring_Schedule.ps1": "b536ed83efdb181a947f31963631e1d6510fc9e506689eaef531994df01e28fa",
     "ORDER_MONITORING_GUIDE.txt": "2354ac7e63102978eb97b25c678e93924bdf9135a90f03f61b6aa53711d6c864",
     "access_policy.php": "e625461ae657f4b19c4092d1929861f27a042ed15d0bc87427cb8534790a5644",
-    "access_roles.php": "5d70f9d28bb7d584cb356d358f921a8b1994dc681d661d6c2832127919119e18",
+    "access_roles.php": "2b076dabb37f86294d336c91e86867fb8ede746e9557b16bb667b0cba584cec7",
     "account.php": "129c46620e1880d92d9521c16d39de0c3a3b5c5f34a37114ce15dabccc36eec3",
     "account_password.php": "03192737e5cebb9a22ee139ef634a59ce12df5415b02a2482caa7cab6218e047",
     "actions.php": "fe1eb7489635219243a4b8e5cf6bd6b26b4026aec3c0b42272c395f59d468a3b",
