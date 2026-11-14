@@ -25,7 +25,7 @@ function export_current_product_details($headers,$rows,$metadata=[]){
 }
 function beginning_template_write($path){
  $rows=[];foreach(db()->query('SELECT master_sku,name,brand,category FROM products WHERE active=1 ORDER BY brand,name,id') as $p)$rows[]=[$p['master_sku'],$p['name'],inventory_filter_brand($p['brand']),$p['category'],''];
- report_write_xlsx($path,'Beginning Balance',['Master SKU','Item','Brand','Category','Quantity'],$rows,['Generated'=>date(DATE_ATOM),'Instructions'=>'Current active products. Fill Quantity for all included rows; remove unused rows. Zero means zero. Upload and review before submission.'],[4]);
+ report_write_xlsx($path,'Beginning Balance',['Master SKU','Item','Brand','Category','Quantity'],$rows,['Generated'=>date(DATE_ATOM),'Instructions'=>'Current active products. Blank Quantity is skipped and preserves the existing balance. Enter 0 to set zero. Upload and review before submission.'],[4]);
 }
 function template_product_reference($source,$dest){
  if(!is_file($source)||!copy($source,$dest))throw new Exception('Template unavailable.');$z=new ZipArchive();if($z->open($dest)!==true)throw new Exception('Cannot open template.');
