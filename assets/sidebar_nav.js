@@ -24,3 +24,13 @@
  window.addEventListener('pageshow',()=>render(read()));
  render(read());
 })();
+
+/* Keep the platform group separate from the full-sidebar visibility setting. */
+(() => {
+ 'use strict';
+ const group=document.querySelector('[data-sidebar-platforms]');
+ if(!group)return;
+ const key=(window.RS8_SIDEBAR_KEY||'rs8.sidebar')+'.platformInventory';
+ if(group.dataset.current!=='true')try{const saved=localStorage.getItem(key);if(saved==='closed')group.open=false;else if(saved==='open')group.open=true;}catch{}
+ group.addEventListener('toggle',()=>{try{localStorage.setItem(key,group.open?'open':'closed');}catch{}});
+})();
