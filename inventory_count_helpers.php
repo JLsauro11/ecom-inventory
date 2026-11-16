@@ -50,7 +50,7 @@ function count_apply_legacy($id,$reason,$allocations=[]){access_assert_admin_app
   if(!$count)throw new Exception('No actual counts to apply.');$u=current_user();foreach($lines as $line){if($line['actual_count']===null)continue;$delta=(int)$line['variance'];if(!$delta)continue;$pid=(int)$line['product_id'];
    if($delta>0)$pdo->prepare('INSERT INTO inflows(txn_date,reference_no,product_id,source_qty,source_uom,conversion_factor,qty,type,remarks,user_id) VALUES(?,?,?,?,?,?,?,?,?,?)')->execute([date('Y-m-d'),$b['batch_ref'],$pid,$delta,'pc',1,$delta,'Inventory Count Adjustment',$reason,$u['id']]);
    else $pdo->prepare('INSERT INTO outflows(txn_date,platform,order_id,product_id,qty,type,remarks,user_id) VALUES(?,?,?,?,?,?,?,?)')->execute([date('Y-m-d'),'Internal',$b['batch_ref'],$pid,-$delta,'Inventory Count Adjustment',$reason,$u['id']]);
-   foreach(['Shopee','Lazada','TikTok'] as $pl)if($plans[$pid][$pl])change_platform_stock($pl,$pid,($delta<0?-1:1)*$plans[$pid][$pl],$b['batch_ref'],date('Y-m-d'));check_platform_alignment($pid);
+   foreach(['Shopee','Lazada','TikTok','Website'] as $pl)if($plans[$pid][$pl])change_platform_stock($pl,$pid,($delta<0?-1:1)*$plans[$pid][$pl],$b['batch_ref'],date('Y-m-d'));check_platform_alignment($pid);
    audit('Inventory count adjustment','Product',$line['master_sku'],'Physical '.$line['on_hand'].' → '.$line['actual_count'].'; variance '.$delta.'; '.$b['batch_ref'].'; '.$reason.'; Reviewed platform quantities '.json_encode($plans[$pid]));
   }
   $pdo->prepare("UPDATE inventory_count_batches SET status='Applied',approved_by=?,approved_name=?,approved_role=?,applied_at=NOW(),reason=? WHERE id=?")->execute([$u['id'],$u['name'],$u['role'],$reason,$id]);$pdo->commit();

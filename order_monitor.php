@@ -9,7 +9,7 @@ function om_allowed(){return in_array(access_profile(),['Admin','Operations Lead
 
 function om_require(){if(!om_allowed())throw new Exception('Only Admin and Operations Lead can register orders, upload statuses or manage follow-up.');if(!om_ready())throw new Exception('Ask Admin to run the Order Monitoring upgrade.');}
 
-function om_shops(){return ['Shopee'=>'redspeed08philippines','Lazada'=>'REDSPEED PH','TikTok'=>'RS8 Philippines'];}
+function om_shops(){return ['Shopee'=>'redspeed08philippines','Lazada'=>'REDSPEED PH','TikTok'=>'RS8 Philippines','Website'=>'Website Selling'];}
 
 function om_shop($platform,$shop){stock_platform($platform);if((om_shops()[$platform]??'')!==$shop)throw new Exception('Select the configured shop for this platform.');return $shop;}
 

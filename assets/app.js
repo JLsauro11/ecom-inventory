@@ -98,7 +98,7 @@ document.querySelectorAll('input[type="password"]').forEach((input,index)=>{
 
 document.querySelectorAll('[data-cancel-inflow-form]').forEach(button=>button.addEventListener('click',()=>{rs8Confirm('Cancel this inflow form? Entered details and selected files will be discarded. No inventory will be added.',()=>{const entry=new URLSearchParams(window.location.search).get('entry')||'manual';window.location.assign('?page=inflow&entry='+encodeURIComponent(entry));});}));
 
-(() => {const source=document.querySelector('form [name="source_platform"]');if(!source)return;const platform=source.form.querySelector('[name="platform"]');const sync=()=>{const direct=['Shopee','Lazada','TikTok'].includes(platform.value);source.required=!direct;if(direct)source.value=platform.value;source.disabled=direct;};platform.addEventListener('change',sync);sync();})();
+(() => {const source=document.querySelector('form [name="source_platform"]');if(!source)return;const platform=source.form.querySelector('[name="platform"]');const sync=()=>{const direct=['Shopee','Lazada','TikTok','Website'].includes(platform.value);source.required=!direct;if(direct)source.value=platform.value;source.disabled=direct;};platform.addEventListener('change',sync);sync();})();
 
 // Back navigates only to safe display URLs; it never replays a POST request.
 (() => {

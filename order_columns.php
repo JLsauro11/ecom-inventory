@@ -1,7 +1,7 @@
 <?php
 // One column contract for the universal template and existing platform exports.
 function order_file_columns($rows,$platform){
- if(!in_array($platform,['Shopee','Lazada','TikTok'],true))throw new Exception('Select a supported order platform.');
+ if(!in_array($platform,['Shopee','Lazada','TikTok','Website'],true))throw new Exception('Select a supported order platform.');
  foreach($rows as $rn=>$row){
   $h=array_map('norm',$row);
   $find=function($names)use($h){foreach($names as $name){$i=array_search($name,$h,true);if($i!==false)return $i;}return null;};

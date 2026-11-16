@@ -44,9 +44,9 @@ function confirm_receipt_batch($bid,$uid){
 }
 function update_receipt_line($line,$pid,$source,$uom){$pdo=db();$pdo->beginTransaction();try{$q=$pdo->prepare('SELECT batch_id FROM receipt_staging_lines WHERE id=?');$q->execute([$line]);$bid=$q->fetchColumn();if(!$bid)throw new Exception('Receipt line not found.');$q=$pdo->prepare('SELECT * FROM inflow_batches WHERE id=? FOR UPDATE');$q->execute([$bid]);$b=$q->fetch();if(!$b||$b['status']!=='To Review')throw new Exception('Only pending receipts can be corrected.');active_product($pid);[$factor,$qty]=receipt_quantity($source,$uom);$pdo->prepare("UPDATE receipt_staging_lines SET product_id=?,source_qty=?,source_uom=?,conversion_factor=?,final_qty=?,validation_status='Matched',validation_message='' WHERE id=?")->execute([$pid,$source,$uom,$factor,$qty,$line]);if(!empty($_POST['save_alias'])){$q=$pdo->prepare('SELECT raw_item FROM receipt_staging_lines WHERE id=?');$q->execute([$line]);$raw=$q->fetchColumn();if(trim($raw)!=='')$pdo->prepare('INSERT INTO receipt_aliases(normalized_alias,alias,product_id) VALUES(?,?,?) ON DUPLICATE KEY UPDATE product_id=VALUES(product_id)')->execute([norm($raw),$raw,$pid]);}audit('Correct receipt line','Receipt',$b['batch_ref'],'Line #'.$line.' validated by reviewer');$pdo->commit();return $bid;}catch(Throwable $e){$pdo->rollBack();throw $e;}}
 
-function platform_label($platform){
+function platform_label($platform){if($platform==='Website')return '<span class="platform-brand website-brand">Website <small>WooCommerce</small></span>';
  $files=['Lazada'=>'lazada.svg','Shopee'=>'shopee.svg','TikTok'=>'tiktok.svg'];
  if(!isset($files[$platform]))return e($platform);
  return '<span class="platform-brand"><img src="assets/logos/'.$files[$platform].'" alt="'.e($platform).'" width="88" height="28"></span>';
 }
-function platform_logos(){return '<span class="platform-cluster">'.platform_label('Lazada').platform_label('Shopee').platform_label('TikTok').'</span>';}
+function platform_logos(){return '<span class="platform-cluster">'.platform_label('Lazada').platform_label('Shopee').platform_label('TikTok').platform_label('Website').'</span>';}

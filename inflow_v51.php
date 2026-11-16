@@ -5,7 +5,7 @@ function record_manual_inflow($input,$file=null,$stage=false){
  $reference=$input['reference_kind']??'';if(!in_array($reference,['Return Order','Return From Borrowed'],true))throw new Exception('Select a valid Reference.');
  $order=trim($input['order_id']??'');if($order===''||strlen($order)>100)throw new Exception('Order ID / borrowed reference is required (maximum 100 characters).');
  $condition=$input['item_condition']??'';if(!in_array($condition,['Good Item','Damaged / Leak','For Repackaging'],true))throw new Exception('Select Item Condition.');if($condition==='For Repackaging')packaging_require();
- $platform=$input['destination_platform']??'';if(!in_array($platform,['Shopee','Lazada','TikTok'],true))throw new Exception('Select a valid destination / return platform.');
+ $platform=$input['destination_platform']??'';if(!in_array($platform,['Shopee','Lazada','TikTok','Website'],true))throw new Exception('Select a valid destination / return platform.');
  $raw=$input['source_qty']??'';if(!is_numeric($raw)||(float)$raw<=0)throw new Exception('Quantity must be greater than zero.');$uom=trim($input['source_uom']??'pc');[$factor,$qty]=receipt_quantity((float)$raw,$uom);if($qty<=0||$qty>100000000)throw new Exception('Invalid inventory quantity.');
  $remarks=trim($input['remarks']??'');$type=$reference==='Return Order'?'Customer Return - Good':'Return From Borrowed';$attachment=null;$original=null;
  if(!empty($file['tmp_name'])){if(!in_array(strtolower(pathinfo($file['name'],PATHINFO_EXTENSION)),['pdf','png','jpg','jpeg'],true))throw new Exception('Use PDF, JPG or PNG attachments.');$attachment=store_upload($file,'inflow_attachments','INFATT');$original=basename($file['name']);}

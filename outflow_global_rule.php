@@ -1,6 +1,6 @@
 <?php
 function outflow_global_rule($platform,$returnTarget=null){
- $values=['Lazada'=>setting('default_lazada_pct','20'),'Shopee'=>setting('default_shopee_pct','40'),'TikTok'=>setting('default_tiktok_pct','40')];
+ $values=array_combine(['Lazada','Shopee','TikTok','Website'],website_defaults());
  echo '<div class="card rule-card" id="global-allocation-rule"><div class="card-head"><div><div class="eyebrow">GLOBAL RULE</div><h3>Global Allocation Rule</h3><span class="muted small">Default percentages for incoming stock. Saving this rule does not change existing platform inventory.</span></div></div>';
  if(can_action('save_default_allocation')){
   echo '<form method="post" action="actions.php" class="stack" data-confirm="Save the global allocation rule? Existing inventory will remain unchanged."><input type="hidden" name="action" value="save_default_allocation"><input type="hidden" name="return" value="'.e($returnTarget??('outflow&platform='.$platform)).'"><input type="hidden" name="csrf" value="'.e(csrf_token()).'"><div class="allocation-inputs">';

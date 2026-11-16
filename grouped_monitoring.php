@@ -1,6 +1,6 @@
 <?php
 // Read-only projections. Stock posting remains in the existing Outflow workflows.
-function gm_platform($input){$p=$input['platform']??'Shopee';return in_array($p,['Shopee','Lazada','TikTok','Manual'],true)?$p:'Shopee';}
+function gm_platform($input){$p=$input['platform']??'Shopee';return in_array($p,['Shopee','Lazada','TikTok','Website','Manual'],true)?$p:'Shopee';}
 function gm_products(){static $all=null;if($all===null){$all=[];foreach(db()->query('SELECT id,master_sku,name FROM products') as $p)$all[(int)$p['id']]=$p;}return $all;}
 function gm_items_text($items){$p=gm_products();$s=[];foreach($items as $id=>$qty)$s[]=($p[$id]['master_sku']??'#'.$id).' · '.($p[$id]['name']??'Product').' × '.$qty;return implode('; ',$s);}
 function gm_order_items(){static $result=null;if($result!==null)return $result;$result=[];foreach(db()->query('SELECT order_id,source_json,components_json FROM om_lines ORDER BY id') as $l){$s=json_decode($l['source_json'],true)?:[];foreach(json_decode($l['components_json'],true)?:[] as $c){$id=(int)($c['product_id']??0);if($id)$result[$l['order_id']][$id]=($result[$l['order_id']][$id]??0)+(int)($s['qty']??1)*(int)($c['per_bundle']??1);}}foreach(db()->query('SELECT l.order_id,o.product_id,SUM(o.qty) qty FROM om_postings l JOIN outflows o ON o.id=l.outflow_id WHERE o.qty>0 GROUP BY l.order_id,o.product_id') as $r)if(!isset($result[$r['order_id']][$r['product_id']]))$result[$r['order_id']][$r['product_id']]=(int)$r['qty'];return $result;}
