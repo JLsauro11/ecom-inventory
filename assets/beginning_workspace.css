@@ -3,3 +3,15 @@
 .content .bb-product-scroll .table th{position:sticky;top:0;z-index:2}.content .bb-history .table th{position:static;top:auto;z-index:auto}
 
 @media(max-width:650px){.content[data-ui-page="beginning"] .product-list-filters{display:grid;grid-template-columns:1fr;gap:12px;width:100%}.content[data-ui-page="beginning"] .product-list-filters>label{width:100%;min-width:0;flex:initial}.content[data-ui-page="beginning"] .product-list-filters>.btn{justify-self:end}}
+/* Original uploaded filename: compact trigger, full details in a native modal. */
+.content .bb-history .bb-file-disclosure{margin:10px 0 0;font-size:12px}
+.content .bb-history .bb-file-trigger{display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid #dce6f0;border-radius:8px;color:#345c85;background:#f5f8fc;list-style:none;font-weight:500;cursor:pointer;max-width:100%}
+.bb-file-trigger::-webkit-details-marker{display:none}.bb-file-trigger svg{flex-shrink:0;color:#16835f}.bb-file-expand{color:#7289a4}.bb-file-trigger:hover{background:#edf3fa}.bb-file-trigger:focus-visible{outline:3px solid #85b1ef;outline-offset:3px}
+.bb-file-fallback{padding:12px 14px;margin-top:10px;overflow-wrap:anywhere;background:#f5f8fc;border-radius:8px}
+.bb-file-dialog{position:fixed;inset:0;margin:auto;width:min(500px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto;border:1px solid #dce4ee;border-radius:16px;padding:26px;color:#142b45;background:#fff;box-shadow:0 24px 70px #0b1b3540}
+.bb-file-dialog::backdrop{background:#152a4370}.bb-file-heading{display:flex;align-items:center;gap:12px;padding-right:24px}.bb-file-heading h3{font-size:18px;margin:0 0 5px}.bb-file-record{color:#687e98;font-size:12px;margin:0;line-height:1.5}
+.bb-file-icon{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:11px;color:#11815c;background:#e9f7f0;flex-shrink:0}.bb-file-icon svg{width:24px;height:24px}.bb-file-close{position:absolute;right:14px;top:12px;border:0;background:transparent;color:#647a94;font-size:26px;width:34px;height:34px;cursor:pointer}
+.bb-file-name{padding:16px;background:#f5f8fc;border:1px solid #e1e9f2;border-radius:10px;margin:20px 0 16px;overflow-wrap:anywhere;font-size:14px;line-height:1.7;user-select:text;white-space:pre-wrap}
+.bb-file-meta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;color:#617994;padding-bottom:20px;font-variant-numeric:tabular-nums}.bb-file-actions{display:flex;justify-content:flex-end;border-top:1px solid #e5edf5;padding-top:16px}.bb-file-actions .btn{min-width:90px}
+@media(max-width:600px){.bb-file-dialog{padding:22px}.bb-file-close{min-width:40px;min-height:40px}.content .bb-history .bb-file-trigger{min-height:40px}}
+@media print{.bb-file-dialog{display:none!important}}

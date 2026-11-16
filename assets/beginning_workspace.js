@@ -13,4 +13,22 @@
   if(form){form.addEventListener('input',()=>{dirty=true;box.querySelector('[data-bb-dirty]').textContent='Unsaved quantities · Includes all product pages.';});form.addEventListener('invalid',event=>{const row=event.target.closest('[data-bb-row]');if(row){page=Math.floor(rows.indexOf(row)/size)+1;render();requestAnimationFrame(()=>event.target.focus());}},true);form.addEventListener('submit',event=>{queueMicrotask(()=>{submitting=!event.defaultPrevented;});});window.addEventListener('beforeunload',event=>{if(dirty&&!submitting){event.preventDefault();event.returnValue='';}});}
  }
  document.querySelectorAll('[data-bb-size="bb_history_size"]').forEach(select=>select.addEventListener('change',()=>{const url=new URL(location.href);url.searchParams.set('bb_history_size',select.value);url.searchParams.set('bb_history_offset','0');location.assign(url);}));
+ const fileDialog=document.getElementById('bbFileDialog');
+ if(fileDialog&&typeof fileDialog.showModal==='function'){
+  let fileOpener=null;
+  document.querySelectorAll('[data-bb-file]').forEach(trigger=>{
+   trigger.setAttribute('aria-haspopup','dialog');trigger.setAttribute('aria-controls','bbFileDialog');
+   trigger.addEventListener('click',event=>{
+    event.preventDefault();fileOpener=trigger;
+    document.getElementById('bbFileName').textContent=trigger.dataset.filename;
+    fileDialog.querySelector('[data-bb-file-record]').textContent='Beginning Balance · Record #'+trigger.dataset.record;
+    const extension=trigger.dataset.extension;
+    fileDialog.querySelector('[data-bb-file-type]').textContent=(extension==='xlsx'?'Excel workbook':'Uploaded file')+(extension?' · .'+extension:'');
+    fileDialog.querySelector('[data-bb-file-date]').textContent=trigger.dataset.uploaded;
+    if(!fileDialog.open)fileDialog.showModal();
+   });
+  });
+  fileDialog.querySelectorAll('[data-bb-file-close]').forEach(button=>button.addEventListener('click',()=>fileDialog.close()));
+  fileDialog.addEventListener('close',()=>{if(fileOpener?.isConnected)fileOpener.focus();});
+ }
 })();
