@@ -6,8 +6,8 @@ function overview_export_sections($r){return [
  ['name'=>'Movement Breakdown','headers'=>['Movement','Sellable (pcs)','Non-Sellable (pcs)','Physical (pcs)'],'rows'=>overview_matrix_rows($r['overview']['rollforward'],$r['filters'])]
  ];}
 /** Reuses the existing typed/escaped XLSX writer, then combines its worksheets. */
-function overview_write_xlsx($path,$r){
- $sections=overview_export_sections($r);$meta=overview_export_meta($r);$meta['Notes']=implode(' ',$r['notes']);$sheets=[];$styles='';$temporary=[];
+function overview_write_xlsx($path,$r,$sections=null,$metadata=null){
+ $sections=$sections??overview_export_sections($r);$meta=$metadata??overview_export_meta($r);$meta['Notes']=implode(' ',$r['notes']);$sheets=[];$styles='';$temporary=[];
  try{
   foreach($sections as $section){$temp=tempnam(sys_get_temp_dir(),'rs8-overview-');if($temp===false)throw new Exception('Temporary report storage unavailable.');$temporary[]=$temp;
    report_write_xlsx($temp,$section['name'],$section['headers'],$section['rows'],$meta);$input=new ZipArchive();if($input->open($temp)!==true)throw new Exception('Cannot read generated report.');try{$xml=$input->getFromName('xl/worksheets/sheet1.xml');$style=$input->getFromName('xl/styles.xml');if($xml===false||$style===false)throw new Exception('Generated report is incomplete.');$sheets[]=$xml;if($styles==='')$styles=$style;}finally{$input->close();}

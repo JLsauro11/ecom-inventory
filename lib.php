@@ -259,3 +259,7 @@ require_once __DIR__.'/product_export_controls.php';
 require_once __DIR__.'/overview_reports.php';
 require_once __DIR__.'/overview_page.php';
 require_once __DIR__.'/overview_exports.php';
+
+require_once __DIR__.'/balance_reports.php';
+require_once __DIR__.'/balance_report_pages.php';
+require_once __DIR__.'/balance_report_exports.php';

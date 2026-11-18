@@ -123,7 +123,8 @@ function om_plan($b){
  elseif(om_existing_totals($o['id'])!==$tot)throw new Exception('Historical posted quantities do not match this export. Correct the mapping or investigate the original outflow.');
 
  foreach($lines as $ln){foreach(['ship_at','delivered_at'] as $timestamp)if(!empty($ln[$timestamp])&&$ln[$timestamp]>$m['snapshot'])throw new Exception('Export snapshot predates an included shipment or delivery timestamp.');}
- if($m['snapshot']<$o['created_at']&&$o['registration_id'])throw new Exception('Export predates fulfillment registration.');if($o['last_snapshot']&&$m['snapshot']<$o['last_snapshot'])throw new Exception('Older export: keep the newer recorded status.');
+ // Encoding time is not the actual fulfillment date. Late entry may use an earlier valid export.
+ if($o['last_snapshot']&&$m['snapshot']<$o['last_snapshot'])throw new Exception('Older export: keep the newer recorded status.');
 
  $reported=oa_reported($o);if($reported['status']==='Cancelled'&&$status!=='Cancelled')throw new Exception('A platform cancellation is already reported; confirm it in Inflow.');
  $rank=['Needs Checking'=>0,'Unpaid'=>0,'To Ship'=>1,'Shipped'=>2,'Delivered'=>3,'Completed'=>4,'Cancelled'=>5,'Return / Refund'=>4,'Failed Delivery'=>4];if($status==='Needs Checking')throw new Exception('Unknown or conflicting item statuses.');if($o['platform_status']==='Cancelled'&&$status!=='Cancelled')throw new Exception('Cancelled order cannot return to an earlier fulfillment status.');if($status!=='Cancelled'&&($rank[$status]??0)<($rank[$o['platform_status']]??0))throw new Exception('Status rollback blocked.');
