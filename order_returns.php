@@ -1,5 +1,6 @@
 <?php
-function order_return_balance($platform,$order,$pid){
+function order_return_balance($platform,$order,$pid){$refs=or_numbers($platform,$order);$balance=order_return_balance_exact($platform,$refs[0],$pid);foreach(array_slice($refs,1) as $ref)$balance['returned']+=order_return_balance_exact($platform,$ref,$pid)['returned'];$balance['remaining']=max(0,$balance['original']-$balance['returned']);return $balance;}
+function order_return_balance_exact($platform,$order,$pid){
  stock_platform($platform);$q=db()->prepare("SELECT COALESCE(SUM(qty),0) FROM outflows WHERE platform=? AND order_id=? AND product_id=? AND type='Order' AND reversed_by_request IS NULL");$q->execute([$platform,$order,$pid]);$original=(int)$q->fetchColumn();
  $q=db()->prepare('SELECT COALESCE(SUM(qty),0) FROM posted_returns WHERE platform=? AND original_ref=? AND product_id=? AND reversed=0');$q->execute([$platform,$order,$pid]);$returned=(int)$q->fetchColumn();
  $q=db()->prepare("SELECT COALESCE(SUM(qty),0) FROM inflows WHERE source_platform=? AND reference_no=? AND product_id=? AND type='Customer Return - Good' AND reversed_by_request IS NULL");$q->execute([$platform,$order,$pid]);$returned+=(int)$q->fetchColumn();
