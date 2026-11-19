@@ -1,6 +1,6 @@
 {
-  "build": "V5.9.26 Receiving Form Access and Readable Status Tabs \u2014 2026-11-19",
-  "requires": "Existing V5.9.25 application. File-only update; no migration, reset or automatic order posting.",
+  "build": "V5.9.27 Bulk Fulfillment Date Select All \u2014 2026-11-19",
+  "requires": "Existing V5.9.26 application. File-only update; no migration, reset or automatic order posting.",
   "files": {
     "Install_Order_Monitoring_Schedule.ps1": "b536ed83efdb181a947f31963631e1d6510fc9e506689eaef531994df01e28fa",
     "ORDER_MONITORING_GUIDE.txt": "2354ac7e63102978eb97b25c678e93924bdf9135a90f03f61b6aa53711d6c864",
@@ -103,7 +103,7 @@
     "brand_sku_controls.php": "7e26915c92fc2d07d9161c84d23a2ba216d5b8b219ee86442e77bb4c9f0b9d4a",
     "brand_sku_page.php": "23566d22716ea71c488d97950e56058cbf96c5682598abb8b21a83e64ac5b367",
     "brand_sku_update.php": "5d77629f1ce46c1965409c2a534e1e1a20a9e92161cfd435ac4b19e6029c304a",
-    "bulk_fulfillment.php": "e5789cfcab7f22c3b17ac9fea7884d85258779f9bc297a87cbdc3080f4c49ee9",
+    "bulk_fulfillment.php": "18287d61ea43457086741e498c5acf4aae95fb14f24c61261e783140c56d5e68",
     "bundle_controls.php": "49538e6b8277e4554bffdc744bd105895daaad701d0e3bb973f704ad533afd67",
     "cancelled_orders.php": "a95d103f8d22fe9ea40ee9622065ef4cb9e7665fc9981d09f92abb918c1e4728",
     "cancelled_orders_page.php": "cb4f7e1f0decec1ff96282483c3b06df2eeb76d5e0683e6a3525a0eebcaaeceb",
