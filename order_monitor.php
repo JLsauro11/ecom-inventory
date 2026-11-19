@@ -51,27 +51,7 @@ function om_assert_available($pid,$qty,$platform=null){if(om_ready()&&$qty>om_av
 function om_mapping_key($pl,$shop,$r){return hash('sha256',json_encode([$pl,$shop,$r['external'],$r['sku'],$r['name'],$r['variation']]));}
 
 function om_component_check($raw,$allowInactive=false){if(!$allowInactive)return bundle_components_validate($raw);if(!is_array($raw)||!$raw||count($raw)>50)throw new Exception('Enter 1 to 50 components.');$out=[];$seen=[];foreach($raw as $c){$pid=whole_number($c['product_id']??'','Product',1);if(isset($seen[$pid])||!om_query('SELECT COUNT(*) FROM products WHERE id=?',[$pid])->fetchColumn())throw new Exception('Invalid or repeated product component.');$seen[$pid]=true;$out[]=['product_id'=>$pid,'per_bundle'=>whole_number($c['per_bundle']??'','Quantity',1)];}return $out;}
-function om_components($pl,$shop,$r,$allowInactive=false){
-
- if(isset($r['components']))return om_component_check($r['components'],$allowInactive);$key=om_mapping_key($pl,$shop,$r);$v=om_query('SELECT components_json FROM om_mappings WHERE mapping_key=?',[$key])->fetchColumn();if($v)return om_component_check(json_decode($v,true),$allowInactive);
-
- if($c=bundle_mapping_get($pl,$r['item']))return om_component_check($c,$allowInactive);
-
- $ids=[];if($r['external']!==''){$q=om_query('SELECT DISTINCT product_id FROM platform_aliases WHERE platform=? AND external_id=?',[$pl,$r['external']]);$ids=array_map('intval',$q->fetchAll(PDO::FETCH_COLUMN));}
-
- if(count($ids)>1)throw new Exception('Ambiguous SKU identity. Select the exact product/variation or bundle.');
-
- if(!$ids){$candidates=array_unique(array_filter([$r['item'],$r['name'],$r['name'].' '.$r['variation']]));foreach($candidates as $c){$q=om_query('SELECT id FROM products WHERE '.($allowInactive?'':'active=1 AND ').'(master_sku=? OR normalized_name=?)',[$c,norm($c)]);$found=array_map('intval',$q->fetchAll(PDO::FETCH_COLUMN));$aliases=om_query('SELECT product_id FROM product_code_aliases WHERE alias_code=?',[$c])->fetchAll(PDO::FETCH_COLUMN);$found=array_merge($found,array_map('intval',$aliases));$q=om_query('SELECT DISTINCT product_id FROM platform_aliases WHERE platform=? AND normalized_alias=?',[$pl,norm($c)]);$found=array_merge($found,array_map('intval',$q->fetchAll(PDO::FETCH_COLUMN)));$ids=array_values(array_unique(array_merge($ids,$found)));}}
-
- if(count($ids)!==1)throw new Exception('Select the matching product or bundle components.');
-
- // Seller SKU alone is not sufficient for TikTok variants; exact identity must be saved.
-
- if($pl==='TikTok'&&$r['variation']!==''&&$r['external']!==''&&!om_query('SELECT COUNT(*) FROM platform_aliases WHERE platform=? AND external_id=?',[$pl,$r['external']])->fetchColumn())throw new Exception('Confirm this TikTok SKU ID and variation once, then save the mapping.');
-
- return om_component_check([['product_id'=>$ids[0],'per_bundle'=>1]],$allowInactive);
-
-}
+function om_components($pl,$shop,$r,$allowInactive=false){return sm_components($pl,$shop,$r,$allowInactive);}
 
 function om_totals($lines){$tot=[];foreach($lines as $r)foreach($r['components'] as $c){$pid=(int)$c['product_id'];$tot[$pid]=($tot[$pid]??0)+(int)$r['qty']*(int)$c['per_bundle'];}ksort($tot,SORT_NUMERIC);return $tot;}
 
@@ -91,7 +71,7 @@ function om_stage($kind,$input,$file){om_require();$m=om_meta($kind,$input);vali
 
 function om_owner($b){om_require();if(access_profile()!=='Admin'&&(int)$b['created_by']!==current_user()['id'])throw new Exception('Only the uploader or Admin may confirm or correct this upload.');if($b['status']!=='Review')throw new Exception('This upload is already confirmed or cancelled.');}
 
-function om_correct($id,$rowNo,$revision,$input){$b=om_upload($id);om_owner($b);if((int)$b['revision']!==(int)$revision)throw new Exception('Review changed. Reopen it.');$c=bundle_components_validate($input['components']??[]);$found=false;foreach($b['rows'] as &$r)if((int)$r['row']===$rowNo){$r['components']=$c;$found=true;if(!empty($input['save_mapping'])){om_query('INSERT INTO om_mappings(mapping_key,platform,shop,source_json,components_json,saved_by) VALUES(?,?,?,?,?,?) ON DUPLICATE KEY UPDATE components_json=VALUES(components_json),saved_by=VALUES(saved_by)',[om_mapping_key($b['platform'],$b['shop'],$r),$b['platform'],$b['shop'],json_encode($r),json_encode($c),current_user()['id']]);}break;}unset($r);if(!$found)throw new Exception('Source row not found.');om_query('UPDATE om_uploads SET rows_json=?,revision=revision+1 WHERE id=?',[json_encode($b['rows']),$id]);om_event(null,$id,'Mapping corrected',['row'=>$rowNo,'components'=>$c]);}
+function om_correct($id,$rowNo,$revision,$input){$b=om_upload($id);om_owner($b);if((int)$b['revision']!==(int)$revision)throw new Exception('Review changed. Reopen it.');$c=bundle_components_validate($input['components']??[]);$found=false;foreach($b['rows'] as &$r)if((int)$r['row']===$rowNo){$r['components']=$c;$r['mapping_is_manual']=true;$found=true;if(!empty($input['save_mapping'])){om_query('INSERT INTO om_mappings(mapping_key,platform,shop,source_json,components_json,saved_by) VALUES(?,?,?,?,?,?) ON DUPLICATE KEY UPDATE components_json=VALUES(components_json),saved_by=VALUES(saved_by)',[om_mapping_key($b['platform'],$b['shop'],$r),$b['platform'],$b['shop'],json_encode($r),json_encode($c),current_user()['id']]);sm_remember_confirmed($b['platform'],$b['shop'],[$r]);}break;}unset($r);if(!$found)throw new Exception('Source row not found.');unset($GLOBALS['SM_MAPPING_ROWS'][$b['platform'].'|'.$b['shop']]);om_query('UPDATE om_uploads SET rows_json=?,revision=revision+1 WHERE id=?',[json_encode($b['rows']),$id]);om_event(null,$id,'Mapping corrected',['row'=>$rowNo,'components'=>$c]);}
 
 function om_plan($b){
 
@@ -110,7 +90,7 @@ function om_plan($b){
  else{
 
  om_validate_source_dates($lines,$m,$b['kind']);
- $stored=$b['kind']==='Status'?om_query('SELECT * FROM om_lines WHERE order_id=? ORDER BY id',[$o['id']])->fetchAll():[];foreach($lines as &$line){$saved=$b['kind']==='Status'?om_saved_status_components($o,$line,$stored):null;$line['mapping_basis']=$saved!==null?'Saved registration / verified order mapping':'Current upload mapping';$line['components']=$saved??om_components($b['platform'],$b['shop'],$line,$b['kind']==='Status');}unset($line);$tot=om_totals($lines);
+ $stored=$b['kind']==='Status'?om_query('SELECT * FROM om_lines WHERE order_id=? ORDER BY id',[$o['id']])->fetchAll():[];if($stored)$lines=sm_bind_status_lines($o,$lines,$stored);foreach($lines as &$line){$line['mapping_is_manual']=$line['mapping_is_manual']??($b['kind']==='Register'&&isset($line['components']));$saved=$b['kind']==='Status'?om_saved_status_components($o,$line,$stored):null;$line['mapping_basis']=$saved!==null?'Saved registration / verified order mapping':'Current upload mapping';$line['components']=$saved??om_components($b['platform'],$b['shop'],$line,$b['kind']==='Status');}unset($line);$tot=om_totals($lines);
 
  if($b['kind']==='Register'){
 
@@ -171,7 +151,7 @@ function om_confirm($id,$digest,$ack){
 
  om_query('INSERT IGNORE INTO om_sessions(platform,shop,fulfillment_date) VALUES(?,?,?)',[$b['platform'],$b['shop'],$m['fulfillment_date']]);$sid=om_query('SELECT id FROM om_sessions WHERE platform=? AND shop=? AND fulfillment_date=?',[$b['platform'],$b['shop'],$m['fulfillment_date']])->fetchColumn();
 
- om_query("INSERT INTO om_orders(platform,shop,order_no,created_order_at,fulfillment_date,session_id,registration_id,owner_id,raw_status) VALUES(?,?,?,?,?,?,?,?,?)",[$b['platform'],$b['shop'],$r['order'],$r['lines'][0]['created'],$m['fulfillment_date'],$sid,$id,$b['created_by'],$r['lines'][0]['raw_status']]);$oid=(int)db()->lastInsertId();foreach($r['lines'] as $line){$c=$line['components'];unset($line['components']);om_query('INSERT INTO om_lines(order_id,line_key,source_json,components_json) VALUES(?,?,?,?)',[$oid,$line['key'],json_encode($line),json_encode($c)]);}foreach($r['totals'] as $pid=>$qty)om_reserve_change($oid,$pid,$qty,'Reserved');om_event($oid,$id,!empty($m['late'])?'Late order registered':'Order registered',['reason'=>$m['reason'],'totals'=>$r['totals']]);or_sync(om_order($oid),$r['lines'],$id,false,true);continue;
+ om_query("INSERT INTO om_orders(platform,shop,order_no,created_order_at,fulfillment_date,session_id,registration_id,owner_id,raw_status) VALUES(?,?,?,?,?,?,?,?,?)",[$b['platform'],$b['shop'],$r['order'],$r['lines'][0]['created'],$m['fulfillment_date'],$sid,$id,$b['created_by'],$r['lines'][0]['raw_status']]);$oid=(int)db()->lastInsertId();foreach($r['lines'] as $line){$c=$line['components'];unset($line['components']);om_query('INSERT INTO om_lines(order_id,line_key,source_json,components_json) VALUES(?,?,?,?)',[$oid,$line['key'],json_encode($line),json_encode($c)]);}foreach($r['totals'] as $pid=>$qty)om_reserve_change($oid,$pid,$qty,'Reserved');sm_remember_confirmed($b['platform'],$b['shop'],$r['lines']);om_event($oid,$id,!empty($m['late'])?'Late order registered':'Order registered',['reason'=>$m['reason'],'totals'=>$r['totals']]);or_sync(om_order($oid),$r['lines'],$id,false,true);continue;
 
  }
 

@@ -272,3 +272,5 @@ require_once __DIR__.'/unified_receiving_page.php';
 require_once __DIR__.'/order_references.php';
 
 require_once __DIR__.'/order_monitor_tabs.php';
+
+require_once __DIR__.'/sku_matching.php';
