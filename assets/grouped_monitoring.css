@@ -32,3 +32,13 @@
 @media(max-width:640px){.gm-filters.gmt-primary,.gm-filters.gmt-extra{grid-template-columns:1fr}.gmt-status-tabs{gap:2px 12px}.gmt-status-tab{min-height:44px}}
 
 .gmt-other{margin:18px 0}.gmt-other>summary{padding:12px 4px;color:#334e70;font-weight:600;cursor:pointer}.gmt-other[open]>.card{margin-top:14px}
+
+/* Full-width status tabs with larger labels and count badges. */
+.gmt-status-tabs{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));width:100%;gap:3px;padding:4px;border:0;background:#eaf0f5;border-radius:10px}
+.gmt-status-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-width:0;min-height:110px;padding:14px 7px;border-radius:7px;border-bottom:3px solid transparent;text-align:center;white-space:normal;font-size:16px;line-height:1.45;font-weight:600;overflow-wrap:normal}
+.gmt-status-tab.active{background:#fff;box-shadow:0 3px 9px #172a420a}
+.gmt-status-tab>span{font-size:15px;font-weight:600;padding:2px 9px;background:#f3f6f9}
+@media(max-width:950px){.gmt-status-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}.gmt-status-tab{min-height:90px}.gmt-status-tab:last-child{grid-column:1/-1}}
+@media(max-width:480px){.gmt-status-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.gmt-status-tab>.gmt-status-label{padding:0;min-height:46px;font-size:16px;line-height:1.4;display:flex;align-items:center;justify-content:center;background:transparent;color:inherit;border-radius:0}
