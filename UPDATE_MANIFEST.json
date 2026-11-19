@@ -1,6 +1,6 @@
 {
-  "build": "V5.9.27 Bulk Fulfillment Date Select All \u2014 2026-11-19",
-  "requires": "Existing V5.9.26 application. File-only update; no migration, reset or automatic order posting.",
+  "build": "V5.9.28 Saved Order Products and Source Details \u2014 2026-11-19",
+  "requires": "Existing V5.9.27 application. File-only update; no migration, reset or automatic order posting.",
   "files": {
     "Install_Order_Monitoring_Schedule.ps1": "b536ed83efdb181a947f31963631e1d6510fc9e506689eaef531994df01e28fa",
     "ORDER_MONITORING_GUIDE.txt": "2354ac7e63102978eb97b25c678e93924bdf9135a90f03f61b6aa53711d6c864",
@@ -180,8 +180,8 @@
     "order_returns.php": "8ddc9076a47e9285dcca63a7582f2482d6257d4d05d9d0d49a21c4ebb4843706",
     "order_review_controls.php": "0a536664d037b84d25356341f960870454c9066a18fe2f9f511ec08d97dadc0e",
     "order_review_v51.php": "5ec5eebdcc830e115cfd1e4539e304538a14326c1fff159524338a9656a0f293",
-    "order_simple.php": "b540a9e426edb328c14a50d14759dae06571df0b0a04acd9966b14454c425e14",
-    "order_simple_page.php": "25437ef3176da61481d67e4b89857e92703ad3cbe7f16de60698225f7f35d8ef",
+    "order_simple.php": "7897ee1dad0727835323ded65ee1faa0867593e165e13f215328d8f681024760",
+    "order_simple_page.php": "ef532ee92a1cd0c8768f8ad7cac54ab27a3de22e78a34e6ca8e6eeea4c55a22d",
     "outflow_global_rule.php": "09c8e2300c1b46895ab1151d8eaa6aabb26658058afad238c0082127e48c8332",
     "overview_exports.php": "42f3823ed764548a9f668825f23043889b9a0ff928c132571725050e2deb8d36",
     "overview_page.php": "4c34fefeede13a7b494926fa25cefec354c2eb1dd446e59abad6ce3a9d9ea50f",
