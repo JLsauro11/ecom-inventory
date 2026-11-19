@@ -13,7 +13,7 @@ try{
  }
  if($_SERVER['REQUEST_METHOD']!=='POST')throw new Exception('Use the form.');verify_csrf();$a=$_POST['action']??'';
  if($a==='om_receive'){
- if(!can_action('return_confirm'))throw new Exception('Return receiving access required.');$o=om_order((int)($_POST['order_id']??0));if($o['posting']!=='Posted')throw new Exception('This order has no active posted outflow.');receiving_lookup(['transaction_kind'=>'returns','platform'=>$o['platform'],'order_id'=>$o['order_no'],'txn_date'=>date('Y-m-d')]);$url='index.php?page=inflow&entry=manual';flash('Original order loaded. Select only physically received items and validate before posting.','info');
+ if(!can_action('return_confirm'))throw new Exception('Return receiving access required.');$o=om_order((int)($_POST['order_id']??0));if($o['posting']!=='Posted')throw new Exception('This order has no active posted outflow.');$url='index.php?page=inflow&entry=manual&ur_order_id='.(int)$o['id'];flash('Original order loaded. Select only physically received items and validate before posting.','info');
  }else{
  om_require();$lock=inventory_write_lock();
  if(in_array($a,['om_stage','om_correct','om_correct_fulfillment','om_bulk_date_validate','om_bulk_date_apply','om_confirm','om_cancel','om_close'],true)){$context=!empty($_POST['upload_id'])?om_upload((int)$_POST['upload_id']):null;$entry=strtolower($context['kind']??($_POST['kind']??'Register'));$url='index.php?page=outflow&entry='.rawurlencode($entry).'&platform='.rawurlencode($context['platform']??($_POST['platform']??'Shopee'));}

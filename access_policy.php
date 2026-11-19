@@ -11,6 +11,7 @@ function access_request_allowed($script,$method,$get=[],$post=[],$role=null){
  if(str_starts_with($script,'upgrade_')||in_array($script,['backup_download.php','backup_auto.php','assign_categories.php','brand_sku_update.php','item_code_update.php'],true))return false;
  if($script==='index.php')return $method==='GET'&&access_page_allowed($get['page']??'dashboard',$role)&&(($get['page']??'')!=='reports'||access_report_allowed($get['report']??'overview',$role));
  if(in_array($script,['inventory_count.php','inventory_count_legacy_endpoint.php'],true))return $method==='GET'?!access_is_viewer($role):access_count_action_allowed($post['action']??'',$role);
+ if($script==='unified_receiving_action.php')return $method==='GET'?access_page_allowed('inflow',$role):role_profile_can_action($profile,'return_confirm');
  if($script==='order_interaction.php')return $method==='GET'?access_page_allowed('order_monitor',$role):in_array($profile,['Admin','Operations Lead'],true);
  if($script==='order_monitor_action.php'&&$method==='GET')return true;
  if($script==='report.php')return $method==='GET'&&access_report_allowed($get['report']??'overview',$role);

@@ -267,3 +267,5 @@ require_once __DIR__.'/balance_report_exports.php';
 require_once __DIR__.'/bulk_fulfillment.php';
 require_once __DIR__.'/order_interactions.php';
 require_once __DIR__.'/order_cancellation_routing.php';
+require_once __DIR__.'/unified_receiving.php';
+require_once __DIR__.'/unified_receiving_page.php';
