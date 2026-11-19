@@ -101,7 +101,8 @@ function om_plan($b){
 
  try{
 
- if($b['kind']==='Register'&&$o){$action='Duplicate — skip';}
+ if(oi_exclusion($b,(string)$no)){$action='Removed from Upload';}
+ elseif($b['kind']==='Register'&&$o){$action='Duplicate — skip';}
 
  elseif($b['kind']==='Status'&&!$o){$action='Excluded — not registered';}
 
@@ -144,7 +145,7 @@ function om_plan($b){
 
  }catch(Throwable $ex){$errors[]=$ex->getMessage();$action='Needs Checking';}
 
- $out[]=['order'=>(string)$no,'order_record'=>$o?:null,'lines'=>$lines,'totals'=>$tot,'status'=>$status,'aftersales'=>$af,'action'=>$action,'errors'=>$errors,'date_details'=>om_date_details($lines,$o?:null,$m),'posting_date'=>$postingDate];
+ $out[]=['order'=>(string)$no,'order_record'=>$o?:null,'lines'=>$lines,'totals'=>$tot,'status'=>$status,'aftersales'=>$af,'action'=>$action,'errors'=>$errors,'date_details'=>om_date_details($lines,$o?:null,$m),'posting_date'=>$postingDate,'exclusion'=>oi_exclusion($b,(string)$no)];
 
  }
 
@@ -160,9 +161,9 @@ function om_release_all($id,$type){foreach(om_query('SELECT * FROM om_reservatio
 
 function om_confirm($id,$digest,$ack){
 
- om_require();if(!$ack)throw new Exception('Review and acknowledge the validation results.');return process_transaction(function()use($id,$digest){$b=om_upload($id);om_owner($b);$p=om_plan($b);if($b['kind']==='Register'&&array_filter($p['orders'],fn($r)=>$r['errors']))throw new Exception('Resolve every registration issue before confirmation, or cancel and correct the source file. No reservation was created.');if(!hash_equals($p['digest'],(string)$digest))throw new Exception('Stock, registration or review changed. Reopen validation before confirming.');$counts=[];$m=$b['meta'];
+ om_require();if(!$ack)throw new Exception('Review and acknowledge the validation results.');return process_transaction(function()use($id,$digest){$b=om_upload($id);om_owner($b);$p=om_plan($b);if($b['kind']==='Register'&&!array_filter($p['orders'],fn($r)=>$r['action']!=='Removed from Upload'))throw new Exception('No orders remain to register. Restore an order or cancel this upload.');if($b['kind']==='Register'&&array_filter($p['orders'],fn($r)=>$r['errors']))throw new Exception('Resolve every registration issue before confirmation, or cancel and correct the source file. No reservation was created.');if(!hash_equals($p['digest'],(string)$digest))throw new Exception('Stock, registration or review changed. Reopen validation before confirming.');$counts=[];$m=$b['meta'];
 
- foreach($p['orders'] as $r){$action=$r['action'];$counts[$action]=($counts[$action]??0)+1;$o=$r['order_record'];if($action==='Duplicate — skip')continue;if($action==='Excluded — not registered'){os_note_excluded($b,$r);continue;}if($r['errors']){if($o){om_query("UPDATE om_orders SET exception_text=?,monitoring='Needs Follow-up',revision=revision+1 WHERE id=?",[implode(' · ',$r['errors']),$o['id']]);om_event($o['id'],$id,'Conflicting update blocked',$r);}continue;}
+ foreach($p['orders'] as $r){$action=$r['action'];$counts[$action]=($counts[$action]??0)+1;$o=$r['order_record'];if(in_array($action,['Duplicate — skip','Removed from Upload'],true))continue;if($action==='Excluded — not registered'){os_note_excluded($b,$r);continue;}if($r['errors']){if($o){om_query("UPDATE om_orders SET exception_text=?,monitoring='Needs Follow-up',revision=revision+1 WHERE id=?",[implode(' · ',$r['errors']),$o['id']]);om_event($o['id'],$id,'Conflicting update blocked',$r);}continue;}
 
  if($b['kind']==='Register'){
 
