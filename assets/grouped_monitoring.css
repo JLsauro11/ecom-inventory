@@ -14,3 +14,21 @@
 .gm-order-actions .btn:focus-visible{outline:3px solid #2075c7;outline-offset:2px}
 .gm-table .gm-order-actions .btn+.btn{margin-left:0}
 
+
+/* Status tabs are list filters, separate from the selling-platform navigation. */
+.gmt-status-tabs{display:flex;flex-wrap:wrap;gap:4px 16px;border-bottom:1px solid #dce4ee;margin:0 0 18px}
+.gmt-status-tab{display:inline-flex;align-items:center;gap:7px;padding:12px 2px;border-bottom:3px solid transparent;color:#52677f;text-decoration:none;font-size:13px;white-space:nowrap}
+.gmt-status-tab.active{border-bottom-color:#ed142b;color:#d51229;font-weight:600}
+.gmt-status-tab>span,.gmt-filter-count{padding:1px 7px;border-radius:14px;background:#eaf0f5;color:#3f5876;font-size:11px;font-variant-numeric:tabular-nums}
+.gmt-status-tab.active>span{background:#ffe9ed;color:#bd2130}
+.gmt-status-tab:focus-visible,.gmt-more>summary:focus-visible{outline:3px solid #2075c7;outline-offset:2px}
+.gm-filters.gmt-primary,.gm-filters.gmt-extra{grid-template-columns:repeat(3,minmax(0,1fr))}
+.gmt-more{margin-top:18px;border-top:1px solid #dce4ee;padding-top:14px}
+.gmt-more>summary{width:max-content;max-width:100%;cursor:pointer;color:#334e70;font-weight:600;padding:8px 4px}
+.gmt-more[open]>.gm-filters{margin-top:12px}
+.gmt-filter [hidden]{display:none!important}
+.gmt-receipt{font-size:12px;color:#674399;margin-top:6px}
+@media(max-width:1000px){.gm-filters.gmt-primary,.gm-filters.gmt-extra{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.gm-filters.gmt-primary,.gm-filters.gmt-extra{grid-template-columns:1fr}.gmt-status-tabs{gap:2px 12px}.gmt-status-tab{min-height:44px}}
+
+.gmt-other{margin:18px 0}.gmt-other>summary{padding:12px 4px;color:#334e70;font-weight:600;cursor:pointer}.gmt-other[open]>.card{margin-top:14px}

@@ -270,3 +270,5 @@ require_once __DIR__.'/order_cancellation_routing.php';
 require_once __DIR__.'/unified_receiving.php';
 require_once __DIR__.'/unified_receiving_page.php';
 require_once __DIR__.'/order_references.php';
+
+require_once __DIR__.'/order_monitor_tabs.php';
