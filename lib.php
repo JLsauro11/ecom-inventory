@@ -274,3 +274,6 @@ require_once __DIR__.'/order_references.php';
 require_once __DIR__.'/order_monitor_tabs.php';
 
 require_once __DIR__.'/sku_matching.php';
+
+require_once __DIR__.'/registration_extensions.php';
+require_once __DIR__.'/registration_extension_page.php';

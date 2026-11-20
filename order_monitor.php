@@ -94,9 +94,9 @@ function om_plan($b){
 
  if($b['kind']==='Register'){
 
- if($status!=='To Ship')throw new Exception('Only To Ship orders can be registered for fulfillment.');foreach($tot as $pid=>$qty){$stock=stock_row($pid);$av=om_available($pid,$b['platform'])-($used[$pid]??0);$snapshots['stock'][$pid]=[$stock['current'],platform_qty($b['platform'],$pid),om_reserved($pid),om_reserved($pid,$b['platform'])];if($qty>$av||$qty>om_available($pid)-($used[$pid]??0))throw new Exception('Insufficient unreserved stock for '.$stock['name'].'. Available on '.$b['platform'].': '.$av.'.');}
+ if(!empty($m['late_registration']))$postingDate=rd_late_validate($b,$lines,$tot,$used);elseif($status!=='To Ship')throw new Exception('Only To Ship orders can be registered for fulfillment. For an already-dispatched order, use Review Late-recorded Dispatch.');foreach($tot as $pid=>$qty){$stock=stock_row($pid);$av=om_available($pid,$b['platform'])-($used[$pid]??0);$snapshots['stock'][$pid]=[$stock['current'],platform_qty($b['platform'],$pid),om_reserved($pid),om_reserved($pid,$b['platform'])];if($qty>$av||$qty>om_available($pid)-($used[$pid]??0))throw new Exception('Insufficient unreserved stock for '.$stock['name'].'. Available on '.$b['platform'].': '.$av.'.');}
 
- foreach($tot as $pid=>$qty)$used[$pid]=($used[$pid]??0)+$qty;$action='Reserve';
+ foreach($tot as $pid=>$qty)$used[$pid]=($used[$pid]??0)+$qty;$action=!empty($m['late_registration'])?'Register & dispatch':'Reserve';
 
  }else{
 
@@ -127,7 +127,7 @@ function om_plan($b){
 
  }catch(Throwable $ex){$errors[]=$ex->getMessage();$action='Needs Checking';}
 
- $out[]=['order'=>(string)$no,'order_record'=>$o?:null,'lines'=>$lines,'totals'=>$tot,'status'=>$status,'aftersales'=>$af,'action'=>$action,'errors'=>$errors,'date_details'=>om_date_details($lines,$o?:null,$m),'posting_date'=>$postingDate,'exclusion'=>oi_exclusion($b,(string)$no)];
+ $out[]=['order'=>(string)$no,'order_record'=>$o?:null,'lines'=>$lines,'totals'=>$tot,'status'=>$status,'aftersales'=>$af,'action'=>$action,'errors'=>$errors,'date_details'=>rd_review_dates($lines,$o?:null,$m,$postingDate,$b),'posting_date'=>$postingDate,'exclusion'=>oi_exclusion($b,(string)$no)];
 
  }
 
@@ -149,9 +149,9 @@ function om_confirm($id,$digest,$ack){
 
  if($b['kind']==='Register'){
 
- om_query('INSERT IGNORE INTO om_sessions(platform,shop,fulfillment_date) VALUES(?,?,?)',[$b['platform'],$b['shop'],$m['fulfillment_date']]);$sid=om_query('SELECT id FROM om_sessions WHERE platform=? AND shop=? AND fulfillment_date=?',[$b['platform'],$b['shop'],$m['fulfillment_date']])->fetchColumn();
+ $registrationDate=!empty($m['late_registration'])?$r['posting_date']:$m['fulfillment_date'];om_query('INSERT IGNORE INTO om_sessions(platform,shop,fulfillment_date) VALUES(?,?,?)',[$b['platform'],$b['shop'],$registrationDate]);$sid=om_query('SELECT id FROM om_sessions WHERE platform=? AND shop=? AND fulfillment_date=?',[$b['platform'],$b['shop'],$registrationDate])->fetchColumn();
 
- om_query("INSERT INTO om_orders(platform,shop,order_no,created_order_at,fulfillment_date,session_id,registration_id,owner_id,raw_status) VALUES(?,?,?,?,?,?,?,?,?)",[$b['platform'],$b['shop'],$r['order'],$r['lines'][0]['created'],$m['fulfillment_date'],$sid,$id,$b['created_by'],$r['lines'][0]['raw_status']]);$oid=(int)db()->lastInsertId();foreach($r['lines'] as $line){$c=$line['components'];unset($line['components']);om_query('INSERT INTO om_lines(order_id,line_key,source_json,components_json) VALUES(?,?,?,?)',[$oid,$line['key'],json_encode($line),json_encode($c)]);}foreach($r['totals'] as $pid=>$qty)om_reserve_change($oid,$pid,$qty,'Reserved');sm_remember_confirmed($b['platform'],$b['shop'],$r['lines']);om_event($oid,$id,!empty($m['late'])?'Late order registered':'Order registered',['reason'=>$m['reason'],'totals'=>$r['totals']]);or_sync(om_order($oid),$r['lines'],$id,false,true);continue;
+ om_query("INSERT INTO om_orders(platform,shop,order_no,created_order_at,fulfillment_date,session_id,registration_id,owner_id,raw_status) VALUES(?,?,?,?,?,?,?,?,?)",[$b['platform'],$b['shop'],$r['order'],$r['lines'][0]['created'],$registrationDate,$sid,$id,$b['created_by'],$r['lines'][0]['raw_status']]);$oid=(int)db()->lastInsertId();foreach($r['lines'] as $line){$c=$line['components'];unset($line['components']);om_query('INSERT INTO om_lines(order_id,line_key,source_json,components_json) VALUES(?,?,?,?)',[$oid,$line['key'],json_encode($line),json_encode($c)]);}if(empty($m['late_registration']))foreach($r['totals'] as $pid=>$qty)om_reserve_change($oid,$pid,$qty,'Reserved');sm_remember_confirmed($b['platform'],$b['shop'],$r['lines']);om_event($oid,$id,!empty($m['late'])?'Late order registered':'Order registered',['reason'=>$m['reason'],'totals'=>$r['totals']]);or_sync(om_order($oid),$r['lines'],$id,false,true);rd_mapping_history($b,$oid,$r['order']);if(!empty($m['late_registration'])){rd_late_finish($b,$r,$oid);}continue;
 
  }
 
@@ -159,11 +159,7 @@ function om_confirm($id,$digest,$ack){
 
  if($action==='Dispatch / post'){
 
- $date=$r['posting_date'];if(!$date)throw new Exception('Reopen review: posting date has not been validated.');require_open_inventory_date($date);
-
- // A separate ledger batch per order keeps linked reversals scoped to that order.
-
- om_query("INSERT INTO import_batches(platform,import_type,filename,stored_path,status,rows_read,units,imported_count,result_json,user_id) VALUES(?,'Orders',?,?,'Complete',?,?,1,?,?)",[$b['platform'],$b['filename'],$b['stored_path'],count($r['lines']),array_sum($r['totals']),json_encode(['order_monitor_upload'=>$id,'order_no'=>$r['order'],'dispatch_confirmed'=>true,'source_snapshot'=>$m['snapshot']]),current_user()['id']]);$batch=(int)db()->lastInsertId();foreach($r['totals'] as $pid=>$qty){check_platform_alignment($pid);om_query('INSERT INTO outflows(txn_date,platform,order_id,product_id,source_item,qty,type,import_batch_id,dedupe_key,remarks,user_id) VALUES(?,?,?,?,?,?,\'Order\',?,?,?,?)',[$date,$b['platform'],$r['order'],$pid,'Order monitor #'.$oid,$qty,$batch,hash('sha256','om|'.$oid.'|'.$pid),'Shop '.$b['shop'].'; status upload #'.$id,current_user()['id']]);$outflow=(int)db()->lastInsertId();om_query('INSERT INTO om_postings(order_id,outflow_id) VALUES(?,?)',[$oid,$outflow]);change_platform_stock($b['platform'],$pid,-$qty,$r['order'],$date);om_reserve_change($oid,$pid,-$qty,'Consumed by dispatch');check_platform_alignment($pid);}om_query("UPDATE om_orders SET posting='Posted' WHERE id=?",[$oid]);
+ rd_post_dispatch($b,$r,$oid);
 
  }
 
