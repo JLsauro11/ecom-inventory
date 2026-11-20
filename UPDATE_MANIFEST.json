@@ -1,6 +1,6 @@
 {
-  "build": "V5.9.41 Inventory Controller Manual Cancellation \u2014 2026-11-20",
-  "requires": "V5.9.40; file-only update. No schema migration, reset or automatic posting.",
+  "build": "V5.9.42 Inventory Controller Full Manual Status \u2014 2026-11-20",
+  "requires": "V5.9.41; file-only update. No schema migration, reset or automatic posting.",
   "files": {
     "Install_Order_Monitoring_Schedule.ps1": "b536ed83efdb181a947f31963631e1d6510fc9e506689eaef531994df01e28fa",
     "ORDER_MONITORING_GUIDE.txt": "2354ac7e63102978eb97b25c678e93924bdf9135a90f03f61b6aa53711d6c864",
@@ -168,9 +168,9 @@
     "order_export_time.php": "4ca556baab5de2dde79c418feb229e2aa183cfbc85cb50ad53f85eae8c271bb6",
     "order_import_v5.php": "8f01c3cae055a4500fbefa32615373c28db48930f9f393a9fa1d45f553d62b55",
     "order_interaction.php": "120f3b6a926ff872e3e173c73ed77710ac7372f506f2b0cba26832619ea9eccf",
-    "order_interactions.php": "5841e09c22a5bb1fdcfa0de48adc6280fab9e99cb166705b4c2f83883275cf21",
+    "order_interactions.php": "109dc00655521a1690e4ad62f117994caa90e0ab01ce7452432274de018c9208",
     "order_item_summary.php": "c27a80959bc26a5663dd16c567e1f06a09ebd80d03bb8ec6d696236c9c593a68",
-    "order_monitor.php": "22b94781fcd987a453e5fef5c025976d40b38251ef3ed8de25155befb0883cfb",
+    "order_monitor.php": "d110c0809fc627c2115762f6737a435fbbca0b99fb8c6de366a44f31aa6b0bcf",
     "order_monitor_action.php": "6bb0b009556173e79ef0d0202a1f28e782a9b6c674d7b3282e956cb2ddac859f",
     "order_monitor_job.php": "4cca2aee9ffb5d058678a6aaa71ec55889c91d5f525ab24e540f5f8568e531c9",
     "order_monitor_page.php": "634e3edc982bb5e1c8759f2bfb82057365b7bdd87d5e707323420354195adc53",
@@ -258,6 +258,6 @@
     "workflow_stock.php": "3738fea1334dc153b7897a8d12c1523fc58b00c18e9a16569e50dd5712a6a25d",
     "order_status_policy.php": "e855ad437c859053c72675dcc54230de18f341a3e24531402f894983ab75e6b4",
     "current_stocks_export.php": "0cbc856f7f20bfb8c1d2025d106b3214e3fc13a36a2b40f278969f521229aeef",
-    "controller_cancellation.php": "bbbad213f58b174d28ec53a8774c19ebe7a53c5ec8f5bcd6ce13d2a2281597e2"
+    "controller_cancellation.php": "c65097a28b7e1bef64c18baf710d817f153fb7fb5dab413fcd5adcbd99d6a7b5"
   }
 }
