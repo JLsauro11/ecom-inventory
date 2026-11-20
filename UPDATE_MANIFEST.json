@@ -1,6 +1,6 @@
 {
-  "build": "V5.9.36 Date-only Order Status Exports \u2014 2026-11-20",
-  "requires": "V5.9.35; file-only update. No schema migration, reset or automatic posting.",
+  "build": "V5.9.37 Return Review Quantity \u2014 2026-11-20",
+  "requires": "V5.9.36; file-only update. No schema migration, reset or automatic posting.",
   "files": {
     "Install_Order_Monitoring_Schedule.ps1": "b536ed83efdb181a947f31963631e1d6510fc9e506689eaef531994df01e28fa",
     "ORDER_MONITORING_GUIDE.txt": "2354ac7e63102978eb97b25c678e93924bdf9135a90f03f61b6aa53711d6c864",
@@ -236,7 +236,7 @@
     "ui_prompts.php": "c5717aa96eb3f4f61ba9a506c8c15d4adb1a2508a505886f94a278c5fcb5873d",
     "unified_receiving.php": "6c1c1d7ac48d87499685d2d7b3f15fdc7738126ebcd5eb735e275de404cdf2b9",
     "unified_receiving_action.php": "108f9d53fdf9cb912a58a983999977a94f5246e21c43f983b56c1850cf656614",
-    "unified_receiving_page.php": "82798286f0a2cfa40b1c8ceee674ec065bd2f2f9ec4a8a7418cdc04e8291f682",
+    "unified_receiving_page.php": "0bbfd307ebabe12e696ac7f68de8ac536a2a8cc9f8aff5791006d6e80a4429ea",
     "unlinked_returns.php": "2f2f38f9af4a0706d70afc4b5dc4716204d26f8c50b0a07f37ed370615d4e4c8",
     "update_check.php": "4fda3b014f444f803479fe84d4ce4de77179b2989de7f1fbe3279ad8bb967ed7",
     "upgrade_adjustments_reports.php": "f7639694043078f824848438c965bd2a8b6a53469bc8d4f2abec6748ac676c2e",
