@@ -1,6 +1,6 @@
 {
-  "build": "V5.9.30 Platform SKU Matching and Reusable Verified Mapping \u2014 2026-11-19",
-  "requires": "Existing V5.9.29 application. File-only update; no migration, reset or automatic order posting.",
+  "build": "V5.9.31 Registration Mapping Correction \u2014 2026-11-20",
+  "requires": "V5.9.30; file-only update, no automatic data or stock changes.",
   "files": {
     "Install_Order_Monitoring_Schedule.ps1": "b536ed83efdb181a947f31963631e1d6510fc9e506689eaef531994df01e28fa",
     "ORDER_MONITORING_GUIDE.txt": "2354ac7e63102978eb97b25c678e93924bdf9135a90f03f61b6aa53711d6c864",
@@ -178,10 +178,10 @@
     "order_references.php": "adbe1daabbef4d12e32d0554f3549e0f7f2f07298a5945cc6ac721af9ac93196",
     "order_return_page.php": "653ba0460dfb02fd6f451588b242f867d989402722f39f3edf1dd3342f704849",
     "order_returns.php": "8ddc9076a47e9285dcca63a7582f2482d6257d4d05d9d0d49a21c4ebb4843706",
-    "order_review_controls.php": "fe1c89cd26f606429ea850f39251a7ccb6fd8f578d1427ff3d0d05dc8cfe0530",
+    "order_review_controls.php": "3ee06d0a9e6f2a5358775ad71c6f425621fc68087ba91e6dd9506fab032b2586",
     "order_review_v51.php": "5ec5eebdcc830e115cfd1e4539e304538a14326c1fff159524338a9656a0f293",
     "order_simple.php": "e47a4a3fd73b42d448fb96d7510c8e6bda3f9869a4d94c8eae13bf3cde90f648",
-    "order_simple_page.php": "09c23d5b52168d80fda7e4d71c9e524ba0af29e6828205d14f8ae37bfe7630c9",
+    "order_simple_page.php": "af7ac0d2dec6676cb1d2317206618d372a1607c9b57dfd1d1ae9645daa17d45d",
     "outflow_global_rule.php": "09c8e2300c1b46895ab1151d8eaa6aabb26658058afad238c0082127e48c8332",
     "overview_exports.php": "42f3823ed764548a9f668825f23043889b9a0ff928c132571725050e2deb8d36",
     "overview_page.php": "4c34fefeede13a7b494926fa25cefec354c2eb1dd446e59abad6ce3a9d9ea50f",
