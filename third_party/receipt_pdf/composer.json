@@ -1,0 +1,6 @@
+{
+  "name": "rs8/receipt-pdf-reader",
+  "description": "Bundled text PDF reader for receipt uploads without server executables",
+  "require": { "smalot/pdfparser": "2.13.1" },
+  "config": { "allow-plugins": false, "optimize-autoloader": true, "sort-packages": true }
+}

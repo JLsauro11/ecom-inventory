@@ -1,0 +1,15 @@
+Bundled receipt text PDF reader
+
+smalot/pdfparser v2.13.1
+Source: https://github.com/smalot/pdfparser
+License: LGPL-3.0; source and original license supplied in vendor/smalot/pdfparser.
+
+symfony/polyfill-mbstring
+Version and upstream commit are recorded in composer.lock.
+Source: https://github.com/symfony/polyfill-mbstring
+License: MIT; source and original license supplied in vendor/symfony/polyfill-mbstring.
+
+Installed without development packages, plugins or install scripts.
+The live application needs no Composer command, external PDF executable,
+shell permission or network connection to extract searchable PDF text.
+Image-only PDFs still require OCR or a text-searchable original export.

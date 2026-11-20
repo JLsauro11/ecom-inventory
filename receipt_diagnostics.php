@@ -1,19 +1,21 @@
 <?php
+require_once __DIR__.'/receipt_php_reader.php';
 function receipt_extract_pdf($path){
  global $CFG;$notes=[];$best='';$bestCount=0;
  $run=function($program,$arguments)use(&$notes){
   $lines=[];$code=0;exec('"'.$program.'" '.$arguments,$lines,$code);return $code;
  };
  $exe=trim($CFG['pdftotext_path']??'');
- if($exe&&is_file($exe)){
+ if($exe&&is_file($exe)&&function_exists('exec')){
   $tmp=tempnam(sys_get_temp_dir(),'rs8text');
   try{$code=$run($exe,'-layout '.escapeshellarg($path).' '.escapeshellarg($tmp));$native=$code===0?(string)file_get_contents($tmp):'';
    if(trim($native," \t\n\r\0\x0B\x0C")!==''){$count=count(parse_receipt_text($native)['items']);if($count)return ['text'=>$native,'method'=>'PDF text','notes'=>['Receipt item rows extracted from the PDF text layer.']];$notes[]='PDF text was extracted, but no supported item rows were found.';$best=$native;}
    else $notes[]=$code===0?'No searchable PDF text was found; image OCR is required.':'PDF text extraction failed (exit code '.$code.').';
   }finally{@unlink($tmp);}
- }else $notes[]='PDF text tool is missing or not configured.';
+ }else $notes[]='External PDF text tool is unavailable; trying the bundled PHP reader.';
+ try{$phpText=receipt_php_pdf_text($path);if(trim($phpText)!==''){$phpCount=count(parse_receipt_text($phpText)['items']);if($phpCount)return ['text'=>$phpText,'method'=>'PHP PDF text','notes'=>array_merge($notes,['Bundled PHP reader extracted '.$phpCount.' item rows without shell commands. Review quantities against the original PDF.'])];if($best==='')$best=$phpText;$notes[]='PHP reader extracted text, but no supported receipt item rows were found.';}else $notes[]='PHP reader found no searchable text. Image-only/scanned PDFs need OCR or a text-searchable original export.';}catch(Throwable $e){$notes[]='PHP PDF reader: '.safe_error_message($e);}
  $ppm=trim($CFG['pdftoppm_path']??'');$ocr=trim($CFG['tesseract_path']??'');
- if(!$ppm||!is_file($ppm)||!$ocr||!is_file($ocr))return ['text'=>$best,'method'=>'Unavailable','notes'=>array_merge($notes,['Image OCR requires installed/configured pdftoppm and Tesseract tools.'])];
+ if(!function_exists('exec')||!$ppm||!is_file($ppm)||!$ocr||!is_file($ocr))return ['text'=>$best,'method'=>$best!==''?'PDF text — review layout':'Unavailable','notes'=>array_merge($notes,['Image OCR requires installed/configured pdftoppm and Tesseract tools.'])];
  $dir=sys_get_temp_dir().DIRECTORY_SEPARATOR.'rs8ocr_'.bin2hex(random_bytes(8));
  if(!mkdir($dir))throw new Exception('Could not create temporary OCR folder.');
  try{

@@ -116,6 +116,7 @@ function run_full_allocation($userId,$remarks=''){ $pdo=db();$ref=next_ref('ALLO
 
 function receipt_pdf_text($path){return receipt_extract_pdf($path)['text'];}
 function pdf_unescape($s){$s=preg_replace_callback('/\\\\([0-7]{1,3})/',fn($m)=>chr(octdec($m[1])),$s);return strtr($s,['\\n'=>"\n",'\\r'=>"\r",'\\t'=>"\t",'\\('=>'(','\\)'=>')','\\\\'=>'\\']);}
+function receipt_numeric_value($raw){if(is_int($raw)||is_float($raw))return is_finite((float)$raw)?(float)$raw:null;if(!is_string($raw))return null;$raw=trim($raw);return preg_match('/^(?:[0-9]+|[0-9]{1,3}(?:,[0-9]{3})+)(?:\.[0-9]+)?$/D',$raw)?(float)str_replace(',','',$raw):null;}
 function parse_receipt_text($text){
  $out=['reference'=>'','transfer_ref'=>'','date'=>'','source'=>'','items'=>[]];
  if(preg_match('/\bIF\s*\d{4,}\b/i',$text,$m))$out['reference']=strtoupper(preg_replace('/\s/','',$m[0]));
@@ -128,7 +129,7 @@ function parse_receipt_text($text){
   if(preg_match('/^(?:checked|verified|received|prepared|signature|total|page\b)/i',$line)){$table=false;$continuation=false;continue;}
   // Normalize only known receipt unit OCR confusions; never guess quantity digits.
   if(preg_match('/^(.+?)\s+(\S+)\s+(bx\s*\(\s*\d+\s*\)|pc|pcs|piece|pieces|pe|pec)\s+(\S+)\s*$/i',$line,$m)){
-   $item=trim($m[1]);$rawUom=strtolower(preg_replace('/\s/','',$m[3]));$uom=in_array($rawUom,['pe','pec'],true)?'pc':$rawUom;$sq=preg_match('/^\d+(?:\.\d+)?$/D',$m[4])?(float)$m[4]:0;
+   $item=trim($m[1]);$rawUom=strtolower(preg_replace('/\s/','',$m[3]));$uom=in_array($rawUom,['pe','pec'],true)?'pc':$rawUom;$sq=receipt_numeric_value($m[4])??0;
    $factor=receipt_uom_factor($uom);$qty=null;try{[, $qty]=receipt_quantity($sq,$uom);}catch(Throwable $e){}
    $out['items'][]=['item'=>$item,'source_qty'=>$sq,'source_uom'=>$uom,'factor'=>$factor,'qty'=>$qty,'raw_shipped'=>$m[4],'raw_source_uom'=>$rawUom,'uom_correction'=>$uom!==$rawUom?'Receipt unit read as '.$rawUom.'; normalized to pc. Compare with the original receipt.':''];
    $last=count($out['items'])-1;$continuation=true;$table=true;continue;
