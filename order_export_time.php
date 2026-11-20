@@ -1,6 +1,8 @@
 <?php
 // Date-only file evidence; the day ceiling below is a comparison boundary, not an actual export timestamp.
 function ed_snapshot($value){$v=trim((string)$value);$day=strlen($v)===10?report_date($v):substr(om_datetime($v,true),0,10);if($day>date('Y-m-d'))throw new Exception('Export Date cannot be in the future.');return $day.' 23:59:59';}
+// A date-only file watermark is not a future clock time that can block a same-day manual event.
+function ed_manual_day_boundary($o,$meta){return !empty($meta['manual'])&&!empty($o['last_snapshot'])&&substr($o['last_snapshot'],-8)==='23:59:59'&&substr($meta['snapshot'],0,10)===substr($o['last_snapshot'],0,10);}
 function ot_order_meta($b,$no){$m=$b['meta'];if($b['kind']==='Status'&&!empty($m['export_time_corrections'][hash('sha256',(string)$no)])){$m['original_export_time']=$m['snapshot'];$m['snapshot']=$m['export_time_corrections'][hash('sha256',(string)$no)];}if($b['kind']==='Status'&&empty($m['manual'])){$m['original_export_time']=$m['original_export_time']??$m['snapshot'];$m['snapshot']=ed_snapshot($m['snapshot']);$m['export_date']=substr($m['snapshot'],0,10);$m['snapshot_precision']='date';}return $m;}
 
 function ot_candidates($orders){return array_values(array_filter($orders,fn($r)=>!empty($r['order_record'])&&!empty($r['errors'])&&(bool)array_filter($r['errors'],fn($e)=>(bool)preg_match('/after Export Date|after Export Time|snapshot predates|Older export conflicts with the recorded timeline/i',$e))));}

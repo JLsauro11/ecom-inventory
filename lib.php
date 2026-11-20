@@ -279,3 +279,5 @@ require_once __DIR__.'/registration_extensions.php';
 require_once __DIR__.'/registration_extension_page.php';
 
 require_once __DIR__.'/order_export_time.php';
+
+require_once __DIR__.'/order_status_policy.php';
