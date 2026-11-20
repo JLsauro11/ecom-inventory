@@ -1,6 +1,6 @@
 {
-  "build": "V5.9.33 Bulk Mapping Correction and Late-recorded Dispatch \u2014 2026-11-20",
-  "requires": "V5.9.32; file-only update, existing schema retained. No automatic mapping, reset, order posting or stock changes during installation.",
+  "build": "V5.9.34 Compact Return Verification \u2014 2026-11-20",
+  "requires": "V5.9.33; presentation-only update. No schema, stock posting or receipt-rule change.",
   "files": {
     "Install_Order_Monitoring_Schedule.ps1": "b536ed83efdb181a947f31963631e1d6510fc9e506689eaef531994df01e28fa",
     "ORDER_MONITORING_GUIDE.txt": "2354ac7e63102978eb97b25c678e93924bdf9135a90f03f61b6aa53711d6c864",
@@ -75,8 +75,8 @@
     "assets/typography.css": "93c3739b6d43d619dc49708e6a5781f40f3a54a744ee1569b461afa865b4338d",
     "assets/ui_prompts.css": "7125ea25d0b415c605ad0996349ae42985b3f67cc48e7370024286cc636f362b",
     "assets/ui_prompts.js": "afd748e9aeea89336a30a3a195108d732432c10b6066c489d4c2fb62b1a750fd",
-    "assets/unified_receiving.css": "24706fa327234cc563f4e97218d53ddf72b56a577e1391eb08ab7ce3e6821b05",
-    "assets/unified_receiving.js": "6be9d46dd742e0d5f21235c8c28d0543bd739439ceefa21f67bbe937feee73bc",
+    "assets/unified_receiving.css": "0a10bac82ee5c25a2051a700cd8114999b059303cd0f8ea66d51e062808ef6ad",
+    "assets/unified_receiving.js": "c410129bddddb0c9adf4b9e1081c4d72877485374972a0f01c43da88b581e93e",
     "assets/unlinked_returns.js": "e6d2d3ef9c45d228876f7b39367c96e4c65edba90f4276753f88278fa313ba2e",
     "assets/usability.css": "3828371ab617381fb27460f49dac9496461e42112a14c92f6dd838f0f3e0e4cb",
     "assets/usability.js": "b90249d4f2c0178058b7fdeb8aed3c984e4abed43f2f0e1338d82d4415d7625a",
@@ -235,7 +235,7 @@
     "ui_prompts.php": "c5717aa96eb3f4f61ba9a506c8c15d4adb1a2508a505886f94a278c5fcb5873d",
     "unified_receiving.php": "6c1c1d7ac48d87499685d2d7b3f15fdc7738126ebcd5eb735e275de404cdf2b9",
     "unified_receiving_action.php": "108f9d53fdf9cb912a58a983999977a94f5246e21c43f983b56c1850cf656614",
-    "unified_receiving_page.php": "8fbef237bdbb20493a31e98f0e28d43747985900491c219c7df585a53498ad30",
+    "unified_receiving_page.php": "82798286f0a2cfa40b1c8ceee674ec065bd2f2f9ec4a8a7418cdc04e8291f682",
     "unlinked_returns.php": "2f2f38f9af4a0706d70afc4b5dc4716204d26f8c50b0a07f37ed370615d4e4c8",
     "update_check.php": "4fda3b014f444f803479fe84d4ce4de77179b2989de7f1fbe3279ad8bb967ed7",
     "upgrade_adjustments_reports.php": "f7639694043078f824848438c965bd2a8b6a53469bc8d4f2abec6748ac676c2e",
