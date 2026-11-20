@@ -1,6 +1,6 @@
 {
-  "build": "V5.9.39 Cancellation Resolution and Delivered Status Lock \u2014 2026-11-20",
-  "requires": "V5.9.38; file-only update. No schema migration, reset or automatic posting.",
+  "build": "V5.9.40 Current Stocks Excel Download \u2014 2026-11-20",
+  "requires": "V5.9.39; file-only update. No schema migration, reset or automatic posting.",
   "files": {
     "Install_Order_Monitoring_Schedule.ps1": "b536ed83efdb181a947f31963631e1d6510fc9e506689eaef531994df01e28fa",
     "ORDER_MONITORING_GUIDE.txt": "2354ac7e63102978eb97b25c678e93924bdf9135a90f03f61b6aa53711d6c864",
@@ -90,7 +90,7 @@
     "balance_report_pages.php": "ee9384d77809344c45757cb38f5c8e1add76becb3181db50c723204763b617d5",
     "balance_reports.php": "c51feee54eff14fd135948496b138bc407ed1385b9180b5fdffcc90b5c0f2ea4",
     "batch_document.php": "5ba4d3ffdcd426ef04a8a78bf5d9bea3551f02b29ccb69626937eb208bb57f46",
-    "batch_pages.php": "66107c76b8b62de9ea3ab92211c5e194e95f9eb688ea927ad14734b3b4edc3ae",
+    "batch_pages.php": "585ff5099057cc97d7240a9499719ac8bc3562899173431e797c8ba9dae4c0f0",
     "batch_workflows.php": "b2a6376466f30e23c75cd328d9958a97d11c7139b28627756678a7432a352749",
     "beginning_history.php": "477a113a940bf6c1f88cc1f0a0a5e19444835a4f4f240618d6f6295887d59380",
     "beginning_review.php": "eb3d40414fd44a2fe9f4237a3daf457b7d228f721a4a46d69931dd2adb022df8",
@@ -132,7 +132,7 @@
     "guided_count_page.php": "264de68d592d0520d9dfb3ba2fd04be7f9fea80c8e15bde9cb162dae24d91d60",
     "header_menu.php": "40c71a022c12bd56237ad3af91ec1522e478382a604325dcba87ff5566d6f643",
     "import_history_page.php": "1760b76371262ebbf36320eee7b7c4396f5843693d2b409f119f4fceffbc5302",
-    "index.php": "441dacfe6a504f5a9cf23a3a759489648e94ede8038194bbd363a53f4a9697de",
+    "index.php": "54b2d7624ad18f6f0724442afee8da45f63e7ae27e133e003b6d6d368ba50c05",
     "inflow_allocation.php": "a61a54b5829f32112b5d8fb584caf72ec7d882191ca3d4bd35a5337f9f24e9cf",
     "inflow_cancellation.php": "7960a59e8d20581c74c938f06ca84e368c845f4ceb1ef457080243b32d307255",
     "inflow_guard.php": "dd998f226fa383a86d7f5a8eacce7b476ab1e02ea806d84ba5d09cdd66cb655f",
@@ -151,7 +151,7 @@
     "inventory_reset_page.php": "a43d189d3aaa339e0b39646bb0b48b085ed42c26b0b261681888946277731d65",
     "item_code_controls.php": "bebf4fafda435cc3d7a02cc8c6696efc104f178b9a55b6daf651b33084a51077",
     "item_code_update.php": "63fd5dec11a5b382c174b0099dad4b095ad91dd8562193bd0919b69895ddf0b5",
-    "lib.php": "2e407b80aee5e12ca5e7314647d4117af2b397ed4beef4e0400ada0e57e6c228",
+    "lib.php": "99d5f96b58e8a9348234fedd303338f1d6e6d1a0c6839a76f8810f5fcd7662ab",
     "login.php": "9393f91f39616a2c266766c222aab4399f302d5a4cd74114fd7518f83b41f5b5",
     "login_a_shell.php": "7a98ec7bb887261f4215e49ba0048c9716b58047e1dab6ce57aadd67bdefe089",
     "logout.php": "b64065c93e3054de6d6cef1fda6e580e0f377f2a449592551d0d89131b5e0acc",
@@ -256,6 +256,7 @@
     "warranty_page.php": "e3d5b689e25fd98543d431277b08afb0941d0ef0b3f8508df48b729e09951ef9",
     "website_selling.php": "5d5eb5d19cc247c44deb6ef45f684cd44e9bf2be7da16b74af6e9ad62555a7fe",
     "workflow_stock.php": "3738fea1334dc153b7897a8d12c1523fc58b00c18e9a16569e50dd5712a6a25d",
-    "order_status_policy.php": "e855ad437c859053c72675dcc54230de18f341a3e24531402f894983ab75e6b4"
+    "order_status_policy.php": "e855ad437c859053c72675dcc54230de18f341a3e24531402f894983ab75e6b4",
+    "current_stocks_export.php": "0cbc856f7f20bfb8c1d2025d106b3214e3fc13a36a2b40f278969f521229aeef"
   }
 }
