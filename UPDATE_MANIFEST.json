@@ -1,11 +1,11 @@
 {
-  "build": "V5.9.43 Hostinger PDF Reading and Comma Quantities \u2014 2026-11-20",
-  "requires": "Known V5.9 baseline; file-only update. No database migration or inventory reset.",
+  "build": "V5.9.44 Operations Lead Receipt Upload Access \u2014 2026-11-20",
+  "requires": "V5.9.43; file-only update. No schema migration, reset or automatic posting.",
   "files": {
     "Install_Order_Monitoring_Schedule.ps1": "b536ed83efdb181a947f31963631e1d6510fc9e506689eaef531994df01e28fa",
     "ORDER_MONITORING_GUIDE.txt": "2354ac7e63102978eb97b25c678e93924bdf9135a90f03f61b6aa53711d6c864",
     "access_policy.php": "fb49cb3c61ee0bc1b321ca6c90001d88949ce7ffc7f23fbd0c9abf754c071a80",
-    "access_roles.php": "be5b2b55daf7a4cec9e6c51f81d674ad767062a4b63eb1d9d90d37f9e60da56c",
+    "access_roles.php": "fe23b00ff503e10ac33d4398d0540e818658992613643b36743aa2f7cfce9195",
     "account.php": "129c46620e1880d92d9521c16d39de0c3a3b5c5f34a37114ce15dabccc36eec3",
     "account_password.php": "03192737e5cebb9a22ee139ef634a59ce12df5415b02a2482caa7cab6218e047",
     "actions.php": "2716b0bf1732f3d662fad73cb1d482535ceda5e99bbdaed2947e5123e910a190",
