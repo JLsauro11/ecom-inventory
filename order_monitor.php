@@ -51,7 +51,7 @@ function om_assert_available($pid,$qty,$platform=null){if(om_ready()&&$qty>om_av
 function om_mapping_key($pl,$shop,$r){return hash('sha256',json_encode([$pl,$shop,$r['external'],$r['sku'],$r['name'],$r['variation']]));}
 
 function om_component_check($raw,$allowInactive=false){if(!$allowInactive)return bundle_components_validate($raw);if(!is_array($raw)||!$raw||count($raw)>50)throw new Exception('Enter 1 to 50 components.');$out=[];$seen=[];foreach($raw as $c){$pid=whole_number($c['product_id']??'','Product',1);if(isset($seen[$pid])||!om_query('SELECT COUNT(*) FROM products WHERE id=?',[$pid])->fetchColumn())throw new Exception('Invalid or repeated product component.');$seen[$pid]=true;$out[]=['product_id'=>$pid,'per_bundle'=>whole_number($c['per_bundle']??'','Quantity',1)];}return $out;}
-function om_components($pl,$shop,$r,$allowInactive=false){return sm_components($pl,$shop,$r,$allowInactive);}
+function om_components($pl,$shop,$r,$allowInactive=false,&$basis=null){return sm_components($pl,$shop,$r,$allowInactive,$basis);}
 
 function om_totals($lines){$tot=[];foreach($lines as $r)foreach($r['components'] as $c){$pid=(int)$c['product_id'];$tot[$pid]=($tot[$pid]??0)+(int)$r['qty']*(int)$c['per_bundle'];}ksort($tot,SORT_NUMERIC);return $tot;}
 
@@ -90,7 +90,7 @@ function om_plan($b){
  else{
 
  om_validate_source_dates($lines,$m,$b['kind']);
- $stored=$b['kind']==='Status'?om_query('SELECT * FROM om_lines WHERE order_id=? ORDER BY id',[$o['id']])->fetchAll():[];if($stored)$lines=sm_bind_status_lines($o,$lines,$stored);foreach($lines as &$line){$line['mapping_is_manual']=$line['mapping_is_manual']??($b['kind']==='Register'&&isset($line['components']));$saved=$b['kind']==='Status'?om_saved_status_components($o,$line,$stored):null;$line['mapping_basis']=$saved!==null?'Saved registration / verified order mapping':'Current upload mapping';$line['components']=$saved??om_components($b['platform'],$b['shop'],$line,$b['kind']==='Status');}unset($line);$tot=om_totals($lines);
+ $stored=$b['kind']==='Status'?om_query('SELECT * FROM om_lines WHERE order_id=? ORDER BY id',[$o['id']])->fetchAll():[];if($stored)$lines=sm_bind_status_lines($o,$lines,$stored);foreach($lines as &$line){$line['mapping_is_manual']=$line['mapping_is_manual']??($b['kind']==='Register'&&isset($line['components']));$saved=$b['kind']==='Status'?om_saved_status_components($o,$line,$stored):null;$line['mapping_basis']=$saved!==null?'Saved registration / verified order mapping':'Current upload mapping';if($saved!==null){$line['components']=$saved;}else{$basis=null;try{$line['components']=om_components($b['platform'],$b['shop'],$line,$b['kind']==='Status',$basis);}finally{$line['mapping_basis']=$basis;}}}unset($line);$tot=om_totals($lines);
 
  if($b['kind']==='Register'){
 

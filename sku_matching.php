@@ -25,11 +25,13 @@ function sm_saved_mapping($platform,$shop,$line,$allowInactive){
  $cacheKey=$platform.'|'.$shop;if(!isset($GLOBALS['SM_MAPPING_ROWS'][$cacheKey]))$GLOBALS['SM_MAPPING_ROWS'][$cacheKey]=om_query('SELECT source_json,components_json FROM om_mappings WHERE platform=? AND shop=?',[$platform,$shop])->fetchAll();$variants=[];$verified=[];foreach($GLOBALS['SM_MAPPING_ROWS'][$cacheKey] as $saved){$src=json_decode($saved['source_json'],true)?:[];if(!sm_identity_match($platform,$src,$line))continue;$components=json_decode($saved['components_json'],true);if(!is_array($components)||!$components)continue;usort($components,fn($a,$b)=>(int)$a['product_id']<=>(int)$b['product_id']);if(!empty($src['sku_identity_version']))$verified[json_encode($components)]=$components;else $variants[json_encode($components)]=$components;}$variants=$verified?:$variants;
  if(count($variants)>1)throw new Exception('Ambiguous SKU identity: saved mappings disagree. Select the matching product or bundle components for this order.');return $variants?om_component_check(reset($variants),$allowInactive):null;
 }
-function sm_components($platform,$shop,$line,$allowInactive=false){
- if(isset($line['components']))return om_component_check($line['components'],$allowInactive);
- if($saved=sm_saved_mapping($platform,$shop,$line,$allowInactive))return $saved;
+function sm_components($platform,$shop,$line,$allowInactive=false,&$basis=null){
+ $basis='Not matched';
+ if(isset($line['components'])){$basis='Manual correction in this upload';return om_component_check($line['components'],$allowInactive);}
+ $basis='Saved SKU / variation mapping';if($saved=sm_saved_mapping($platform,$shop,$line,$allowInactive))return $saved;
  $sku=sm_value($line,$platform);if($sku==='')throw new Exception('Select the matching product or bundle components. '.sm_field($line,$platform).' is blank; product title is not used to guess the SKU.');
- if($bundle=bundle_mapping_get($platform,$sku))return om_component_check($bundle,$allowInactive);
+ $basis='Saved bundle mapping';if($bundle=bundle_mapping_get($platform,$sku))return om_component_check($bundle,$allowInactive);
+ $basis='Exact SKU / description / verified alias match';
  $ids=om_query('SELECT id FROM products WHERE '.($allowInactive?'':'active=1 AND ').'(master_sku=? OR normalized_name=?)',[$sku,norm($sku)])->fetchAll(PDO::FETCH_COLUMN);
  $ids=array_merge($ids,om_query('SELECT product_id FROM product_code_aliases WHERE alias_code=?',[$sku])->fetchAll(PDO::FETCH_COLUMN));
  $ids=array_merge($ids,om_query('SELECT product_id FROM platform_aliases WHERE platform=? AND normalized_alias=?',[$platform,norm($sku)])->fetchAll(PDO::FETCH_COLUMN));

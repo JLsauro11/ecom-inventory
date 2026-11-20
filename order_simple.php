@@ -1,5 +1,16 @@
 <?php
 // Shared read models for the three-step upload workflow. No posting on GET.
+function os_registration_stock_data($row,$batch,$plan){
+ if($batch['kind']!=='Register'||$batch['status']!=='Review'||!empty($row['order_record'])||($row['action']??'')==='Removed from Upload')return [];
+ $used=[];foreach($plan['orders']??[] as $prior){if((string)$prior['order']===(string)$row['order'])break;if($prior['action']==='Reserve'&&!$prior['errors'])foreach($prior['totals'] as $pid=>$qty)$used[$pid]=($used[$pid]??0)+(int)$qty;}
+ $out=[];foreach($row['totals']??[] as $pid=>$qty){$stock=stock_row($pid);$earlier=$used[$pid]??0;$platform=platform_qty($batch['platform'],$pid);$reserved=om_reserved($pid,$batch['platform']);$global=om_available($pid);$available=$platform-$reserved-$earlier;$warehouse=$global-$earlier;$out[]=['product'=>$stock['name'],'required'=>(int)$qty,'platform_stock'=>$platform,'reserved'=>$reserved,'earlier_upload'=>$earlier,'platform_available'=>$available,'warehouse_available'=>$warehouse,'usable'=>min($available,$warehouse),'shortage'=>max(0,(int)$qty-min($available,$warehouse))];}return $out;
+}
+function os_registration_stock_panel($row,$batch,$plan){
+ $items=os_registration_stock_data($row,$batch,$plan);if(!$items)return;
+ echo '<details class="os-stock-breakdown"'.($row['errors']?' open':'').'><summary>Stock Availability · '.e($batch['platform']).'</summary><p class="small muted">Live review only. Required is this order. Earlier in this upload is planned for valid preceding orders, not yet reserved.</p>';
+ foreach($items as $item){echo '<p><b>'.e($item['product']).'</b></p><dl>';foreach(['required'=>'Required','platform_stock'=>'Platform Stock','reserved'=>'Already Reserved','earlier_upload'=>'Earlier in This Upload','platform_available'=>'Platform Available for This Order','warehouse_available'=>'Warehouse Sellable Available for This Order','usable'=>'Usable for This Order','shortage'=>'Shortage'] as $key=>$label)echo '<dt>'.e($label).'</dt><dd>'.(int)$item[$key].' pcs</dd>';echo '</dl>';}
+ echo '<p class="small muted">If the product is wrong, use Correct Product / Bundle. A platform allocation transfer does not increase warehouse physical stock.</p>';if(access_page_allowed('transfers'))echo '<a class="btn secondary sm" href="?page=transfers">Open Stock Transfer</a>';echo '</details>';
+}
 function os_product_source_data($row,$batch){
  $data=['origin'=>'upload','lines'=>$row['lines']??[],'totals'=>$row['totals']??[],'source'=>['id'=>$batch['id'],'filename'=>$batch['filename'],'created_at'=>$batch['created_at']??'']];
  if($data['lines'])return $data;$o=$row['order_record']??null;if(!$o||empty($o['id']))return $data;
