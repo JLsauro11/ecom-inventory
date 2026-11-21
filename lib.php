@@ -145,7 +145,7 @@ function receipt_uom_factor($uom){$u=norm($uom);if(in_array($u,['pc','pcs','piec
 function csv_download($filename,$rows){header('Content-Type: text/csv; charset=utf-8');header('Content-Disposition: attachment; filename="'.$filename.'"');$o=fopen('php://output','w');foreach($rows as $r){foreach($r as &$cell)if(is_string($cell)&&preg_match('/^[=+@\t\r]|^-[^0-9]/',$cell))$cell="'".$cell;unset($cell);fputcsv($o,$r);}fclose($o);exit;}
 
 
-function receipt_match_product($item){if($mapped=product_code_lookup($item))return $mapped;
+function receipt_match_product($item){if(function_exists('prc_blocked')&&prc_blocked($item))return null;if($mapped=product_code_lookup($item))return $mapped;
  $pdo=db();$n=norm($item);if($n==='')return null;
  $st=$pdo->prepare('SELECT product_id FROM receipt_aliases WHERE normalized_alias=?');$st->execute([$n]);if($x=$st->fetchColumn())return (int)$x;
  $st=$pdo->prepare('SELECT id FROM products WHERE normalized_name=? AND active=1 LIMIT 1');$st->execute([$n]);if($x=$st->fetchColumn())return (int)$x;
@@ -288,3 +288,5 @@ require_once __DIR__.'/inflow_history_exports.php';
 require_once __DIR__.'/receipt_line_controls.php';
 
 require_once __DIR__.'/incoming_allocation_exports.php';
+
+require_once __DIR__.'/posted_receipt_correction.php';
