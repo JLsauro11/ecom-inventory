@@ -26,7 +26,7 @@ function access_roles_panel(){
 }
 function role_profile_can_action($role,$action){
  $role=role_label($role);if(str_starts_with($action,'om_'))return $action==='om_receive'?role_profile_can_action($role,'return_confirm'):in_array($role,['Admin','Operations Lead'],true);if(in_array($action,['import_orders','save_order_review','confirm_order_review','cancel_order_review'],true)&&function_exists('om_ready')&&om_ready()&&!in_array($role,['Admin','Operations Lead'],true))return false;if($role==='Admin')return true;
- if(in_array($action,['remove_receipt_line','remove_receipt_lines','add_receipt_line','prc_request'],true))$action='resolve_receipt_line';
+ if(in_array($action,['remove_receipt_line','remove_receipt_lines','add_receipt_line','prc_request','poc_request'],true))$action='resolve_receipt_line';
  if(in_array($action,['ur_lookup','ur_stage','ur_verify','ur_post','ur_cancel','ur_link'],true))$action='return_confirm';
  if(in_array($action,['cancelled_order_lookup','cancelled_order_review'],true)||str_starts_with($action,'receiving_'))$action='return_confirm';
  if(in_array($action,['replace_beginning_upload','cancel_beginning_upload','confirm_beginning_upload'],true))$action='upload_beginning';

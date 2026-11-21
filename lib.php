@@ -290,3 +290,5 @@ require_once __DIR__.'/receipt_line_controls.php';
 require_once __DIR__.'/incoming_allocation_exports.php';
 
 require_once __DIR__.'/posted_receipt_correction.php';
+
+require_once __DIR__.'/posted_order_correction.php';
