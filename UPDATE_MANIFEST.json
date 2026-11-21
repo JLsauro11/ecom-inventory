@@ -1,6 +1,6 @@
 {
-  "build": "V5.9.48 Inflow Duplicate Check and Missing Items \u2014 2026-11-21",
-  "requires": "V5.9.47; file-only update. No schema migration, reset or automatic posting.",
+  "build": "V5.9.49 Receipt Actions Menu and Popups \u2014 2026-11-21",
+  "requires": "V5.9.48; file-only update. No schema migration, reset or automatic posting.",
   "files": {
     "Install_Order_Monitoring_Schedule.ps1": "b536ed83efdb181a947f31963631e1d6510fc9e506689eaef531994df01e28fa",
     "ORDER_MONITORING_GUIDE.txt": "2354ac7e63102978eb97b25c678e93924bdf9135a90f03f61b6aa53711d6c864",
@@ -134,7 +134,7 @@
     "guided_count_page.php": "264de68d592d0520d9dfb3ba2fd04be7f9fea80c8e15bde9cb162dae24d91d60",
     "header_menu.php": "40c71a022c12bd56237ad3af91ec1522e478382a604325dcba87ff5566d6f643",
     "import_history_page.php": "1760b76371262ebbf36320eee7b7c4396f5843693d2b409f119f4fceffbc5302",
-    "index.php": "f18b3c1eb1ed923f7916830180087c611c6472157f07491f2dcaf73ee3a3a69d",
+    "index.php": "561536d939ebf9029f4d4c37bfb16610af58cb13bf466f2b0addc779e85850cc",
     "inflow_allocation.php": "a61a54b5829f32112b5d8fb584caf72ec7d882191ca3d4bd35a5337f9f24e9cf",
     "inflow_cancellation.php": "7960a59e8d20581c74c938f06ca84e368c845f4ceb1ef457080243b32d307255",
     "inflow_guard.php": "346016847539870bd4c1e2843f7021851085e30988d095b4624e8350e76c9b16",
@@ -671,7 +671,9 @@
     "warranty_page.php": "e3d5b689e25fd98543d431277b08afb0941d0ef0b3f8508df48b729e09951ef9",
     "website_selling.php": "5d5eb5d19cc247c44deb6ef45f684cd44e9bf2be7da16b74af6e9ad62555a7fe",
     "workflow_stock.php": "3738fea1334dc153b7897a8d12c1523fc58b00c18e9a16569e50dd5712a6a25d",
-    "receipt_line_controls.php": "b8d5bd0fd99cc8d5092f559a0395bd1c0cd61347661e072e5c0d8cb9a160cb6a",
-    "assets/receipt_line_bulk.js": "2353de6c4e8bbc0d0dd17b3cddbc0dac4d08b994becdbbbb957a8a0b7ddeb1ab"
+    "receipt_line_controls.php": "717714f707c8e25c8d238df5b004b28dcc2ffd4eb9b75940e735fb6ab2e3af7d",
+    "assets/receipt_line_bulk.js": "2353de6c4e8bbc0d0dd17b3cddbc0dac4d08b994becdbbbb957a8a0b7ddeb1ab",
+    "assets/receipt_line_actions.css": "7758ceb11c3951d6dc081757e9634be4d2377378d748afbb21aacec56c33cf0e",
+    "assets/receipt_line_actions.js": "ae19787facc9d5769e8d9c86ac5cc27610b3b5c660e1bf4809c965409fd2e354"
   }
 }
