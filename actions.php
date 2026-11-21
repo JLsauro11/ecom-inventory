@@ -101,6 +101,9 @@ try{
   $pdo->beginTransaction();$q=$pdo->prepare('SELECT * FROM inflow_batches WHERE id=? FOR UPDATE');$q->execute([$bid]);$old=$q->fetch();if(!$old||$old['batch_type']!=='Receipt PDF'||!in_array($old['status'],['To Review','Unsuccessful'],true))throw new Exception('Only an unconfirmed receipt can be corrected.');
   $pdo->prepare('UPDATE inflow_batches SET reference_no=?,txn_date=?,transfer_ref=? WHERE id=?')->execute([$ref,$date,$transfer,$bid]);audit('Correct receipt header','Inflow Batch',$old['batch_ref'],$old['reference_no'].' -> '.$ref);$pdo->commit();flash('Receipt reference and date corrected.');$return='receipt_review&id='.$bid;
  }
+ elseif($a==='remove_receipt_line'){
+  $bid=remove_extracted_receipt_line((int)($_POST['batch_id']??0),(int)($_POST['line_id']??0),$_POST['line_digest']??'',$_POST['reason']??'');flash('Receipt line removed. No stock changed. Review the remaining items and platform allocation again.','info');$return='receipt_review&id='.$bid;
+ }
  elseif($a==='resolve_receipt_line'){
   $bid=update_receipt_line((int)$_POST['line_id'],(int)$_POST['product_id'],$_POST['source_qty']??'',trim($_POST['source_uom']??''));flash('Receipt line corrected and validated.');$return='receipt_review&id='.$bid;
  }

@@ -1,14 +1,14 @@
 {
-  "build": "V5.9.45 Inflow History Excel PDF and Print \u2014 2026-11-21",
-  "requires": "Known V5.9 baseline; file-only update. No database migration or inventory reset.",
+  "build": "V5.9.46 Remove Extracted Receipt Lines \u2014 2026-11-21",
+  "requires": "V5.9.45; file-only update. No schema migration, reset or automatic posting.",
   "files": {
     "Install_Order_Monitoring_Schedule.ps1": "b536ed83efdb181a947f31963631e1d6510fc9e506689eaef531994df01e28fa",
     "ORDER_MONITORING_GUIDE.txt": "2354ac7e63102978eb97b25c678e93924bdf9135a90f03f61b6aa53711d6c864",
     "access_policy.php": "fb49cb3c61ee0bc1b321ca6c90001d88949ce7ffc7f23fbd0c9abf754c071a80",
-    "access_roles.php": "fe23b00ff503e10ac33d4398d0540e818658992613643b36743aa2f7cfce9195",
+    "access_roles.php": "3431db304056baeeded0a93f1b5022530b2e9fcc86271713701f45ec2dbd3c86",
     "account.php": "129c46620e1880d92d9521c16d39de0c3a3b5c5f34a37114ce15dabccc36eec3",
     "account_password.php": "03192737e5cebb9a22ee139ef634a59ce12df5415b02a2482caa7cab6218e047",
-    "actions.php": "2716b0bf1732f3d662fad73cb1d482535ceda5e99bbdaed2947e5123e910a190",
+    "actions.php": "7302aded2cf081c07b3e367bd607a21c06566097cd47520b85fa5dc7f2b2bb09",
     "activity_search_page.php": "5c37bda7590e5ca491899e5f2b04cdbf9d97764984288e5a8225e0c9f65f3c65",
     "adjustment_controls.php": "76a40e9c1ee47f6111b3ea1ace86df1e63bdc08f63cd910cd58ea969fcb40f91",
     "adjustment_notifications.php": "5ea9cc613336e6d5d3e57c7d33c4a0d2ce6f507b7799900024cfc9348286728d",
@@ -134,7 +134,7 @@
     "guided_count_page.php": "264de68d592d0520d9dfb3ba2fd04be7f9fea80c8e15bde9cb162dae24d91d60",
     "header_menu.php": "40c71a022c12bd56237ad3af91ec1522e478382a604325dcba87ff5566d6f643",
     "import_history_page.php": "1760b76371262ebbf36320eee7b7c4396f5843693d2b409f119f4fceffbc5302",
-    "index.php": "d7be045b3d8e65addb5e4025f4e45ef930ce1c4cc4fc56d9daf69d8a7ca50077",
+    "index.php": "4725a0c086e723831ae91af61defab079543366a7729d392fb64c70f6d87ac1f",
     "inflow_allocation.php": "a61a54b5829f32112b5d8fb584caf72ec7d882191ca3d4bd35a5337f9f24e9cf",
     "inflow_cancellation.php": "7960a59e8d20581c74c938f06ca84e368c845f4ceb1ef457080243b32d307255",
     "inflow_guard.php": "dd998f226fa383a86d7f5a8eacce7b476ab1e02ea806d84ba5d09cdd66cb655f",
@@ -154,7 +154,7 @@
     "inventory_reset_page.php": "a43d189d3aaa339e0b39646bb0b48b085ed42c26b0b261681888946277731d65",
     "item_code_controls.php": "bebf4fafda435cc3d7a02cc8c6696efc104f178b9a55b6daf651b33084a51077",
     "item_code_update.php": "63fd5dec11a5b382c174b0099dad4b095ad91dd8562193bd0919b69895ddf0b5",
-    "lib.php": "3976c4f95dd2017178498ae2e0633f57d138d114627721afffb4a14279006e16",
+    "lib.php": "c0dc058ac34234f7bf23d32032b72e8c4b2ca5433667b9d456b685b3fd517160",
     "login.php": "9393f91f39616a2c266766c222aab4399f302d5a4cd74114fd7518f83b41f5b5",
     "login_a_shell.php": "7a98ec7bb887261f4215e49ba0048c9716b58047e1dab6ce57aadd67bdefe089",
     "logout.php": "b64065c93e3054de6d6cef1fda6e580e0f377f2a449592551d0d89131b5e0acc",
@@ -670,6 +670,7 @@
     "warranty_controls.php": "dedf80dea1afbefe57bcf9f65ae9bd71a38e2e6e878e713dd8599517d412af18",
     "warranty_page.php": "e3d5b689e25fd98543d431277b08afb0941d0ef0b3f8508df48b729e09951ef9",
     "website_selling.php": "5d5eb5d19cc247c44deb6ef45f684cd44e9bf2be7da16b74af6e9ad62555a7fe",
-    "workflow_stock.php": "3738fea1334dc153b7897a8d12c1523fc58b00c18e9a16569e50dd5712a6a25d"
+    "workflow_stock.php": "3738fea1334dc153b7897a8d12c1523fc58b00c18e9a16569e50dd5712a6a25d",
+    "receipt_line_controls.php": "62b81dffb51d6a6c490a63fa1160fc3aa1a0f952d74c665062259e2651fba778"
   }
 }
