@@ -1,0 +1,10 @@
+Bundled PDF report renderer
+
+dompdf/dompdf 3.1.6 — https://github.com/dompdf/dompdf
+Dependencies and exact upstream references are listed in composer.lock.
+Original source and licenses for all packages are included under vendor/.
+This distribution retains the LGPL/MIT/BSD notices supplied by the packages.
+
+Installed without development packages, plugins or install scripts.
+Report generation uses local bundled fonts, with remote resources, inline PHP
+and PDF JavaScript disabled. No shell command or external PDF service is used.
