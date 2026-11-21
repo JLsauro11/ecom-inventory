@@ -1,6 +1,6 @@
 {
-  "build": "V5.9.51 Return Entry Tracking and Actions Popups \u2014 2026-11-21",
-  "requires": "V5.9.50; file-only update. No schema migration, reset or automatic posting.",
+  "build": "V5.9.52 Incoming Stock Allocation Excel PDF and Print \u2014 2026-11-21",
+  "requires": "V5.9.51; file-only update. No schema migration, reset or automatic posting.",
   "files": {
     "Install_Order_Monitoring_Schedule.ps1": "b536ed83efdb181a947f31963631e1d6510fc9e506689eaef531994df01e28fa",
     "ORDER_MONITORING_GUIDE.txt": "2354ac7e63102978eb97b25c678e93924bdf9135a90f03f61b6aa53711d6c864",
@@ -134,8 +134,8 @@
     "guided_count_page.php": "264de68d592d0520d9dfb3ba2fd04be7f9fea80c8e15bde9cb162dae24d91d60",
     "header_menu.php": "40c71a022c12bd56237ad3af91ec1522e478382a604325dcba87ff5566d6f643",
     "import_history_page.php": "1760b76371262ebbf36320eee7b7c4396f5843693d2b409f119f4fceffbc5302",
-    "index.php": "561536d939ebf9029f4d4c37bfb16610af58cb13bf466f2b0addc779e85850cc",
-    "inflow_allocation.php": "a61a54b5829f32112b5d8fb584caf72ec7d882191ca3d4bd35a5337f9f24e9cf",
+    "index.php": "1d9393f72a8a9340597161acdd85ad00d7599a1af452f39397ffbbed35ee312a",
+    "inflow_allocation.php": "27d2c77b4519060601c7f97f4fc4e9b6137f5b9633f05576e6e820703b8bf69c",
     "inflow_cancellation.php": "7960a59e8d20581c74c938f06ca84e368c845f4ceb1ef457080243b32d307255",
     "inflow_guard.php": "346016847539870bd4c1e2843f7021851085e30988d095b4624e8350e76c9b16",
     "inflow_history_exports.php": "85bfbdaab6efec9bd973d53dd0c4c79d6ce025de8f09186eccccbf732d11c1ae",
@@ -154,7 +154,7 @@
     "inventory_reset_page.php": "a43d189d3aaa339e0b39646bb0b48b085ed42c26b0b261681888946277731d65",
     "item_code_controls.php": "bebf4fafda435cc3d7a02cc8c6696efc104f178b9a55b6daf651b33084a51077",
     "item_code_update.php": "63fd5dec11a5b382c174b0099dad4b095ad91dd8562193bd0919b69895ddf0b5",
-    "lib.php": "c0dc058ac34234f7bf23d32032b72e8c4b2ca5433667b9d456b685b3fd517160",
+    "lib.php": "f7665fb33b84fc2499312daffa76db1c384badba7b12fbee1d3d151b1a2060e0",
     "login.php": "9393f91f39616a2c266766c222aab4399f302d5a4cd74114fd7518f83b41f5b5",
     "login_a_shell.php": "7a98ec7bb887261f4215e49ba0048c9716b58047e1dab6ce57aadd67bdefe089",
     "logout.php": "b64065c93e3054de6d6cef1fda6e580e0f377f2a449592551d0d89131b5e0acc",
@@ -674,6 +674,7 @@
     "receipt_line_controls.php": "60f52dee8f3f1e771f27110007c1d9dd8d3dad39c31c601d2be5ca3262e5b644",
     "assets/receipt_line_bulk.js": "2353de6c4e8bbc0d0dd17b3cddbc0dac4d08b994becdbbbb957a8a0b7ddeb1ab",
     "assets/receipt_line_actions.css": "a03a5afc8b59d65b68d8b794d8ff6704a7df13def85ac8ee1ecb8cfc41b93c01",
-    "assets/receipt_line_actions.js": "a256ec4360bbda7f874b305649753f227fa622f47a331b0266ec90813e9d1a69"
+    "assets/receipt_line_actions.js": "a256ec4360bbda7f874b305649753f227fa622f47a331b0266ec90813e9d1a69",
+    "incoming_allocation_exports.php": "b20e2526497de8af294d17f283d723d4288625c7f53282446fa5935b581c04c4"
   }
 }

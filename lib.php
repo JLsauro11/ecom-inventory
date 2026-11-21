@@ -286,3 +286,5 @@ require_once __DIR__.'/current_stocks_export.php';
 require_once __DIR__.'/controller_cancellation.php';
 require_once __DIR__.'/inflow_history_exports.php';
 require_once __DIR__.'/receipt_line_controls.php';
+
+require_once __DIR__.'/incoming_allocation_exports.php';
