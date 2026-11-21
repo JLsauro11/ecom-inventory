@@ -1,6 +1,6 @@
 {
-  "build": "V5.9.53 Correct Posted Receipt Item with Admin Approval \u2014 2026-11-21",
-  "requires": "V5.9.52; file-only update. No schema migration, reset or automatic posting.",
+  "build": "V5.9.54 Admin Self-Approval for Receipt Item Corrections \u2014 2026-11-21",
+  "requires": "V5.9.53; file-only update. No schema migration, reset or automatic posting.",
   "files": {
     "Install_Order_Monitoring_Schedule.ps1": "b536ed83efdb181a947f31963631e1d6510fc9e506689eaef531994df01e28fa",
     "ORDER_MONITORING_GUIDE.txt": "2354ac7e63102978eb97b25c678e93924bdf9135a90f03f61b6aa53711d6c864",
@@ -140,7 +140,7 @@
     "inflow_guard.php": "346016847539870bd4c1e2843f7021851085e30988d095b4624e8350e76c9b16",
     "inflow_history_exports.php": "85bfbdaab6efec9bd973d53dd0c4c79d6ce025de8f09186eccccbf732d11c1ae",
     "inflow_reversal.php": "00007f6be03dc6881a4da20d9c2855c5d15507c5c7748b2f8d7f6a3d04174baa",
-    "inflow_reversal_page.php": "db9dc28b553e6d2aa9bdd1231284a3b1f6c009df97a834f929bf37ba18a9de95",
+    "inflow_reversal_page.php": "5f4834d3fe606af49c29bbec0f71ac2953fe87f26b2b83987d74706200d4a715",
     "inflow_search.php": "403565f62a505fd19a9f64ca0d2aab4121e12fe4f7e83db70c4c95622dbea484",
     "inflow_v51.php": "2957347bcc041157c112585966d4102966fdf701269d71526fec1dc84546b8ac",
     "inventory_count.php": "6ded06cb49dd42d333e9aa139b19ad2f2bbc296ed91f22b35535445d1d0c8667",
@@ -676,6 +676,6 @@
     "assets/receipt_line_actions.css": "a03a5afc8b59d65b68d8b794d8ff6704a7df13def85ac8ee1ecb8cfc41b93c01",
     "assets/receipt_line_actions.js": "a256ec4360bbda7f874b305649753f227fa622f47a331b0266ec90813e9d1a69",
     "incoming_allocation_exports.php": "af5e35a5ca4e42c9a39407b8c0e97c205c5166b8cd793445a850098efbf75a33",
-    "posted_receipt_correction.php": "6c52600416c0c559c5528d2187291d6631d657cebf6ec15a68069dbd67095b9e"
+    "posted_receipt_correction.php": "880f6bd0f1689ac609e0590e529cff3d8456edf20b62b94defc6ed13bd51ab4d"
   }
 }
