@@ -1,6 +1,6 @@
 {
-  "build": "V5.9.49 Receipt Actions Menu and Popups \u2014 2026-11-21",
-  "requires": "V5.9.48; file-only update. No schema migration, reset or automatic posting.",
+  "build": "V5.9.50 Receipt Actions Dropdown and Toolbar Layout \u2014 2026-11-21",
+  "requires": "V5.9.49; file-only update. No schema migration, reset or automatic posting.",
   "files": {
     "Install_Order_Monitoring_Schedule.ps1": "b536ed83efdb181a947f31963631e1d6510fc9e506689eaef531994df01e28fa",
     "ORDER_MONITORING_GUIDE.txt": "2354ac7e63102978eb97b25c678e93924bdf9135a90f03f61b6aa53711d6c864",
@@ -671,9 +671,9 @@
     "warranty_page.php": "e3d5b689e25fd98543d431277b08afb0941d0ef0b3f8508df48b729e09951ef9",
     "website_selling.php": "5d5eb5d19cc247c44deb6ef45f684cd44e9bf2be7da16b74af6e9ad62555a7fe",
     "workflow_stock.php": "3738fea1334dc153b7897a8d12c1523fc58b00c18e9a16569e50dd5712a6a25d",
-    "receipt_line_controls.php": "717714f707c8e25c8d238df5b004b28dcc2ffd4eb9b75940e735fb6ab2e3af7d",
+    "receipt_line_controls.php": "60f52dee8f3f1e771f27110007c1d9dd8d3dad39c31c601d2be5ca3262e5b644",
     "assets/receipt_line_bulk.js": "2353de6c4e8bbc0d0dd17b3cddbc0dac4d08b994becdbbbb957a8a0b7ddeb1ab",
-    "assets/receipt_line_actions.css": "7758ceb11c3951d6dc081757e9634be4d2377378d748afbb21aacec56c33cf0e",
-    "assets/receipt_line_actions.js": "ae19787facc9d5769e8d9c86ac5cc27610b3b5c660e1bf4809c965409fd2e354"
+    "assets/receipt_line_actions.css": "a03a5afc8b59d65b68d8b794d8ff6704a7df13def85ac8ee1ecb8cfc41b93c01",
+    "assets/receipt_line_actions.js": "a256ec4360bbda7f874b305649753f227fa622f47a331b0266ec90813e9d1a69"
   }
 }
