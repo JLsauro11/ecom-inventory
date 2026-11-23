@@ -1,5 +1,6 @@
 <?php
 require __DIR__.'/lib.php';require_login();require_once __DIR__.'/role_ui.php';require_once __DIR__.'/sidebar_platforms.php';require_once __DIR__.'/ui_prompts.php';require_once __DIR__.'/beginning_workspace.php';ob_start('ui_feedback_html');$pdo=db();$u=current_user();if(setting('schema_version','0')!=='5'){if($u['role']==='Admin'){header('Location: upgrade_v5.php');exit;}exit('Ask your administrator to run upgrade_v5.php before opening the updated system.');}$page=$_GET['page']??'dashboard';if(!product_categories_ready()){if($u['role']==='Admin'){header('Location: upgrade_v5.php');exit;}exit('Ask your administrator to run the updated V5 upgrade for product categories.');}if(!inventory_update_ready()){if($u['role']==='Admin'){header('Location: upgrade_v5.php');exit;}exit('Ask your administrator to run the latest V5 upgrade.');}if(!inflow_controls_ready()||!complete_update_ready()){if($u['role']==='Admin'){header('Location: upgrade_v5.php');exit;}exit('Ask your administrator to run the latest database upgrade.');}$products=product_options();$flash=getFlash();require_once __DIR__.'/brand_filter.php';$selectedBrand=is_string($_GET['brand']??null)?trim($_GET['brand']):'';$selectedBrand=$selectedBrand===''?'':inventory_filter_brand($selectedBrand);$selectedMain=is_string($_GET['main_category']??null)?$_GET['main_category']:'';$selectedSub=is_string($_GET['subcategory']??null)?$_GET['subcategory']:'';$brandProducts=inventory_filtered_products($products);$brandQuery='&'.http_build_query(['brand'=>$selectedBrand,'main_category'=>$selectedMain,'subcategory'=>$selectedSub]);
+if($page==='studio'&&isset($_GET['studio_export'])){ob_end_clean();studio_export($_GET['studio_export']);exit;}
 if($page==='stocks'&&($_GET['download']??'')==='xlsx'){ob_end_clean();cs_download_stocks($brandProducts);exit;}
 if($page==='inflow'&&isset($_GET['allocation_export'])){ob_end_clean();ia_download((int)($_GET['id']??0),$_GET['allocation_export']);exit;}
 if($page==='inflow'&&isset($_GET['inflow_export'])){ob_end_clean();ih_download($_GET['inflow_export']);exit;}
@@ -19,7 +20,7 @@ $adminPendingRequests=$u['role']==='Admin'?admin_requests_pending_count():0;
 $nav=[
  ['dashboard','Dashboard','⌂'],
  ['inventory_group','Inventory',''],['stocks','Current Stocks','▣'],['beginning','Beginning Balance','▥'],['inflow','Inflow','＋'],['outflow','Outflow','−'],['order_monitor','Order Monitoring','▤'],['nonsellable','Non-Sellable','↩'],
- ['borrowed','Borrowed Items','⇄'],
+ ['studio','Studio Stocks','▤'],['borrowed','Borrowed Items','⇄'],
  ['platform_group','Platform Inventory',''],['platform_inventory','Lazada / Shopee / TikTok','▦'],['transfers','Stock Transfer','⇄'],['file_generator','Platform File Generator','⇩'],
  ['products_group','Products',''],['products','Product Master','▦'],['mapping','Platform Mapping','↔'],
  ['category_manager','Product Categories','▦'],['audit_group','Control & Audit',''],['reconciliation','Reconciliation','≋'],['receipts','Receipt Archive','▤'],['inventory_count','Inventory Adjustments','▤'],['reports','Reports','▥'],['imports','Import History','☷'],['activity','Activity Log','◉'],
@@ -36,6 +37,7 @@ usability_page_context($page);ui_prompt_page_notice($page);
 if($u['role']==='Admin'&&!empty($_GET['from_requests']))echo '<a class="btn ghost requests-back" href="?page=admin_requests">← Requests &amp; Approvals</a>';
 if($page==='dashboard'&&access_is_viewer()){require __DIR__.'/management_dashboard.php';}
 elseif($page==='order_monitor'){om_page();}
+elseif($page==='studio'){try{studio_page();}catch(Throwable $ex){echo '<div class="alert danger">'.e(safe_error_message($ex)).'</div>';}}
 elseif($page==='help'){usability_help_page();}
 elseif($page==='admin_requests'){admin_requests_page();}
 elseif($page==='admin_request'){admin_request_detail_page();}

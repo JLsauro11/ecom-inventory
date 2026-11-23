@@ -292,3 +292,6 @@ require_once __DIR__.'/incoming_allocation_exports.php';
 require_once __DIR__.'/posted_receipt_correction.php';
 
 require_once __DIR__.'/posted_order_correction.php';
+
+require_once __DIR__.'/studio_stocks.php';
+require_once __DIR__.'/studio_page.php';

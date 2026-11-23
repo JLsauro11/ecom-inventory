@@ -1,0 +1,11 @@
+<?php
+require __DIR__.'/lib.php';require_login();$id=(int)($_POST['id']??0);$lock=null;
+try{if($_SERVER['REQUEST_METHOD']!=='POST')throw new Exception('Use the Studio form.');verify_csrf();$a=$_POST['action']??'';if(!in_array($a,['studio_setup','studio_create','studio_decide','studio_cancel','studio_preview','studio_post'],true)||!can_action($a==='studio_preview'?'studio_post':$a))throw new Exception('Studio action access required.');$lock=inventory_write_lock();$step='';
+ if($a==='studio_setup'){studio_install();flash('Studio Stocks enabled. No existing stock changed.');}
+ elseif($a==='studio_create'){$key=(string)($_POST['request_key']??'');if(!isset($_SESSION['studio_request_keys'][$key]))throw new Exception('Reopen the Studio request form.');$id=studio_create($_POST);flash('Request submitted to Operations Lead. No stock changed.');}
+ elseif($a==='studio_decide'){studio_decide($id,$_POST);unset($_SESSION['studio_preview'][$id]);flash('Decision saved. Stock changes only when ICO confirms the actual transfer.');}
+ elseif($a==='studio_cancel'){studio_cancel($id,$_POST);unset($_SESSION['studio_preview'][$id]);flash('Request cancelled. No stock changed.');}
+ elseif($a==='studio_preview'){$plan=process_transaction(fn()=>studio_plan($id,$_POST['sources']??[]));$_SESSION['studio_preview'][$id]=['plan'=>$plan,'sources'=>$_POST['sources']??[],'user_id'=>current_user()['id'],'token'=>bin2hex(random_bytes(32))];$step='&step=review';}
+ elseif($a==='studio_post'){$saved=$_SESSION['studio_preview'][$id]??null;if(!$saved||$saved['user_id']!==current_user()['id']||!hash_equals($saved['token'],(string)($_POST['token']??'')))throw new Exception('Review the transfer before confirmation.');studio_post($id,['sources'=>$saved['sources'],'digest'=>$saved['plan']['digest'],'handed_to'=>$_POST['handed_to']??'','physical_ack'=>$_POST['physical_ack']??null]);unset($_SESSION['studio_preview'][$id]);flash('Studio transfer posted once. Sellable decreased; Studio increased; total physical unchanged.');}
+ inventory_write_unlock($lock);$lock=null;header('Location: index.php?page=studio'.($id?'&id='.$id:'').$step);exit;
+}catch(Throwable $e){if(db()->inTransaction())db()->rollBack();if($lock)inventory_write_unlock($lock);flash(safe_error_message($e),'danger');header('Location: index.php?page=studio'.($id?'&id='.$id:''));exit;}
