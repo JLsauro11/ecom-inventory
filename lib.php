@@ -295,3 +295,5 @@ require_once __DIR__.'/posted_order_correction.php';
 
 require_once __DIR__.'/studio_stocks.php';
 require_once __DIR__.'/studio_page.php';
+require_once __DIR__.'/inventory_exceptions.php';
+require_once __DIR__.'/inventory_exception_pages.php';

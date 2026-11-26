@@ -37,6 +37,8 @@ usability_page_context($page);ui_prompt_page_notice($page);
 if($u['role']==='Admin'&&!empty($_GET['from_requests']))echo '<a class="btn ghost requests-back" href="?page=admin_requests">← Requests &amp; Approvals</a>';
 if($page==='dashboard'&&access_is_viewer()){require __DIR__.'/management_dashboard.php';}
 elseif($page==='order_monitor'){om_page();}
+elseif($page==='damage_declare'){try{ix_damage_page();}catch(Throwable $ex){echo '<div class="alert danger">'.e(safe_error_message($ex)).'</div>';}}
+elseif($page==='wrong_returns'){try{ix_case_page();}catch(Throwable $ex){echo '<div class="alert danger">'.e(safe_error_message($ex)).'</div>';}}
 elseif($page==='studio'){try{studio_page();}catch(Throwable $ex){echo '<div class="alert danger">'.e(safe_error_message($ex)).'</div>';}}
 elseif($page==='help'){usability_help_page();}
 elseif($page==='admin_requests'){admin_requests_page();}
