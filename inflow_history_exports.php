@@ -6,7 +6,7 @@ function ih_export_build(){
  if(!access_page_allowed('inflow'))throw new Exception('Inflow access required.');
  foreach(['inflow_q','date_from','date_to','inflow_kind','inflow_status','inflow_owner'] as $key)if(isset($_GET[$key])&&!is_string($_GET[$key]))throw new Exception('Invalid Inflow filter.');
  $filter=inflow_history_query();$q=db()->prepare('SELECT b.*,u.name processed_by'.$filter['sql'].' ORDER BY b.id DESC');$q->execute($filter['args']);$rows=[];$total=0;
- foreach($q as $r){$m=json_decode($r['result_json']??'',true)?:[];$label=ih_export_status($r,$m);$qty=(int)$r['total_qty'];$total+=$qty;
+ foreach($q as $r){$m=rc_history_meta(json_decode($r['result_json']??'',true)?:[]);$label=ih_export_status($r,$m);$qty=(int)$r['total_qty'];$total+=$qty;
   $rows[]=[$r['txn_date'],(string)($r['reference_no']?:$r['batch_ref']),(string)$r['batch_ref'],$m['reference_kind']??$r['batch_type'],$m['condition']??($r['status']==='Confirmed'?'Good Item':'Pending review'),$m['destination']??($r['status']==='Confirmed'?'Legacy / see details':'Pending review'),$qty,(string)$r['source_name'],(string)($r['processed_by']??''),$label];
  }
  $filters=[];foreach(['inflow_q'=>'Search','date_from'=>'From','date_to'=>'To','inflow_kind'=>'Type','inflow_status'=>'Status','inflow_owner'=>'Uploader'] as $key=>$label)if(trim((string)($_GET[$key]??''))!=='')$filters[]=$label.': '.($key==='inflow_owner'&&$_GET[$key]==='mine'?'My uploads':(string)$_GET[$key]);
