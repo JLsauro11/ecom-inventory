@@ -51,6 +51,7 @@ elseif($page==='day_closing'){require __DIR__.'/day_closing_page.php';}
 elseif($page==='corrections'){require __DIR__.'/inflow_reversal_page.php';}
 elseif($page==='cancelled_orders'){try{require __DIR__.'/cancelled_orders_page.php';}catch(Throwable $ex){echo '<div class="alert danger">'.e(safe_error_message($ex)).'</div>';}}
 elseif($page==='order_return'){if(ur_is_batch(return_batch((int)($_GET['id']??0))))ur_page((int)$_GET['id']);elseif(cancelled_order_batch(return_batch((int)($_GET['id']??0))))require __DIR__.'/cancelled_orders_page.php';else require __DIR__.'/order_return_page.php';}
+elseif($page==='return_followup'){try{rf_page();}catch(Throwable $ex){echo '<div class="alert danger">'.e(safe_error_message($ex)).'</div>';}}
 elseif($page==='return_audit'){try{rc_page();}catch(Throwable $ex){echo '<div class="alert danger">'.e(safe_error_message($ex)).'</div>';}}
 elseif($page==='warranty_cases'){try{wc_page();}catch(Throwable $ex){echo '<div class="alert danger">'.e(safe_error_message($ex)).'</div>';}}
 elseif($page==='warranty'){require __DIR__.'/warranty_page.php';}

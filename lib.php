@@ -306,3 +306,6 @@ require_once __DIR__.'/warranty_cases_page.php';
 require_once __DIR__.'/return_item_scope.php';
 
 require_once __DIR__.'/return_condition_audit.php';
+
+require_once __DIR__.'/return_followup.php';
+require_once __DIR__.'/return_followup_page.php';
