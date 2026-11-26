@@ -24,13 +24,5 @@ function warranty_validate($input,$lock=false){
  return ['return'=>$r,'product'=>$p,'input'=>['return_id'=>(int)$r['id'],'txn_date'=>$date,'qty'=>$qty,'product_id'=>$pid,'source_platform'=>$source,'order_id'=>$ref,'remarks'=>$remarks],'stock'=>stock_row($pid),'platform_qty'=>platform_qty($source,$pid)];
 }
 function warranty_digest($a){return hash('sha256',json_encode([$a['input'],$a['return'],$a['product'],$a['stock'],$a['platform_qty']]));}
-function warranty_stage($input){$a=warranty_validate($input);$token=bin2hex(random_bytes(24));$_SESSION['warranty_reviews'][$token]=['input'=>$a['input'],'digest'=>warranty_digest($a),'uid'=>current_user()['id'],'expires'=>time()+3600];return $token;}
-function warranty_confirm($token,$ack){
- if(!can_action('manual_outflow'))throw new Exception('Your account cannot issue warranty replacements.');if(!$ack)throw new Exception('Review and acknowledge the replacement before posting.');
- $v=$_SESSION['warranty_reviews'][$token]??null;if(!$v||$v['expires']<time()||(int)$v['uid']!==(int)current_user()['id'])throw new Exception('Review expired or already submitted. Start a new warranty replacement.');
- $id=process_transaction(function()use($v,$token){$a=warranty_validate($v['input'],true);if(!hash_equals($v['digest'],warranty_digest($a)))throw new Exception('Stock or return eligibility changed. Go back and review the replacement again.');$i=$a['input'];$r=$a['return'];$sourceItem='Warranty posting: '.$token;
-  db()->prepare('INSERT INTO outflows(txn_date,platform,order_id,product_id,source_item,qty,type,dedupe_key,remarks,user_id) VALUES(?,?,?,?,?,?,?,?,?,?)')->execute([$i['txn_date'],$i['source_platform'],$i['order_id'],$i['product_id'],$sourceItem,$i['qty'],'Warranty Replacement',hash('sha256','warranty|'.$token),'Return '.$r['batch_ref'].' / line #'.$r['id'].'; Original order '.$r['original_ref'].' ('.$r['platform'].'); '.$i['remarks'],current_user()['id']]);$oid=(int)db()->lastInsertId();
-  set_setting('warranty_outflow_'.$oid,json_encode(['return_id'=>(int)$r['id'],'return_batch_id'=>(int)$r['batch_id'],'return_reference'=>$r['batch_ref'],'returned_product_id'=>(int)$r['product_id'],'original_order'=>$r['original_ref'],'original_platform'=>$r['platform'],'reference'=>$i['order_id'],'posting_token'=>$sourceItem]));
-  change_platform_stock($i['source_platform'],$i['product_id'],-$i['qty'],$i['order_id'],$i['txn_date']);check_platform_alignment($i['product_id']);audit('Post warranty replacement','Outflow',(string)$oid,$i['order_id'].'; '.$i['qty'].' pcs; Return '.$r['batch_ref'].' / #'.$r['id'].'; defective stock remains Non-Sellable.');return $oid;
- });unset($_SESSION['warranty_reviews'][$token]);return $id;
-}
+function warranty_stage($input){throw new Exception('Create and approve replacements in Warranty Cases. The old warranty entry is read-only.');}
+function warranty_confirm($token,$ack){throw new Exception('Use the approved Warranty Case and ICO release. This old review cannot post stock.');}
