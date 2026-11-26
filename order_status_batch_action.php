@@ -1,0 +1,3 @@
+<?php
+require __DIR__.'/lib.php';require_login();header('Content-Type: application/json; charset=utf-8');header('Cache-Control: private, no-store');
+try{if($_SERVER['REQUEST_METHOD']!=='POST')throw new Exception('Use the processing page.');verify_csrf();om_require();$state=wb_tick((int)($_POST['upload_id']??0),$_POST['token']??'',(int)($_POST['cursor']??-1),$_POST['mode']??'work');echo json_encode(['ok'=>true,'progress'=>$state],JSON_THROW_ON_ERROR);}catch(Throwable $e){unset($GLOBALS['OR_INDEX'],$GLOBALS['OM_RESERVED'],$GLOBALS['OA_REPORTS']);http_response_code(400);echo json_encode(['ok'=>false,'message'=>safe_error_message($e)]);}
