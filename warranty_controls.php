@@ -7,7 +7,7 @@ function warranty_links($activeOnly=true){
  if($activeOnly)$sql.=' AND o.reversed_by_request IS NULL';
  $links=[];foreach(db()->query($sql) as $o){$v=json_decode($o['value_text'],true);if(!$v||($v['reference']??'')!==$o['order_id']||($v['posting_token']??'')!==$o['source_item'])continue;$links[]=['outflow'=>$o,'link'=>$v];}return $links;
 }
-function warranty_used($returnId){$n=0;foreach(warranty_links() as $l)if((int)$l['link']['return_id']===(int)$returnId)$n+=(int)$l['outflow']['qty'];return $n;}
+function warranty_used($returnId){$n=0;foreach(warranty_links() as $l)if((int)$l['link']['return_id']===(int)$returnId)$n+=(int)$l['outflow']['qty'];return $n+(function_exists('wc_link_used')?wc_link_used($returnId):0);}
 function warranty_return($id,$lock=false){
  $q=db()->prepare("SELECT r.*,b.batch_ref,b.status batch_status,p.name,p.master_sku FROM posted_returns r JOIN return_batches b ON b.id=r.batch_id JOIN products p ON p.id=r.product_id WHERE r.id=?".($lock?' FOR UPDATE':''));$q->execute([(int)$id]);$r=$q->fetch();
  if(!$r||$r['reversed']||$r['batch_status']!=='Posted'||str_starts_with($r['batch_ref'],'CAN-')||(int)$r['damaged_qty']<1||!$r['non_sellable_id'])throw new Exception('Select a posted Damage / Leak customer return.');

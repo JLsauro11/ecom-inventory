@@ -20,7 +20,7 @@ $adminPendingRequests=$u['role']==='Admin'?admin_requests_pending_count():0;
 $nav=[
  ['dashboard','Dashboard','⌂'],
  ['inventory_group','Inventory',''],['stocks','Current Stocks','▣'],['beginning','Beginning Balance','▥'],['inflow','Inflow','＋'],['outflow','Outflow','−'],['order_monitor','Order Monitoring','▤'],['nonsellable','Non-Sellable','↩'],
- ['studio','Studio Stocks','▤'],['borrowed','Borrowed Items','⇄'],
+ ['warranty_cases','Warranty Cases','▤'],['studio','Studio Stocks','▤'],['borrowed','Borrowed Items','⇄'],
  ['platform_group','Platform Inventory',''],['platform_inventory','Lazada / Shopee / TikTok','▦'],['transfers','Stock Transfer','⇄'],['file_generator','Platform File Generator','⇩'],
  ['products_group','Products',''],['products','Product Master','▦'],['mapping','Platform Mapping','↔'],
  ['category_manager','Product Categories','▦'],['audit_group','Control & Audit',''],['reconciliation','Reconciliation','≋'],['receipts','Receipt Archive','▤'],['inventory_count','Inventory Adjustments','▤'],['reports','Reports','▥'],['imports','Import History','☷'],['activity','Activity Log','◉'],
@@ -50,6 +50,7 @@ elseif($page==='day_closing'){require __DIR__.'/day_closing_page.php';}
 elseif($page==='corrections'){require __DIR__.'/inflow_reversal_page.php';}
 elseif($page==='cancelled_orders'){try{require __DIR__.'/cancelled_orders_page.php';}catch(Throwable $ex){echo '<div class="alert danger">'.e(safe_error_message($ex)).'</div>';}}
 elseif($page==='order_return'){if(ur_is_batch(return_batch((int)($_GET['id']??0))))ur_page((int)$_GET['id']);elseif(cancelled_order_batch(return_batch((int)($_GET['id']??0))))require __DIR__.'/cancelled_orders_page.php';else require __DIR__.'/order_return_page.php';}
+elseif($page==='warranty_cases'){try{wc_page();}catch(Throwable $ex){echo '<div class="alert danger">'.e(safe_error_message($ex)).'</div>';}}
 elseif($page==='warranty'){require __DIR__.'/warranty_page.php';}
 elseif($page==='stock_exceptions'){if(process_ready())require __DIR__.'/negative_page.php';else echo '<div class="alert warn">Run the Admin upgrade first.</div>';}
 elseif($page==='borrowed'){if(process_ready())require __DIR__.'/borrowed_page.php';else echo '<div class="alert warn">Run the current Admin upgrade to enable Borrowed Items.</div>';}

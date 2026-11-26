@@ -299,3 +299,6 @@ require_once __DIR__.'/inventory_exceptions.php';
 require_once __DIR__.'/inventory_exception_pages.php';
 
 require_once __DIR__.'/order_status_batches.php';
+
+require_once __DIR__.'/warranty_cases.php';
+require_once __DIR__.'/warranty_cases_page.php';
