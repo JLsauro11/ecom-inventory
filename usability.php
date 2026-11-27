@@ -64,7 +64,7 @@ function usability_page_context($page){
  'outflow'=>'Upload → Review → Confirm. Order registration reserves stock; first dispatch deducts it once. Use Order Monitoring for statuses and history.',
  'borrowed'=>'Issuing borrowed items releases sellable stock. Record returns or request a conversion using the same borrow record; conversion approval belongs to Admin.',
  'transfers'=>'Move allocations between platforms. Review source availability and destination quantities; total physical stock is unchanged.',
- 'nonsellable'=>'Non-Sellable stock is physically held but unavailable for sale. Changing condition does not create units. Physical release or disposal decreases stock only after Admin approval.',
+ 'nonsellable'=>'Non-Sellable stock is physically held but unavailable for sale. Changing condition does not create units. Physical release requires approval: ICO requests go to Operations Lead or Admin; Operations Lead requests go to a different Admin.',
  'reconciliation'=>'Compare records to explain differences. Reconciliation is a checking process; only the confirmed correction action changes quantities.',
  'platform_inventory'=>'Allocated quantities are the system source for manual marketplace updates. Allocations do not add to total physical stock.',
  'reports'=>'Reports are read-only. Apply filters before downloading or printing; Stock Balances uses an As Of date.',
