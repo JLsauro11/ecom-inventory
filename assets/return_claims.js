@@ -16,7 +16,7 @@
    inspected:'Record the inspection result in remarks. Actual stock receiving is a separate Inflow submission.',
    for_filing:'The claim has not been submitted yet. Record what still needs to be filed.',
    claim_filed:'Record that the claim was submitted. Put its actual filing date in remarks.',
-   claim_approved:'Save the confirmed platform approval. Missing filing history is recorded together with approval. Receiving remains pending when a return is still expected.',
+   claim_approved:'Claim Approved means seller paid / compensated. Saving automatically resolves the case and removes it from pending follow-ups. Filing and approval history are retained; no stock is added.',
    approved_no_return:'The platform claim is approved, the seller is paid / compensated, and no item will return. Inspection becomes Not Required; the case leaves pending ICO returns. Stock stays deducted.',
    claim_rejected:'Record the platform rejection and the next action in remarks. Actual receiving remains separate.',
    close_claim:'Close the claims follow-up. An outstanding physical return remains pending until it is properly received or resolved.'
