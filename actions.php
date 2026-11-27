@@ -91,6 +91,7 @@ try{
  elseif($a==='confirm_bulk_inflow'){
   if(empty($_POST['review_ack']))throw new Exception('Confirm that you reviewed the bulk inflow.');$bid=(int)($_POST['batch_id']??0);$total=confirm_bulk_inflow($bid,$u['id']);flash('Bulk inflow confirmed: '.$total.' pcs added.');$return='inflow_batch&id='.$bid;
  }
+ elseif($a==='receipt_retry_reading'){$bid=(int)($_POST['batch_id']??0);$n=receipt_retry_reading($bid,$_POST['digest']??'');$return='receipt_review&id='.$bid;flash($n?'Saved PDF read again. Review the extracted items and allocation. No stock changed.':'No items could be read. Use Add Item Manually on this receipt. No stock changed.',$n?'info':'warn');}
  elseif($a==='upload_receipt'){
   if(empty($_FILES['receipt']['tmp_name']))throw new Exception('Select a PDF receipt.');$ext=strtolower(pathinfo($_FILES['receipt']['name'],PATHINFO_EXTENSION));if($ext!=='pdf')throw new Exception('Receipt upload must be a PDF file.');
   $supplier=inflow_supplier($_POST['supplier']??'');inflow_upload_check($_FILES['receipt']);$rel=store_upload($_FILES['receipt'],'receipts','RCPT');$dest=__DIR__.'/'.$rel;$reading=receipt_extract_pdf($dest);$text=$reading['text'];$parsed=parse_receipt_text($text);$parsed['reading_diagnostics']=$reading['notes'];$parsed['extraction_method']=$reading['method'];$ref=$parsed['reference']?:next_ref('DR');$batchRef=next_ref('INF-RCPT');

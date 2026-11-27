@@ -15,6 +15,10 @@
   dialog.addEventListener('close',()=>dialog.receiptReturnFocus?.focus());
   dialog.addEventListener('click',e=>{if(e.target!==dialog)return;const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();});
  });
+ document.querySelectorAll('[data-receipt-open]').forEach(button=>button.addEventListener('click',()=>{
+  const dialog=document.getElementById(button.dataset.receiptOpen);if(!dialog)return;
+  hideAll();dialog.receiptReturnFocus=button;if(!dialog.open)dialog.showModal();
+ }));
  document.addEventListener('click',e=>{if(!e.target.closest('.receipt-line-actions'))hideAll();});
  window.addEventListener('resize',hideAll);document.addEventListener('wheel',e=>{if(!e.target.closest('.receipt-line-action-menu'))hideAll();},{passive:true});
 })();
