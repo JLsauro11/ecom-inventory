@@ -9,7 +9,7 @@
   if(!action)return;
   const notes={
    keep:'Save remarks or evidence while keeping the current case status.',
-   accept_return:'Accept the customer reason without opening a platform claim. Post the actual returned SKU, quantity and condition through Inflow; receiving remains pending until posted.',
+   accept_return:'Accept the valid customer return. If its expected items are already received and posted, the case and order monitoring resolve automatically. Otherwise, receive only the actual SKU, quantity and condition through Inflow.',
    accept_return_close:'The actual received items are already posted. Confirm that they complete this accepted customer return. No further stock is added.',
    accept_short_return:'Close the customer return using only the items already received and posted. Missing units were never received by the customer; reconcile that original dispatch difference separately. Do not receive them again.',
    for_inspection:'Use only when the actual item has arrived. Inspect it, then record received quantities through Inflow.',

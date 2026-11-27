@@ -12,12 +12,12 @@ function restricted_pending_requests(){
 }
 function restricted_approval_panel(){
  if(!in_array(access_profile(),['Admin','Operations Lead'],true))return;$rows=restricted_pending_requests();
- echo '<section class="card table-wrap"><h3>Physical Release Requests · Awaiting Approval</h3><p class="muted small">ICO requests: Operations Lead or Admin approves. Operations Lead requests: a different Admin approves. Stock changes only on approval and posting.</p><table class="table"><tr><th>Reference / Date</th><th>Requested By</th><th>Purpose / Quantity</th><th>Action</th></tr>';
+ echo '<section class="card table-wrap"><h3>Non-Sellable Requests · Awaiting Approval</h3><p class="muted small">ICO requests: Operations Lead or Admin approves. Operations Lead requests: a different Admin approves. Stock changes only on approval and posting.</p><table class="table"><tr><th>Reference / Date</th><th>Requested By</th><th>Purpose / Quantity</th><th>Action</th></tr>';
  foreach($rows as $b){$w=$b['workflow'];$u=om_query('SELECT name FROM users WHERE id=?',[$b['user_id']])->fetchColumn();echo '<tr><td>'.e($w['data']['ref']).'<br>'.e($w['data']['txn_date']).'</td><td>'.e($u).'</td><td>'.e($w['data']['type']).' · '.array_sum(array_column($w['plan'],'qty')).' pcs</td><td><a class="btn secondary sm" href="?page=stock_batch&id='.$b['id'].'">Review Request</a></td></tr>';}
- if(!$rows)echo '<tr><td colspan="4">No physical release requests awaiting your approval.</td></tr>';echo '</table></section>';
+ if(!$rows)echo '<tr><td colspan="4">No Non-Sellable requests awaiting your approval.</td></tr>';echo '</table></section>';
 }
 function restricted_record_status($r){
- if($r['reversed_by_request']!==null)return 'Reversed';$remaining=$r['remaining']??max(0,(int)$r['qty']-release_total($r['id']));if(!$remaining)return 'Completed / Released';
+ if($r['reversed_by_request']!==null)return 'Reversed';$remaining=$r['remaining']??max(0,(int)$r['qty']-release_total($r['id']));if(packaging_kind($r['condition_type'])==='damaged'&&packaging_ready()){$recovered=(int)om_query('SELECT COALESCE(SUM(qty),0) FROM packaging_completions WHERE source_id=? AND reversed_by_request IS NULL',[$r['id']])->fetchColumn();if($recovered>0)return $remaining?'Partially Returned to Sellable':($recovered>=(int)$r['qty']?'Returned to Sellable':'Completed / Released');}if(!$remaining)return 'Completed / Released';
  if(packaging_kind($r['condition_type'])==='damaged'&&in_array($r['status'],['For Review','Pending','Recorded'],true))return 'Recorded · Non-Sellable';
  return $r['packaging_state']??$r['status'];
 }

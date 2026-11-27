@@ -318,3 +318,5 @@ require_once __DIR__.'/restricted_controls.php';
 require_once __DIR__.'/return_case_outcomes.php';
 
 require_once __DIR__.'/return_operations_audit.php';
+
+require_once __DIR__.'/restricted_recovery.php';
