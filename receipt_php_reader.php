@@ -1,18 +1,21 @@
 <?php
 // Text-PDF fallback for hosting without shell commands. No remote service or stock writes.
 function receipt_pdf_join_rows($text){
- $out=[];$pending='';$table=false;
+ $out=[];$pending='';$table=false;$shippedOnly=false;
  foreach(preg_split('/\R/',str_replace("\xC2\xA0",' ',$text)) as $line){
   $clean=trim(preg_replace('/\s+/u',' ',$line));
-  if(preg_match('/\b(?:item|description)\b.*\b(?:ordered|units|shipped)\b/i',$clean)){$table=true;$pending='';}
+  // Some PDFs position quantity and unit with separate TJ commands without a literal space.
+  $clean=preg_replace('/^(\d[\d,.]*)(bx\s*\(|pcs?\b)/i','$1 $2',$clean);
+  if(preg_match('/\b(?:item|description)\b.*(?:ordered|units|shipped)/i',$clean)){$table=true;$pending='';$shippedOnly=!preg_match('/ordered/i',$clean);$line=preg_replace('/(shipped)(units)/i','$1 $2',$clean);}
   elseif(preg_match('/^(?:checked|verified|received|prepared|signature|total|page\b|\d+\s+of\s+\d+)/i',$clean)){$table=false;$pending='';}
-  elseif($table&&preg_match('/^(\S+)\s+(bx\s*\(\s*\d+\s*\)|pc|pcs|piece|pieces|pe|pec)\s+(\S+)$/i',$clean)){
+  elseif($table&&preg_match($shippedOnly?'/^(\S+)\s+(bx\s*\(\s*\d+\s*\)|pc|pcs|piece|pieces|pe|pec)$/i':'/^(\S+)\s+(bx\s*\(\s*\d+\s*\)|pc|pcs|piece|pieces|pe|pec)\s+(\S+)$/i',$clean)){
    if($pending!=='')$line=$pending.' '.$clean;
    $pending='';
   }
   elseif($table&&preg_match('/^.+?\s+\S+\s+(?:bx\s*\(\s*\d+\s*\)|pc|pcs|piece|pieces|pe|pec)\s+\S+$/i',$clean)){$pending='';}
   elseif($table&&$clean!==''){
    // Repeated printed product descriptions are one item; wrapped model suffixes are retained.
+   if($clean===$pending)continue;
    if($pending===''||preg_match('/^(?:rs[8b]|srf|nanomoly|bossj|lumina)\b/i',$clean))$pending=$clean;
    elseif($clean!==$pending)$pending.=' '.$clean;
   }

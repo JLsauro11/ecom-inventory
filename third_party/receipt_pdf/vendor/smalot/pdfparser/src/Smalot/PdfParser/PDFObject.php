@@ -1153,6 +1153,13 @@ class PDFObject
             do {
                 $oldCommand = $command;
 
+                // A TJ array may start with a positioning number (e.g. [-1077<...>]).
+                // Preserve its spacing and continue decoding the following text operand.
+                if (preg_match('/^\s*([+-]?(?:\d+(?:\.\d*)?|\.\d+))\s*/', $command, $number)) {
+                    $subcommand[] = [self::TYPE => 'n', self::OPERATOR => '', self::COMMAND => $number[1]];
+                    $command = substr($command, \strlen($number[0]));
+                }
+
                 // Search for parentheses string () format
                 if (preg_match('/^ *\((.*?)(?<![^\\\\]\\\\)\) *(-?[\d.]+)?/', $command, $tjmatch)) {
                     $subcommand[] = [

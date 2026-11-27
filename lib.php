@@ -122,13 +122,15 @@ function parse_receipt_text($text){
  if(preg_match('/\bIF\s*\d{4,}\b/i',$text,$m))$out['reference']=strtoupper(preg_replace('/\s/','',$m[0]));
  if(preg_match('/\bTO-[A-Z0-9-]+\b/i',$text,$m))$out['transfer_ref']=strtoupper($m[0]);
  if(preg_match('/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/',$text,$m)&&checkdate((int)$m[1],(int)$m[2],(int)$m[3]))$out['date']=sprintf('%04d-%02d-%02d',$m[3],$m[1],$m[2]);
- $table=false;$last=null;$continuation=false;
+ $table=false;$last=null;$continuation=false;$shippedOnly=false;
  foreach(preg_split('/\R/',$text) as $line){
   $line=trim(preg_replace('/\s+/u',' ',$line));if($line==='')continue;
-  if(preg_match('/\b(?:item|description)\b.*\b(?:ordered|units|shipped)\b/i',$line)){$table=true;$continuation=false;continue;}
+  if(preg_match('/\b(?:item|description)\b.*(?:ordered|units|shipped)/i',$line)){$table=true;$shippedOnly=!preg_match('/ordered/i',$line);$continuation=false;continue;}
   if(preg_match('/^(?:checked|verified|received|prepared|signature|total|page\b)/i',$line)){$table=false;$continuation=false;continue;}
   // Normalize only known receipt unit OCR confusions; never guess quantity digits.
-  if(preg_match('/^(.+?)\s+(\S+)\s+(bx\s*\(\s*\d+\s*\)|pc|pcs|piece|pieces|pe|pec)\s+(\S+)\s*$/i',$line,$m)){
+  $matched=preg_match('/^(.+?)\s+(\S+)\s+(bx\s*\(\s*\d+\s*\)|pc|pcs|piece|pieces|pe|pec)\s+(\S+)\s*$/i',$line,$m);
+  if(!$matched&&$table&&$shippedOnly&&preg_match('/^(.+?)\s+(\S+)\s+(bx\s*\(\s*\d+\s*\)|pc|pcs|piece|pieces|pe|pec)\s*$/i',$line,$short)){$m=[$short[0],$short[1],$short[2],$short[3],$short[2]];$matched=true;}
+  if($matched){
    $item=trim($m[1]);$rawUom=strtolower(preg_replace('/\s/','',$m[3]));$uom=in_array($rawUom,['pe','pec'],true)?'pc':$rawUom;$sq=receipt_numeric_value($m[4])??0;
    $factor=receipt_uom_factor($uom);$qty=null;try{[, $qty]=receipt_quantity($sq,$uom);}catch(Throwable $e){}
    $out['items'][]=['item'=>$item,'source_qty'=>$sq,'source_uom'=>$uom,'factor'=>$factor,'qty'=>$qty,'raw_shipped'=>$m[4],'raw_source_uom'=>$rawUom,'uom_correction'=>$uom!==$rawUom?'Receipt unit read as '.$rawUom.'; normalized to pc. Compare with the original receipt.':''];
