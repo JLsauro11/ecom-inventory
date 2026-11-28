@@ -1,8 +1,8 @@
 <?php
 function restricted_request_profile($b){$saved=$b['workflow']['requester_profile']??'';if($saved!=='')return $saved;$role=om_query('SELECT role FROM users WHERE id=?',[$b['user_id']])->fetchColumn();return access_role_profile($role?:'Admin');}
-function restricted_approval_label($b){return in_array(restricted_request_profile($b),['Admin','Operations Lead'],true)?'a different Admin':'Operations Lead or Admin';}
+function restricted_approval_label($b){if(ns_recovery_batch($b)&&restricted_request_profile($b)==='Admin')return 'Admin (self-approval allowed for Return to Sellable)';return in_array(restricted_request_profile($b),['Admin','Operations Lead'],true)?'a different Admin':'Operations Lead or Admin';}
 function restricted_can_approve($b){
- $profile=access_profile();if($b['import_type']!=='Non-Sellable Release'||(int)$b['user_id']===(int)current_user()['id'])return false;
+ $profile=access_profile();if($b['import_type']!=='Non-Sellable Release')return false;if($profile==='Admin'&&ns_recovery_batch($b))return true;if((int)$b['user_id']===(int)current_user()['id'])return false;
  return $profile==='Admin'||($profile==='Operations Lead'&&!in_array(restricted_request_profile($b),['Operations Lead','Admin'],true));
 }
 function restricted_pending_requests(){
